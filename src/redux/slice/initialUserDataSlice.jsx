@@ -1,149 +1,115 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getFromBackend } from "../../utils/api/userApi";
-
-export const fetchNotebooks = createAsyncThunk("fetchNotebooks", async () => {
-  const notebooks = await getFromBackend("/notebook");
-  return notebooks;
-});
-
-export const fetchNotes = createAsyncThunk("fetchNotes", async () => {
-  const notes = await getFromBackend("/note");
-  return notes;
-});
-
-export const fetchTags = createAsyncThunk("fetchTags", async () => {
-  const tag = await getFromBackend("/tag");
-  return tag;
-});
-export const fetchShortcut = createAsyncThunk("fetchShortcut", async () => {
-  const shortcut = await getFromBackend("/shortcut");
-  return shortcut;
-});
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  notebooks: {
-    isloading: true,
-    isError: true,
-    errMsg: null,
-    data: null,
-  },
-  notes: {
-    isloading: true,
-    isError: false,
-    errMsg: null,
-    data: null,
-  },
-  tags: {
-    isloading: true,
-    isError: false,
-    errMsg: null,
-    data: null,
-  },
-  shortcuts: {
-    isloading: true,
-    isError: false,
-    errMsg: null,
-    data: null,
-  },
+  notebooks: null,
+  notes: null,
+  tags: null,
+  activeNotebook: null,
 };
 
-const initialUserDataSlice = createSlice({
-  name: "initialUserDataSlice",
+const userNotableData = createSlice({
+  name: "userNotableData",
   initialState,
-  extraReducers: (builder) => {
-    // WORK: INITIAL NOTEBOOKS DATA
-    builder
-      .addCase(fetchNotebooks.pending, (state) => {
-        state.notebooks.isloading = true;
-      })
-      .addCase(fetchNotebooks.fulfilled, (state, { payload }) => {
-        if (payload?.status === 200) {
-          console.log("notebook", payload);
-          state.notebooks.data = payload.data.data;
-          state.notebooks.isError = false;
-          state.notebooks.isloading = false;
-        } else {
-          state.notebooks.errMsg = payload.data.message;
-          state.notebooks.isError = true;
-          state.notebooks.isloading = false;
+  reducers: {
+    userInitialData: (state, { payload }) => {
+      const notebooksList = payload[0].data;
+      const notesList = payload[1].data;
+      const tagsList = payload[2].data;
+
+      const primaryNotebook = notebooksList.find(
+        (notebook) => notebook.primary === true
+      );
+
+      state.notebooks = notebooksList;
+      state.notes = notesList;
+      state.tags = tagsList;
+      state.activeNotebook = primaryNotebook._id;
+
+      return state;
+    },
+    pushNewNotebook: (state, { payload }) => {
+      state.notebooks = [payload, ...state.notebooks];
+
+      return state;
+    },
+    updateTheNotebook: (state, { payload }) => {
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook._id === payload._id) {
+          return payload;
         }
-      })
-      .addCase(fetchNotebooks.rejected, (state) => {
-        state.notebooks.isError = true;
-        state.notebooks.isloading = false;
+
+        return notebook;
       });
 
-    // WORK: INITIAL NOTES DATA
-    // .addCase(fetchNotes.pending, (state) => {
-    //   state.notes.isloading = true;
-    // })
+      return state;
+    },
+    deletedNotebook: (state, { payload }) => {
+      state.notebooks = state.notebooks.filter(
+        (notebook) => notebook._id !== payload
+      );
 
-    // .addCase(fetchNotes.fulfilled, (state, { payload }) => {
-    //   if (payload?.status === 200) {
-    //     state.notes.data = payload.data.data;
-    //   state.notes.isError = false;
-    //   } else {
-    //     state.notes.errMsg = payload.data.message;
-    //     state.notes.isError = true;
-    //   }
-    //   state.notes.isloading = false;
+      return state;
+    },
+    changeActiveNotebook: (state, { payload }) => {
+      state.activeNotebook = payload;
+      return state;
+    },
+    createdNewNote: (state, { payload }) => {
+      state.notes = [...state.notes, payload];
+      return state;
+    },
+    updatedTheNote: (state, { payload }) => {
+      state.notes = state.notes.map((note) => {
+        if (note._id === payload._id) {
+          return payload;
+        }
 
-    // })
-    // .addCase(fetchNotes.rejected, (state) => {
-    //   state.notes.isloading = false;
+        return note;
+      });
 
-    //   state.notes.isError = true;
-    // })
+      return state;
+    },
+    deleteTheNote: (state, { payload }) => {
+      state.notes = state.notes.filter((note) => note._id !== payload);
 
-    // // WORK: INITIAL TAGS DATA
-    // .addCase(fetchTags.pending, (state) => {
-    //   state.tags.isloading = true;
-    // })
+      return state;
+    },
+    createdNewTag: (state, { payload }) => {
+      state.tags = [...state.tags, payload];
+      return state;
+    },
+    updateTheTag: (state, { payload }) => {
+      state.tags = state.tags.map((tag) => {
+        if (tag._id === payload._id) {
+          return payload;
+        }
 
-    // .addCase(fetchTags.fulfilled, (state, { payload }) => {
-    //   if (payload?.status === 200) {
-    //     state.tags.data = payload.data.data;
-    //   state.tags.isError = false;
+        return tag;
+      });
 
-    //   } else {
-    //     state.tags.errMsg = payload.data.message;
-    //     state.tags.isError = true;
-    //   }
-
-    //   state.tags.isloading = false;
-    // })
-    // .addCase(fetchTags.rejected, (state) => {
-    //   state.tags.isloading = false;
-    //   state.tags.isError = true;
-    // })
-
-    // // WORK: INITIAL SHORTCUT DATA
-    // .addCase(fetchShortcut.pending, (state) => {
-    //   state.shortcuts.isloading = true;
-    // })
-
-    // .addCase(fetchShortcut.fulfilled, (state, { payload }) => {
-    //   if (payload?.status === 200) {
-    //     state.shortcuts.data = payload.data.data;
-    //   state.shortcuts.isError = false;
-
-    //   } else {
-    //     state.shortcuts.errMsg = payload.data.message;
-    //     state.shortcuts.isError = true;
-    //   }
-
-    //   state.shortcuts.isloading = false;
-    // })
-    // .addCase(fetchShortcut.rejected, (state) => {
-    //   state.shortcuts.isloading = false;
-    //   state.shortcuts.isError = true;
-    // });
+      return state;
+    },
+    deletedTheTag: (state, { payload }) => {
+      state.tags = state.tags.filter((tag) => tag._id !== payload);
+      return state;
+    },
   },
 });
 
-export const initialUserDataReducer = initialUserDataSlice.reducer;
+export const {
+  userInitialData,
+  pushNewNotebook,
+  updateTheNotebook,
+  deletedNotebook,
+  changeActiveNotebook,
+  createdNewNote,
+  updatedTheNote,
+  deleteTheNote,
+  createdNewTag,
+  updateTheTag,
+  deletedTheTag,
+} = userNotableData.actions;
 
-export const notebooksInitialState = (state) => state.initialUserData.notebooks;
-export const notesInitialState = (state) => state.initialUserData.notes;
-export const tagsInitialState = (state) => state.initialUserData.tags;
-export const shortcutsInitialState = (state) => state.initialUserData.shortcuts;
+export const userNotableDataReducer = userNotableData.reducer;
+
+export const userInitialState = (state) => state.notable;

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import UseInitialFetch from "../hooks/useInitialFetch";
+import UseInitialFetch from "../../hooks/query/UseInitialFetch";
 
 const AllNotes = () => {
   const textareaRef = useRef(null);

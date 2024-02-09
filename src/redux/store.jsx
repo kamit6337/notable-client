@@ -1,15 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authReducer } from "./slice/authSlice";
-import { initialUserDataReducer } from "./slice/initialUserDataSlice";
-import { makeNoteReducer } from "./slice/makeNoteSlice";
-import { globalErrorReducer } from "./slice/globalErrorSlice";
+import { userNotableDataReducer } from "./slice/initialUserDataSlice";
+import { toggleReducer } from "./slice/toggleSlice";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
-    initialUserData: initialUserDataReducer,
-    makeNote: makeNoteReducer,
-    globalError: globalErrorReducer,
+    notable: userNotableDataReducer,
+    toggle: toggleReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

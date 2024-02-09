@@ -1,15 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
+import Home from "../pages/home/Home";
+import Login from "../pages/auth/Login";
+import SignUp from "../pages/auth/SignUp";
 import NotFound from "../pages/NotFound";
-import Notes from "../pages/AllNotes";
-import CheckLogin from "../pages/CheckLogin";
-import Notebooks from "../pages/AllNoteBooks";
-import SingleNotebook from "../pages/SingleNotebook";
-import Tags from "../pages/AllTags";
-import ShowError from "../pages/ShowError";
+import Notes from "../pages/notes/AllNotes";
+import CheckLogin from "../pages/auth/CheckLogin";
+import Notebooks from "../pages/notebooks/AllNoteBooks";
+import SingleNotebook from "../pages/notebookNotes/SingleNotebook";
+import Tags from "../pages/tags/AllTags";
+import ShowError from "../pages/auth/ShowError";
 import TagNotes from "../pages/TagNotes";
+import ForgotPasswordPage from "../pages/auth/ForgotPassword";
 
 const Router = () => {
   return (
@@ -19,7 +21,7 @@ const Router = () => {
 
         {/* NOTE: NOTEBOOK RELATED ROUTES */}
         <Route path="notebooks" element={<Notebooks />} />
-        <Route path="notebook" element={<SingleNotebook />} />
+        <Route path="notebooks/:id" element={<SingleNotebook />} />
 
         {/* NOTE: NOTES RELATED ROUTES */}
         <Route path="notes" element={<Notes />} />
@@ -30,6 +32,8 @@ const Router = () => {
       </Route>
 
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/login/check" element={<CheckLogin />} />
       <Route path="/error" element={<ShowError />} />
 
