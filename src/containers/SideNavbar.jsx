@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { QueryCache } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postToBackend } from "../utils/api/userApi";
 import UseLoginCheck from "../hooks/query/useLoginCheck";
 import { getAuthReq } from "../utils/api/authApi";
@@ -12,15 +12,16 @@ import {
 } from "../redux/slice/initialUserDataSlice";
 import AllTags from "../pages/tags/AllTags";
 import { useState } from "react";
+import { toggleNoteActivation } from "../redux/slice/toggleSlice";
 
 const SideNavbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data } = UseLoginCheck();
   const queryCache = new QueryCache();
-  const { activeNotebook } = useSelector(userInitialState);
+  const { primaryNotebook } = useSelector(userInitialState);
   const [showTagList, setShowTagList] = useState(false);
-
+  const { pathname } = useLocation();
   const handleLogout = async () => {
     try {
       await getAuthReq("/logout");
@@ -35,23 +36,47 @@ const SideNavbar = () => {
 
   const handleNoteCreation = async () => {
     try {
-      console.log("activeNotebook", activeNotebook);
-      const newNote = await postToBackend("/notes", {
-        id: activeNotebook,
-      });
+      const obj = {
+        id: primaryNotebook,
+      };
+
+      let navigateLink = `/notebooks/${primaryNotebook}`;
+
+      if (pathname.startsWith("/notes")) {
+        navigateLink = pathname;
+      }
+
+      if (pathname.startsWith("/notebooks")) {
+        const notebookId = pathname.split("/").at(-1);
+        obj.id = notebookId;
+        navigateLink = pathname;
+      }
+
+      if (pathname.startsWith("/tags")) {
+        const tagId = pathname.split("/").at(-1);
+        obj.tagId = tagId;
+        navigateLink = pathname;
+      }
+
+      const newNote = await postToBackend("/notes", obj);
       console.log("success", newNote);
       dispatch(createdNewNote(newNote.data));
-      navigate(`/notebooks/${activeNotebook}`);
+      navigate(navigateLink);
+      dispatch(toggleNoteActivation(true));
     } catch (error) {
       console.log("Error in create note", error);
     }
+  };
+
+  const resetAllTags = () => {
+    setShowTagList(false);
   };
 
   const photoUrl = `${environment.SERVER_URL}/${data.photo}`;
 
   return (
     <>
-      <section className="relative z-30 text-sm bg-black/90 text-white/90 w-full h-full">
+      <section className="relative z-40 text-sm bg-black/90 text-white/90 w-full h-full">
         <div className="flex p-2 justify-start gap-1 items-center">
           <div className="w-8 rounded-full">
             <img
@@ -98,7 +123,7 @@ const SideNavbar = () => {
           <div className=" ">
             <p
               className="p-2 w-max cursor-pointer"
-              onMouseEnter={() => setShowTagList(true)}
+              onClick={() => setShowTagList((prev) => !prev)}
             >
               Tags
             </p>
@@ -108,10 +133,10 @@ const SideNavbar = () => {
       <div
         className={`${
           showTagList ? "translate-x-0" : "-translate-x-full "
-        } absolute left-60 z-10 top-0 h-screen w-96 bg-blue-50 transition-all duration-500`}
+        } absolute left-60 z-30 top-0 h-screen w-96 bg-blue-50 transition-all duration-500`}
         onMouseLeave={() => setShowTagList(false)}
       >
-        <AllTags />
+        <AllTags reset={resetAllTags} />
       </div>
     </>
   );

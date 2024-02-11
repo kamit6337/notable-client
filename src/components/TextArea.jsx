@@ -1,32 +1,35 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import UpdateNote from "../../hooks/mutation/UpdateNote";
+import UpdateNote from "../hooks/mutation/UpdateNote";
 import { useDispatch } from "react-redux";
 import {
   deleteTheNote,
   updatedTheNote,
-} from "../../redux/slice/initialUserDataSlice";
-import { Icons } from "../../assets/Icons";
-import { deleteToBackend } from "../../utils/api/userApi";
+} from "../redux/slice/initialUserDataSlice";
+import { Icons } from "../assets/Icons";
+import { deleteToBackend } from "../utils/api/userApi";
 
 const TextArea = ({ activeNote, resetSetIndex }) => {
   const dispatch = useDispatch();
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
+  const [isTitleTyping, setIsTitleTyping] = useState(false);
 
   const { register, getValues, reset, setFocus } = useForm({
     defaultValues: {
       title: "",
-      body: "abcde",
+      body: "",
     },
   });
 
   const { mutate, data, isLoading } = UpdateNote(activeNote._id);
 
   useEffect(() => {
-    setFocus("body");
-  }, [setFocus, activeNote]);
+    if (!isTitleTyping) {
+      setFocus("body");
+    }
+  }, [setFocus, activeNote, isTitleTyping]);
 
   useEffect(() => {
     if (activeNote) {
@@ -48,6 +51,7 @@ const TextArea = ({ activeNote, resetSetIndex }) => {
 
   const changeTitle = (e) => {
     const { value } = e.target;
+
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
@@ -62,7 +66,7 @@ const TextArea = ({ activeNote, resetSetIndex }) => {
       mutate(obj);
 
       console.log(obj);
-    }, 3000);
+    }, 1000);
 
     setTypingTimeout(timeout);
   };
@@ -89,6 +93,8 @@ const TextArea = ({ activeNote, resetSetIndex }) => {
   };
 
   const handleDeleteNote = async () => {
+    setShowOption(false);
+
     try {
       const deleteNote = await deleteToBackend("/notes", {
         id: activeNote._id,
@@ -110,8 +116,10 @@ const TextArea = ({ activeNote, resetSetIndex }) => {
             className="w-full h-full px-6 text-xl font-bold outline-none"
             placeholder="title"
             onChange={changeTitle}
+            onClick={() => setIsTitleTyping(true)}
             autoComplete="off"
             spellCheck="false"
+            onKeyDown={(e) => e.key === "Enter" && setIsTitleTyping(false)}
           />
         </div>
         <div className="h-full w-32 flex flex-col justify-between text-xs p-2">

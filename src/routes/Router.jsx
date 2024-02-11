@@ -8,10 +8,9 @@ import Notes from "../pages/notes/AllNotes";
 import CheckLogin from "../pages/auth/CheckLogin";
 import Notebooks from "../pages/notebooks/AllNoteBooks";
 import SingleNotebook from "../pages/notebookNotes/SingleNotebook";
-import Tags from "../pages/tags/AllTags";
 import ShowError from "../pages/auth/ShowError";
-import TagNotes from "../pages/TagNotes";
 import ForgotPasswordPage from "../pages/auth/ForgotPassword";
+import TagNotes from "../pages/tagNotes/TagNotes";
 
 const Router = () => {
   return (
@@ -27,8 +26,7 @@ const Router = () => {
         <Route path="notes" element={<Notes />} />
 
         {/* NOTE: TAGS RELATED ROUTES */}
-        <Route path="tags" element={<Tags />} />
-        <Route path="tag" element={<TagNotes />} />
+        <Route path="tags/:id" element={<TagNotes />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

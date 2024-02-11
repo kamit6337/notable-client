@@ -18,6 +18,7 @@ const initialState = {
     data: null,
     tag: false,
   },
+  isNoteActivated: false,
 };
 
 const toggleSlice = createSlice({
@@ -75,11 +76,20 @@ const toggleSlice = createSlice({
       state.deleteForm = { bool, data, tag };
       return state;
     },
+    toggleNoteActivation: (state, { payload }) => {
+      state.isNoteActivated = payload;
+
+      return state;
+    },
   },
 });
 
-export const { toggleCreateNewNotebook, toggleCreateNewTag, toggleDeleteForm } =
-  toggleSlice.actions;
+export const {
+  toggleCreateNewNotebook,
+  toggleCreateNewTag,
+  toggleDeleteForm,
+  toggleNoteActivation,
+} = toggleSlice.actions;
 
 export const toggleReducer = toggleSlice.reducer;
 

@@ -15,11 +15,6 @@ const MainLayout = () => {
   // WORK: MAKING CONTINUOUS CHECKING ONLY AFTER SUCCESSFUL LOGGED IN THAT IS USER IS AUTHENTICATED EVERY 5 MINUTES, THAT IT DOES NOT MAKE ANY CHANGE IN TOKEN
   const { isError, error, data, isSuccess } = UseLoginCheck();
 
-  // console.log("isError", isError);
-  // console.log("error", error);
-  // console.log("data", data);
-  // console.log("isSuccess", isSuccess);
-
   // WORK: INITIALLY FETCH ALL NOTEBOOKS AND NOTES RELATED TO THAT USER
   const {
     isLoading,
@@ -45,17 +40,17 @@ const MainLayout = () => {
   }
 
   return (
-    <section className="w-full h-screen relative">
+    <section className="w-full h-screen">
       <div className="flex w-full h-full">
         <div className="h-full w-60 ">
           <SideNavbar />
         </div>
-        <div className="flex-1 h-full">
+        <div className="flex-1">
           <Outlet />
         </div>
       </div>
 
-      <div className="w-full h-full">
+      <div className="w-full">
         <GlobalForm />
       </div>
     </section>

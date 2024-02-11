@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from "react-redux";
 import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { Icons } from "../../assets/Icons";
@@ -6,8 +7,9 @@ import {
   toggleCreateNewTag,
   toggleDeleteForm,
 } from "../../redux/slice/toggleSlice";
+import { Link } from "react-router-dom";
 
-const AllTags = () => {
+const AllTags = ({ reset }) => {
   const dispatch = useDispatch();
   const { tags } = useSelector(userInitialState);
   const [showOption, setShowOption] = useState(false);
@@ -66,13 +68,17 @@ const AllTags = () => {
                   setIndex(null);
                 }}
               >
-                <p>{title}</p>
+                <p className="cursor-pointer">
+                  <Link to={`/tags/${_id}`} onClick={reset}>
+                    {title}
+                  </Link>
+                </p>
 
                 {index === i && (
                   <div className="relative">
                     <p
                       className="cursor-pointer"
-                      onClick={() => setShowTagOption(true)}
+                      onClick={() => setShowTagOption((prev) => !prev)}
                     >
                       <Icons.options className="rotate-90 " />
                     </p>

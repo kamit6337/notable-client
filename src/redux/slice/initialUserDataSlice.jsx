@@ -4,7 +4,7 @@ const initialState = {
   notebooks: null,
   notes: null,
   tags: null,
-  activeNotebook: null,
+  primaryNotebook: null,
 };
 
 const userNotableData = createSlice({
@@ -23,7 +23,7 @@ const userNotableData = createSlice({
       state.notebooks = notebooksList;
       state.notes = notesList;
       state.tags = tagsList;
-      state.activeNotebook = primaryNotebook._id;
+      state.primaryNotebook = primaryNotebook._id;
 
       return state;
     },
@@ -48,10 +48,6 @@ const userNotableData = createSlice({
         (notebook) => notebook._id !== payload
       );
 
-      return state;
-    },
-    changeActiveNotebook: (state, { payload }) => {
-      state.activeNotebook = payload;
       return state;
     },
     createdNewNote: (state, { payload }) => {
@@ -101,7 +97,6 @@ export const {
   pushNewNotebook,
   updateTheNotebook,
   deletedNotebook,
-  changeActiveNotebook,
   createdNewNote,
   updatedTheNote,
   deleteTheNote,
