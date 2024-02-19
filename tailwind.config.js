@@ -7,25 +7,36 @@ export default {
         sans: ["Poppins", "sans-serif"],
       },
       colors: {
-        black950: "#020617",
-        black900: "#0f172a",
-        grap50: "#f9fafb",
+        my_single_note_title: "#333333",
+        my_single_note_body: "#737373",
+        my_home_notelist: "#FFFFFF",
+        my_home_notelist_border: "#E7E9E7",
+        my_home_recent: "#OOA82D",
+        my_note_green: "#3FB833",
+        my_light_green_dark: "#3CC02E",
+        my_sidenavbar: "#100F0F",
+        my_sidenavbar_icon: "#CCCCCC",
+        my_notelist: "#CDCEC6",
+        my_notelist_body: "#B5B5B0",
+        my_notelist_title: "#61615F",
+        my_notearea_white: "#FDFDFA",
+        my_tags: "#E9EDE8",
       },
     },
     screens: {
       "2xl": { max: "1535px" },
       // => @media (max-width: 1535px) { ... }
 
-      xl: { max: "1280px" },
+      laptop: { max: "1280px" },
       // => @media (max-width: 1279px) { ... }
 
-      lg: { max: "1024px" },
+      sm_lap: { max: "1024px" },
       // => @media (max-width: 1023px) { ... }
 
-      md: { max: "768px" },
+      tablet: { max: "768px" },
       // => @media (max-width: 767px) { ... }
 
-      sm: { max: "640px" },
+      mobile: { max: "640px" },
       // => @media (max-width: 639px) { ... }
     },
   },

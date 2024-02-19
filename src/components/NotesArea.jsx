@@ -1,78 +1,201 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icons } from "../assets/Icons";
 import TextArea from "./TextArea";
 import NoteTags from "./NoteTags";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNoteActivation, toggleState } from "../redux/slice/toggleSlice";
+import convertHTMLtoString from "../utils/javaScript/convertHTMLtoString";
+import {
+  sortFunction,
+  sortOptionsList,
+} from "../utils/javaScript/sortOptionsList";
+import convertDateType from "../utils/javaScript/convertDateType";
 
-const NotesArea = ({ title, list }) => {
+const NotesArea = ({ title, icon, list }) => {
   const lastNoteRef = useRef(null);
   const dispatch = useDispatch();
   const { isNoteActivated } = useSelector(toggleState);
-
-  const [noteIndex, setNoteIndex] = useState(0);
-
-  const activeNote = useMemo(() => {
-    return list[noteIndex];
-  }, [noteIndex, list]);
+  const [showSortOption, setShowSortOption] = useState(false);
+  const [newList, setNewList] = useState(list);
+  const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
+  const [activeNote, setActiveNote] = useState(null);
 
   useEffect(() => {
-    if (isNoteActivated && list && list.length > 0 && lastNoteRef.current) {
-      setNoteIndex(list.length - 1);
+    if (!list) return;
+    const localSort = JSON.parse(localStorage.getItem("sort"));
+    if (!activeNote) {
+      setActiveNote(list[0]);
+    } else {
+      const findNote = list.find((note) => note._id === activeNote._id);
 
-      lastNoteRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-
-      dispatch(toggleNoteActivation(false));
+      if (!findNote) {
+        setActiveNote(list[0]);
+      } else {
+        setActiveNote(findNote);
+      }
     }
-  }, [isNoteActivated, list, dispatch]);
 
-  const resetSetIndex = () => {
-    if (noteIndex === list.length - 1) {
-      setNoteIndex(list.length - 2);
+    if (!localSort) {
+      setNewList(list);
+      return;
     }
+
+    setNewList(sortFunction(list, localSort.id));
+    const updateSortOptions = sortOptionsList.map((obj) => {
+      const newObj = { ...obj };
+      if (newObj.id === localSort.id) {
+        newObj.active = true;
+        return newObj;
+      }
+      delete newObj.active;
+      return newObj;
+    });
+    setNewSortOptions(updateSortOptions);
+  }, [list, activeNote]);
+
+  useEffect(() => {
+    if (activeNote) {
+      let isAvailable = JSON.parse(localStorage.getItem("notesId"));
+      if (!isAvailable) {
+        localStorage.setItem("notesId", JSON.stringify([activeNote._id]));
+        return;
+      }
+      if (isAvailable.length >= 20) {
+        const sliceTheList = isAvailable.slice(0, 19);
+        isAvailable = sliceTheList;
+      }
+      const filterNotes = isAvailable.filter((id) => id !== activeNote._id);
+      const addedNote = [activeNote._id, ...filterNotes];
+      localStorage.setItem("notesId", JSON.stringify(addedNote));
+    }
+  }, [activeNote]);
+
+  useEffect(() => {
+    if (
+      isNoteActivated.bool &&
+      newList &&
+      newList.length > 0 &&
+      lastNoteRef.current
+    ) {
+      setActiveNote(isNoteActivated.data);
+      dispatch(toggleNoteActivation({ bool: false }));
+
+      setTimeout(() => {
+        lastNoteRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 200);
+    }
+  }, [isNoteActivated, newList, dispatch]);
+
+  const resetSetIndex = (id) => {
+    const findLastNoteIndex = newList.findIndex((note) => note._id === id);
+    if (findLastNoteIndex === newList.length - 1) {
+      setActiveNote(newList.at(-2));
+    } else {
+      setActiveNote(newList[findLastNoteIndex + 1]);
+    }
+  };
+
+  const handleSort = (id) => {
+    setShowSortOption(false);
+    localStorage.setItem("sort", JSON.stringify({ id }));
+
+    setNewList(sortFunction(newList, id));
+
+    const updateSortOptions = newSortOptions.map((obj) => {
+      const newObj = { ...obj };
+      if (newObj.id === id) {
+        newObj.active = true;
+        return newObj;
+      }
+      delete newObj.active;
+      return newObj;
+    });
+    setNewSortOptions(updateSortOptions);
+  };
+
+  const handleActiveNote = (note) => {
+    setActiveNote(note);
   };
 
   return (
     <section className="w-full h-full flex">
       {/* NOTE: SIDE NOTE BAR */}
+
       <div className="w-60 bg-gray-50 h-full  flex flex-col border-r border-gray-300">
         {/* MARK: HEADER */}
-        <div className="h-24 border-b border-gray-400 w-full flex flex-col gap-1 px-5">
-          <div className="flex gap-1 items-center py-4">
-            <Icons.notesSolid className="text-2xl" />
+        <div className="h-24 border-b border-gray-400 w-full flex flex-col justify-between pb-2 pt-4 gap-1 px-5">
+          <div className="flex gap-1 items-center ">
+            <p className="text-2xl">{icon}</p>
             <p className="text-lg">{title}</p>
           </div>
-          <p>{list.length} Notes</p>
+          <div className="flex justify-between items-center">
+            <p>{list.length} Notes</p>
+            <div className="relative">
+              <p
+                className="text-xl"
+                onClick={() => setShowSortOption((prev) => !prev)}
+              >
+                <Icons.sort />
+              </p>
+              {showSortOption && (
+                <div
+                  className="absolute z-20 top-full mt-3 left-0 bg-white border whitespace-nowrap  rounded-lg py-4 text-sm"
+                  onMouseLeave={() => setShowSortOption(false)}
+                >
+                  {newSortOptions.map((obj, i) => {
+                    const { id, name, active } = obj;
+
+                    return (
+                      <div
+                        key={i}
+                        className={`${
+                          active && "bg-gray-100"
+                        }  hover:bg-gray-100 px-10 py-2`}
+                        onClick={() => handleSort(id)}
+                      >
+                        <p className="">{name}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* MARK: NOTE LIST */}
 
         <div className="w-full flex-1 p-[2px] overflow-y-scroll overflow-x-hidden">
-          {list.length > 0 ? (
-            list.map((note, i) => {
-              const { title, body, notebookTitle } = note;
+          {newList.length > 0 ? (
+            newList.map((note, i) => {
+              const { _id, title, body, updatedAt } = note;
 
               return (
                 <div
                   key={i}
-                  ref={i === list.length - 1 ? lastNoteRef : null}
-                  className={`w-full h-44 p-5  border-b hover:bg-white cursor-pointer ${
-                    noteIndex === i && "border border-black950"
+                  ref={activeNote?._id === _id ? lastNoteRef : null}
+                  className={`w-full h-32 flex flex-col justify-between  p-5  border-b hover:bg-white cursor-pointer ${
+                    activeNote?._id === _id &&
+                    "border border-my_single_note_title"
                   }`}
-                  onClick={() => setNoteIndex(i)}
+                  onClick={() => handleActiveNote(note)}
                 >
-                  <p>{title}</p>
-                  <p className="text-xs mt-4">{body}</p>
-                  <p>{notebookTitle}</p>
+                  <p className="text-sm">{title}</p>
+                  <p className="text-sm -mt-2 break-all text-gray-500">
+                    {convertHTMLtoString(body)}
+                  </p>
+                  <p className=" text-xs">{convertDateType(updatedAt)}</p>
                 </div>
               );
             })
           ) : (
-            <div>No Notes available</div>
+            <div className="h-full w-full flex justify-center items-center px-4 text-center">
+              Sorry, No Notes available
+            </div>
           )}
         </div>
       </div>
@@ -80,11 +203,11 @@ const NotesArea = ({ title, list }) => {
       {/* NOTE: TEXT AREA */}
       {activeNote && (
         <div className="flex-1 h-full relative">
-          <div className="" style={{ height: "calc(100% - 40px)" }}>
+          <div className="" style={{ height: "calc(100% - 80px)" }}>
             <TextArea activeNote={activeNote} resetSetIndex={resetSetIndex} />
           </div>
 
-          <div className="absolute z-10 bottom-0 w-full bg-gray-200 h-10 ">
+          <div className="absolute z-10 bottom-0 w-full h-10 ">
             <NoteTags activeNote={activeNote} />
           </div>
         </div>

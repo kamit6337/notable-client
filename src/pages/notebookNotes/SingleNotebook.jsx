@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import NotesArea from "../../components/NotesArea";
+import { Icons } from "../../assets/Icons";
 
 const SingleNotebook = () => {
   const { notes, notebooks } = useSelector(userInitialState);
@@ -15,7 +16,13 @@ const SingleNotebook = () => {
     return [filterNotebookNotes, findNotebook.title];
   }, [id, notes, notebooks]);
 
-  return <NotesArea list={noteList} title={notebookName} />;
+  return (
+    <NotesArea
+      list={noteList}
+      title={notebookName}
+      icon={<Icons.notebooks />}
+    />
+  );
 };
 
 export default SingleNotebook;

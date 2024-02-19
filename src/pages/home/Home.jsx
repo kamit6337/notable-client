@@ -1,5 +1,91 @@
+import { useMemo } from "react";
+import UseLoginCheck from "../../hooks/query/useLoginCheck";
+import { useSelector } from "react-redux";
+import { userInitialState } from "../../redux/slice/initialUserDataSlice";
+import CustomImages from "../../assets/images";
+import currentDate from "../../utils/javaScript/currentDate";
+import { Link } from "react-router-dom";
+import convertHTMLtoString from "../../utils/javaScript/convertHTMLtoString";
+import { Icons } from "../../assets/Icons";
+
 const Home = () => {
-  return <div>Home</div>;
+  const { data } = UseLoginCheck();
+  const { notes } = useSelector(userInitialState);
+
+  const noteList = useMemo(() => {
+    const notesId = JSON.parse(localStorage.getItem("notesId"));
+
+    if (!notesId || notesId.length === 0) return [];
+
+    let recentNotes = notesId.map((id) => {
+      const findNote = notes.find((note) => note._id === id);
+
+      return findNote;
+    });
+
+    recentNotes = recentNotes.filter((note) => note !== undefined);
+
+    return recentNotes;
+  }, [notes]);
+
+  return (
+    <section className="relative w-full h-full bg-my_notearea_white   flex flex-col gap-6">
+      <div className="">
+        <img
+          src={CustomImages.coffeeTable}
+          alt="Coffee Table"
+          className="w-full"
+        />
+      </div>
+      <section className="absolute top-0 left-0 w-full h-full flex flex-col justify-between pt-16  pb-2 px-6">
+        <div className="px-10 flex justify-between items-center text-white">
+          <p className="text-2xl">Hi, {data.name.split(" ")[0]}</p>
+          <p>{currentDate()}</p>
+        </div>
+        <div className="p-6 pb-0 border-2 border-my_home_notelist_border rounded-lg bg-my_home_notelist  ">
+          <div className="uppercase  font-semibold tracking-wide text-my_single_note_body flex items-center gap-1">
+            <p>Notes</p>
+            <p className="text-xl text-my_note_green cursor-pointer">
+              <Link to={`/notes`}>
+                <Icons.rightArrow />
+              </Link>
+            </p>
+          </div>
+          <p className="text-my_note_green text-sm my-4 font-semibold tracking-wide underline underline-offset-4">
+            Recent
+          </p>
+          <div className="w-full flex  gap-2 overflow-x-scroll">
+            {noteList?.length > 0 ? (
+              noteList.map((note, i) => {
+                const { _id, title, body } = note;
+
+                return (
+                  <Link
+                    to={`/notes/${_id}`}
+                    key={i}
+                    className="grow-0 shrink-0 basis-40"
+                  >
+                    <div className="p-3 border-2 rounded-lg border-my_home_notelist_border shadow-xl  h-64 text-sm mb-4">
+                      <p className="font-semibold tracking-wide mb-1 text-my_single_note_title">
+                        {title}
+                      </p>
+                      <p className="tracking-wide break-all text-my_single_note_body">
+                        {convertHTMLtoString(body, 100)}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <div className="h-64 w-full flex justify-center items-center">
+                Sorry, No Notes available
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </section>
+  );
 };
 
 export default Home;

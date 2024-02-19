@@ -38,8 +38,17 @@ import {
   MdOutlineSubscriptions,
   MdOutlineHistory,
 } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
+import { IoMdArrowDropright, IoMdArrowDropdown } from "react-icons/io";
+import { BsSortDown } from "react-icons/bs";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 export const Icons = {
+  profile: FaRegCircleUser,
+  sort: BsSortDown,
+  downArrowSolid: IoMdArrowDropdown,
+  rightArrowSolid: IoMdArrowDropright,
+  starSolid: FaStar,
   downArrow: IoIosArrowDown,
   setting: AiOutlineSetting,
   search: AiOutlineSearch,

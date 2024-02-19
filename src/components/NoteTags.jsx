@@ -40,20 +40,6 @@ const NoteTags = ({ activeNote }) => {
     }
   }, []);
 
-  console.log("height");
-
-  const optionsHeight = useMemo(() => {
-    if (tagOptionRef.current) {
-      const height = tagOptionRef.current.clientHeight;
-
-      console.log("height", height);
-      return height;
-    }
-    return 0;
-  }, []);
-
-  console.log("optionsHeight", optionsHeight);
-
   useEffect(() => {
     if (tagOptionRef.current) {
       const height = tagOptionRef.current.clientHeight;
@@ -96,7 +82,7 @@ const NoteTags = ({ activeNote }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 h-full">
+    <div className="flex items-center gap-2 px-6 h-full">
       {noteTagList?.length > 0 &&
         noteTagList.map((tag, i) => {
           const { _id, title } = tag;
@@ -107,7 +93,7 @@ const NoteTags = ({ activeNote }) => {
               className="relative h-full flex flex-col items-center justify-center"
             >
               <p
-                className=" text-sm border border-black rounded-3xl px-3 py-1 cursor-pointer"
+                className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
                 onClick={() => setIndex(i)}
               >
                 {title}
@@ -115,7 +101,7 @@ const NoteTags = ({ activeNote }) => {
 
               {index === i && (
                 <p
-                  className="absolute bottom-full mb-2 rounded-xl bg-slate-300 w-40  cursor-pointer py-2 text-center"
+                  className="absolute bottom-full mb-2 rounded-3xl bg-gray-300 w-40  cursor-pointer py-2 text-center text-sm"
                   onMouseLeave={() => setIndex(null)}
                   onClick={() => handleRemoveNoteTag(_id)}
                 >
@@ -128,7 +114,7 @@ const NoteTags = ({ activeNote }) => {
 
       <div className="relative h-full flex flex-col items-center justify-center">
         <p
-          className=" text-sm border border-black rounded-3xl px-3 py-1 cursor-pointer"
+          className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
           onClick={() => setShowTagList((prev) => !prev)}
         >
           Add tag
@@ -137,7 +123,7 @@ const NoteTags = ({ activeNote }) => {
           <div
             className={`${
               modifyTags.length > 0 && "border"
-            }  absolute bottom-full mb-2 rounded-xl bg-slate-300 w-40 max-h-40 overflow-y-scroll`}
+            }  absolute bottom-full mb-4 rounded-md bg-my_notearea_white border-2 w-40 max-h-40 overflow-y-scroll`}
             onMouseLeave={() => setShowTagList(false)}
             ref={tagOptionRef}
           >
@@ -147,7 +133,7 @@ const NoteTags = ({ activeNote }) => {
 
                 return (
                   <p
-                    className="text-center py-2 border-b last:border-none cursor-pointer"
+                    className="text-center p-2 border-b last:border-none cursor-pointer"
                     key={i}
                     onClick={() => handleAddTagToNote(_id)}
                   >

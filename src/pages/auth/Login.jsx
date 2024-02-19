@@ -154,7 +154,7 @@ const Login = () => {
                   <Link to={`/signup`}>Sign Up</Link>
                 </span>
               </p>
-              <p>
+              <p className="underline">
                 <Link to={`/forgotPassword`}>Forgot Password</Link>
               </p>
             </div>

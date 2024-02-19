@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { sortString } from "../../utils/javaScript/sortOptionsList";
 
 const initialState = {
   notebooks: null,
@@ -12,9 +13,13 @@ const userNotableData = createSlice({
   initialState,
   reducers: {
     userInitialData: (state, { payload }) => {
-      const notebooksList = payload[0].data;
-      const notesList = payload[1].data;
-      const tagsList = payload[2].data;
+      let notebooksList = payload[0].data;
+      let notesList = payload[1].data;
+      let tagsList = payload[2].data;
+
+      notebooksList = sortString(notebooksList);
+      notesList = sortString(notesList);
+      tagsList = sortString(tagsList);
 
       const primaryNotebook = notebooksList.find(
         (notebook) => notebook.primary === true
@@ -23,7 +28,7 @@ const userNotableData = createSlice({
       state.notebooks = notebooksList;
       state.notes = notesList;
       state.tags = tagsList;
-      state.primaryNotebook = primaryNotebook._id;
+      state.primaryNotebook = primaryNotebook;
 
       return state;
     },
@@ -89,6 +94,32 @@ const userNotableData = createSlice({
       state.tags = state.tags.filter((tag) => tag._id !== payload);
       return state;
     },
+    changeThePrimaryNotebook: (state, { payload }) => {
+      const { id, changedId } = payload;
+
+      let changedNootebook = null;
+
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook._id === id) {
+          notebook.primary = false;
+
+          return notebook;
+        }
+
+        if (notebook._id === changedId) {
+          notebook.primary = true;
+          changedNootebook = notebook;
+
+          return notebook;
+        }
+
+        return notebook;
+      });
+
+      state.primaryNotebook = changedNootebook;
+
+      return state;
+    },
   },
 });
 
@@ -103,6 +134,7 @@ export const {
   createdNewTag,
   updateTheTag,
   deletedTheTag,
+  changeThePrimaryNotebook,
 } = userNotableData.actions;
 
 export const userNotableDataReducer = userNotableData.reducer;

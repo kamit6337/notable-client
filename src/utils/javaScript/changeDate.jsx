@@ -51,14 +51,14 @@ const changeDate = (UTCDate, ago = false) => {
   }
 
   if (currentHour !== convertToNum(hours)) {
-    return `${currentHour - convertToNum(hours)} hours ago`;
+    return `${currentHour - convertToNum(hours)} hrs ago`;
   }
 
   if (currentMinute !== convertToNum(minutes)) {
-    return `${currentMinute - convertToNum(minutes)} minutes ago`;
+    return `${currentMinute - convertToNum(minutes)} min ago`;
   }
 
-  return `${currentSeconds - convertToNum(seconds)} seconds ago`;
+  return `${currentSeconds - convertToNum(seconds)} sec ago`;
 };
 
 export default changeDate;

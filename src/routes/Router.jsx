@@ -11,6 +11,7 @@ import SingleNotebook from "../pages/notebookNotes/SingleNotebook";
 import ShowError from "../pages/auth/ShowError";
 import ForgotPasswordPage from "../pages/auth/ForgotPassword";
 import TagNotes from "../pages/tagNotes/TagNotes";
+import SingleNote from "../pages/SingleNote/SingleNote";
 
 const Router = () => {
   return (
@@ -24,6 +25,7 @@ const Router = () => {
 
         {/* NOTE: NOTES RELATED ROUTES */}
         <Route path="notes" element={<Notes />} />
+        <Route path="notes/:id" element={<SingleNote />} />
 
         {/* NOTE: TAGS RELATED ROUTES */}
         <Route path="tags/:id" element={<TagNotes />} />

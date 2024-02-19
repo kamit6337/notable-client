@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { useMemo } from "react";
 import NotesArea from "../../components/NotesArea";
+import { Icons } from "../../assets/Icons";
 
 const TagNotes = () => {
   const { notes, tags } = useSelector(userInitialState);
@@ -19,7 +20,9 @@ const TagNotes = () => {
     return [noteList, tagName];
   }, [id, tags, notes]);
 
-  return <NotesArea list={noteList} title={tagName} />;
+  return (
+    <NotesArea list={noteList} title={tagName} icon={<Icons.tagOutline />} />
+  );
 };
 
 export default TagNotes;

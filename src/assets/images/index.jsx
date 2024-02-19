@@ -1,5 +1,9 @@
 import googleLogo from "./google.png";
+import coffeeTable from "./coffee_table.jpg";
 
-export const logo = {
+const CustomImages = {
   googleLogo,
+  coffeeTable,
 };
+
+export default CustomImages;

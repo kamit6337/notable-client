@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  settingForm: {
+    bool: false,
+  },
   createNewNotebook: {
     bool: false,
     update: false,
@@ -18,7 +21,10 @@ const initialState = {
     data: null,
     tag: false,
   },
-  isNoteActivated: false,
+  isNoteActivated: {
+    bool: false,
+    data: null,
+  },
 };
 
 const toggleSlice = createSlice({
@@ -77,7 +83,27 @@ const toggleSlice = createSlice({
       return state;
     },
     toggleNoteActivation: (state, { payload }) => {
-      state.isNoteActivated = payload;
+      const { bool, data } = payload;
+
+      if (!bool) {
+        state.isNoteActivated = {
+          bool: false,
+          data: null,
+        };
+        return state;
+      }
+
+      state.isNoteActivated = {
+        bool: true,
+        data: data,
+      };
+
+      return state;
+    },
+    toggleSettingForm: (state, { payload }) => {
+      const { bool } = payload;
+
+      state.settingForm.bool = bool;
 
       return state;
     },
@@ -89,6 +115,7 @@ export const {
   toggleCreateNewTag,
   toggleDeleteForm,
   toggleNoteActivation,
+  toggleSettingForm,
 } = toggleSlice.actions;
 
 export const toggleReducer = toggleSlice.reducer;

@@ -3,10 +3,15 @@ import { toggleState } from "../redux/slice/toggleSlice";
 import CreateNewTag from "../components/CreateNewTag";
 import DeleteForm from "../components/DeleteForm";
 import NewNotebookForm from "../components/NewNotebookForm";
+import SettingFormPage from "../components/SettingForm";
 
 const GlobalForm = () => {
-  const { createNewNotebook, createNewTag, deleteForm } =
+  const { createNewNotebook, createNewTag, deleteForm, settingForm } =
     useSelector(toggleState);
+
+  if (settingForm.bool) {
+    return <SettingFormPage />;
+  }
 
   if (createNewNotebook.bool) {
     return (
