@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { QueryCache } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postToBackend } from "../utils/api/userApi";
-import UseLoginCheck from "../hooks/query/useLoginCheck";
+import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import { getAuthReq } from "../utils/api/authApi";
 import environment from "../utils/environment";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,13 +11,14 @@ import {
   userInitialState,
 } from "../redux/slice/initialUserDataSlice";
 import AllTags from "../pages/tags/AllTags";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   toggleNoteActivation,
+  toggleSearchForm,
   toggleSettingForm,
 } from "../redux/slice/toggleSlice";
 import { Icons } from "../assets/Icons";
-import { useForm } from "react-hook-form";
+import ShortcutPage from "../components/ShortcutPage";
 
 const list = [
   {
@@ -42,46 +43,11 @@ const SideNavbar = () => {
   const dispatch = useDispatch();
   const { data } = UseLoginCheck();
   const queryCache = new QueryCache();
-  const { primaryNotebook, notebooks, notes } = useSelector(userInitialState);
+  const { primaryNotebook } = useSelector(userInitialState);
   const [showTagList, setShowTagList] = useState(false);
   const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
-  const [showSearchNotFound, setShowSearchNotFound] = useState(false);
   const [showAccountOptions, setShowAccountOptions] = useState(false);
-  const [searchedList, setSearchedList] = useState([]);
-  const { register, reset } = useForm({
-    defaultValues: {
-      search: "",
-    },
-  });
-
-  const shortcutList = useMemo(() => {
-    const filterNotebooks = notebooks.filter((notebook) => notebook.shortcut);
-    const filterNotes = notes.filter((note) => note.shortcut);
-
-    return [...filterNotes, ...filterNotebooks];
-  }, [notebooks, notes]);
-
-  const handleSearch = (e) => {
-    const { value } = e.target;
-
-    if (!value) {
-      setShowSearchNotFound(false);
-      setSearchedList([]);
-      return;
-    }
-
-    setShowSearchNotFound(true);
-    const combinedArray = [...notebooks, ...notes];
-
-    const filter = combinedArray.filter((obj) =>
-      obj.title.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setSearchedList(filter);
-
-    console.log("filter", filter);
-  };
 
   const handleLogout = async () => {
     setShowAccountOptions(false);
@@ -131,13 +97,11 @@ const SideNavbar = () => {
     }
   };
 
-  const resetSearchbar = () => {
-    reset({ search: "" });
-    setSearchedList([]);
-  };
-
   const resetAllTags = () => {
     setShowTagList(false);
+  };
+  const resetShortcuts = () => {
+    setShowShorcut(false);
   };
 
   const handleOpenSettingForm = () => {
@@ -150,12 +114,14 @@ const SideNavbar = () => {
   return (
     <>
       <section className="relative z-40 text-sm bg-my_sidenavbar text-my_sidenavbar_icon w-full h-full">
-        <div className="relative mx-6">
+        {/* MARK: PROFILE BAR */}
+
+        <div className="relative mx-6 ">
           <div
-            className="flex py-3 gap-1 items-center cursor-pointer"
+            className="flex py-3 gap-2 items-center cursor-pointer"
             onClick={() => setShowAccountOptions((prev) => !prev)}
           >
-            <div className="w-8 rounded-full">
+            <div className="w-8 sm_lap:w-7 rounded-full">
               <img
                 src={photoUrl}
                 alt="profiel"
@@ -163,7 +129,7 @@ const SideNavbar = () => {
                 className="w-full rounded-full object-cover"
               />
             </div>
-            <p className="hover:text-white">{data?.name}</p>
+            <p className="hover:text-white ">{data?.name.split(" ")[0]}</p>
           </div>
           {showAccountOptions && (
             <div
@@ -202,72 +168,22 @@ const SideNavbar = () => {
           )}
         </div>
 
+        {/* MARK: SEARCH BAR */}
         <div className="m-3 flex flex-col gap-3">
-          <div className="relative w-full">
-            <div className="p-2 px-4 bg-slate-700 rounded-2xl w-full flex items-center gap-2">
-              <p>
-                <Icons.search />
-              </p>
-              <input
-                {...register("search")}
-                type="text"
-                onChange={handleSearch}
-                placeholder="Search"
-                className="bg-slate-700 w-full"
-                spellCheck="false"
-                autoComplete="off"
-              />
-            </div>
-            {searchedList.length > 0 ? (
-              <div
-                className="absolute top-full w-full mt-2  bg-my_notearea_white text-black
-              h-40 overflow-y-scroll rounded-xl"
-              >
-                {searchedList.map((obj, i) => {
-                  const { _id, title, notebook } = obj;
-
-                  if (!notebook) {
-                    return (
-                      <Link
-                        key={i}
-                        to={`/notebooks/${_id}`}
-                        onClick={resetSearchbar}
-                      >
-                        <div className="p-2 px-4 flex  gap-1">
-                          <p className="mt-[3px]">
-                            <Icons.notebooks />
-                          </p>
-                          <p className="">{title}</p>
-                        </div>
-                      </Link>
-                    );
-                  }
-
-                  return (
-                    <Link key={i} to={`/notes/${_id}`} onClick={resetSearchbar}>
-                      <div className="p-2 px-4 flex  gap-1 ">
-                        <p className="mt-[3px]">
-                          <Icons.notesSolid />
-                        </p>
-                        <p>{title}</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            ) : (
-              showSearchNotFound && (
-                <div
-                  className="absolute top-full w-full mt-2  bg-my_notearea_white text-black
-              h-40  rounded-xl flex justify-center items-center"
-                >
-                  <p>Sorry, Not found</p>
-                </div>
-              )
-            )}
-          </div>
           <div
-            className="p-2 px-4 rounded-2xl bg-my_note_green text-white cursor-pointer flex items-center gap-2"
+            className="p-2 sm_lap:p-[6px] sm_lap:px-3 px-4 bg-slate-700 rounded-2xl w-full flex items-center gap-2 cursor-pointer"
+            onClick={() => dispatch(toggleSearchForm({ bool: true }))}
+          >
+            <p>
+              <Icons.search />
+            </p>
+            <p>Search</p>
+          </div>
+
+          {/* MARK: CREATE NOTE */}
+
+          <div
+            className="p-2 px-4 sm_lap:p-[6px] sm_lap:px-3 rounded-2xl bg-my_note_green text-white cursor-pointer flex items-center gap-2"
             onClick={handleNoteCreation}
           >
             <p>
@@ -276,9 +192,11 @@ const SideNavbar = () => {
             <p>Note</p>
           </div>
         </div>
-        <div className="px-2 my-4">
+
+        {/* MARK: LINKS */}
+
+        <div className="px-5 my-4">
           <div className="flex items-center cursor-pointer w-max">
-            <p className="w-4 " />
             <p className="text-lg">
               <Icons.homeSolid />
             </p>
@@ -287,59 +205,18 @@ const SideNavbar = () => {
             </p>
           </div>
 
-          <div>
-            <div
-              className="flex items-center cursor-pointer w-max"
-              onClick={() => setShowShorcut((prev) => !prev)}
-            >
-              <p className="w-4">
-                {showShortcut ? (
-                  <Icons.downArrowSolid />
-                ) : (
-                  <Icons.rightArrowSolid />
-                )}
-              </p>
-              <p className="text-lg">
-                <Icons.starSolid />
-              </p>
-              <p className="p-2">Shortcut</p>
-            </div>
-            {showShortcut && (
-              <div className="pl-10 flex flex-col gap-1">
-                {shortcutList.length > 0 &&
-                  shortcutList.map((obj, i) => {
-                    const { _id, title, notebook } = obj;
-
-                    if (!notebook) {
-                      return (
-                        <Link key={i} to={`/notebooks/${_id}`}>
-                          <div className=" flex  gap-1">
-                            <p className="mt-[3px]">
-                              <Icons.notebooks />
-                            </p>
-                            <p className="">{title}</p>
-                          </div>
-                        </Link>
-                      );
-                    }
-
-                    return (
-                      <Link key={i} to={`/notes/${_id}`}>
-                        <div className="flex  gap-1 ">
-                          <p className="mt-[3px]">
-                            <Icons.notesSolid />
-                          </p>
-                          <p>{title}</p>
-                        </div>
-                      </Link>
-                    );
-                  })}
-              </div>
-            )}
+          <div
+            className="flex items-center cursor-pointer w-max"
+            onClick={() => setShowShorcut((prev) => !prev)}
+          >
+            <p className="text-lg">
+              <Icons.starSolid />
+            </p>
+            <p className="p-2">Shortcut</p>
           </div>
         </div>
 
-        <div className="px-2">
+        <div className="px-5">
           {list.map((obj, i) => {
             if (!obj.href) {
               return (
@@ -350,9 +227,6 @@ const SideNavbar = () => {
                     obj.function && setShowTagList((prev) => !prev)
                   }
                 >
-                  <p className="w-4 ">
-                    {obj.arrow && <Icons.rightArrowSolid />}
-                  </p>
                   <p className="text-lg">
                     <obj.icon />
                   </p>
@@ -363,7 +237,6 @@ const SideNavbar = () => {
 
             return (
               <div key={i} className="flex items-center cursor-pointer w-max">
-                <p className="w-4 ">{obj.arrow && <Icons.rightArrowSolid />}</p>
                 <p className="text-lg">
                   <obj.icon />
                 </p>
@@ -377,11 +250,18 @@ const SideNavbar = () => {
       </section>
 
       <div
-        className={` absolute left-60 z-30 top-0 h-screen w-96  bg-my_tags border-r-2 transition-all duration-700`}
-        // onMouseLeave={() => setShowTagList(false)}
+        className={`sidebar_translate`}
+        onMouseLeave={() => setShowTagList(false)}
         style={{ translate: `${showTagList ? "0" : "-200%"}` }}
       >
         <AllTags reset={resetAllTags} />
+      </div>
+      <div
+        className={`sidebar_translate`}
+        onMouseLeave={() => setShowShorcut(false)}
+        style={{ translate: `${showShortcut ? "0" : "-200%"}` }}
+      >
+        <ShortcutPage reset={resetShortcuts} />
       </div>
     </>
   );

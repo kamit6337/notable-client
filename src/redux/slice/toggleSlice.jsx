@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  searchForm: {
+    bool: false,
+  },
+  hideSidebars: {
+    bool: false,
+  },
+
   settingForm: {
     bool: false,
   },
@@ -107,6 +114,20 @@ const toggleSlice = createSlice({
 
       return state;
     },
+    toggleHideSidebars: (state, { payload }) => {
+      const { bool } = payload;
+
+      state.hideSidebars.bool = bool;
+
+      return state;
+    },
+    toggleSearchForm: (state, { payload }) => {
+      const { bool } = payload;
+
+      state.searchForm.bool = bool;
+
+      return state;
+    },
   },
 });
 
@@ -116,6 +137,8 @@ export const {
   toggleDeleteForm,
   toggleNoteActivation,
   toggleSettingForm,
+  toggleHideSidebars,
+  toggleSearchForm,
 } = toggleSlice.actions;
 
 export const toggleReducer = toggleSlice.reducer;

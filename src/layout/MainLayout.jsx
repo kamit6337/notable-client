@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import { Outlet, useNavigate } from "react-router-dom";
 import SideNavbar from "../containers/SideNavbar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import UseInitialFetch from "../hooks/query/UseInitialFetch";
 import LoadingState from "../containers/Loading";
-import UseLoginCheck from "../hooks/query/useLoginCheck";
+import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import GlobalForm from "../containers/GlobalForm";
+import { toggleState } from "../redux/slice/toggleSlice";
 
 const MainLayout = () => {
+  const { hideSidebars } = useSelector(toggleState);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,9 +45,11 @@ const MainLayout = () => {
   return (
     <section className="w-full h-screen">
       <div className="flex w-full h-full">
-        <div className="h-full w-60 ">
-          <SideNavbar />
-        </div>
+        {hideSidebars.bool || (
+          <div className="h-full basis-60 sm_lap:basis-52 tablet:basis-40  ">
+            <SideNavbar />
+          </div>
+        )}
         <div className="flex-1 h-full">
           <Outlet />
         </div>

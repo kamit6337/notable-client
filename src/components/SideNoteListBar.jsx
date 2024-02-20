@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icons } from "../assets/Icons";
 import convertDateType from "../utils/javaScript/convertDateType";
 import convertHTMLtoString from "../utils/javaScript/convertHTMLtoString";
@@ -7,6 +7,10 @@ import {
   sortFunction,
   sortOptionsList,
 } from "../utils/javaScript/sortOptionsList";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleNoteActivation, toggleState } from "../redux/slice/toggleSlice";
+import FindingScreenHeight from "../lib/FindingScreenHeight";
+import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
 
 const SideNoteListBar = ({
   title,
@@ -15,11 +19,53 @@ const SideNoteListBar = ({
   activeNote,
   handleActiveNote,
 }) => {
+  const dispatch = useDispatch();
   const lastNoteRef = useRef(null);
-
   const [showSortOption, setShowSortOption] = useState(false);
   const [newList, setNewList] = useState(list);
   const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
+  const { isNoteActivated } = useSelector(toggleState);
+  const screenHeight = FindingScreenHeight();
+  const { height, ref } = FindingDivScrollHeight(newList);
+
+  useEffect(() => {
+    if (!list) return;
+    const localSort = JSON.parse(localStorage.getItem("sort"));
+    if (!localSort) {
+      setNewList(list);
+      return;
+    }
+    setNewList(sortFunction(list, localSort.id));
+    const updateSortOptions = sortOptionsList.map((obj) => {
+      const newObj = { ...obj };
+      if (newObj.id === localSort.id) {
+        newObj.active = true;
+        return newObj;
+      }
+      delete newObj.active;
+      return newObj;
+    });
+    setNewSortOptions(updateSortOptions);
+  }, [list]);
+
+  useEffect(() => {
+    if (
+      isNoteActivated.bool &&
+      newList &&
+      newList.length > 0 &&
+      lastNoteRef.current
+    ) {
+      handleActiveNote(isNoteActivated.data);
+      dispatch(toggleNoteActivation({ bool: false }));
+
+      setTimeout(() => {
+        lastNoteRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 200);
+    }
+  }, [isNoteActivated, newList, dispatch, handleActiveNote]);
 
   const handleSort = (id) => {
     setShowSortOption(false);
@@ -40,15 +86,15 @@ const SideNoteListBar = ({
   };
 
   return (
-    <div className="w-60 bg-gray-50 h-full  flex flex-col border-r border-gray-300">
+    <div className="w-full bg-gray-50 h-full  border-r border-gray-300">
       {/* MARK: HEADER */}
-      <div className="h-24 border-b border-gray-400 w-full flex flex-col justify-between pb-2 pt-4 gap-1 px-5">
+      <header className="h-24 border-b border-gray-400 w-full flex flex-col justify-between pb-2 pt-4 gap-1 px-5">
         <div className="flex gap-1 items-center ">
-          <p className="text-2xl">{icon}</p>
-          <p className="text-lg">{title}</p>
+          <p className="text-2xl sm_lap:text-lg">{icon}</p>
+          <p className="text-lg  sm_lap:text-sm">{title}</p>
         </div>
         <div className="flex justify-between items-center">
-          <p>{list.length} Notes</p>
+          <p>{newList.length} Notes</p>
           <div className="relative">
             <p
               className="text-xl"
@@ -80,11 +126,18 @@ const SideNoteListBar = ({
             )}
           </div>
         </div>
-      </div>
+      </header>
 
       {/* MARK: NOTE LIST */}
-
-      <div className="w-full flex-1 p-[2px] overflow-y-scroll overflow-x-hidden">
+      <div
+        ref={ref}
+        className={`${
+          height >= screenHeight - 100
+            ? "overflow-y-scroll"
+            : "overflow-y-hidden"
+        }  w-full p-[2px]  overflow-x-hidden`}
+        style={{ maxHeight: `${screenHeight - 100}px` }}
+      >
         {newList.length > 0 ? (
           newList.map((note, i) => {
             const { _id, title, body, updatedAt } = note;

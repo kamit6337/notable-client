@@ -17,6 +17,7 @@ const NotebookStack = ({ notebooks }) => {
   const [index, setIndex] = useState(null);
 
   const handleAddShortcut = async (id) => {
+    setIndex(null);
     try {
       const updateNotebook = await postToBackend("/shortcut", {
         notebookId: id,
@@ -29,6 +30,8 @@ const NotebookStack = ({ notebooks }) => {
   };
 
   const handleRemoveShortcut = async (id) => {
+    setIndex(null);
+
     try {
       const updateNotebook = await patchToBackend("/shortcut", {
         notebookId: id,
@@ -52,33 +55,43 @@ const NotebookStack = ({ notebooks }) => {
           return (
             <div key={i} className={`${!even && "bg-gray-100"} `}>
               <div className="flex justify-between items-center">
-                <div className="flex-1 flex items-center">
-                  {/* <Icons.rightArrow className="text-lg" /> */}
-                  <p className=" py-2 px-4 cursor-pointer flex items-center">
-                    <p className="w-3 text-[10px]">
-                      {primary && <Icons.starSolid />}
-                    </p>
+                {/* MARK: TITLE */}
+                <div className="flex-1 flex py-2 px-4 tablet:p-2 cursor-pointer">
+                  <p className="w-3 text-[10px] mt-[6px]">
+                    {primary && <Icons.starSolid />}
+                  </p>
+                  <p className="text-sm">
                     <Link to={`/notebooks/${_id}`}>{title}</Link>
                   </p>
                 </div>
-                <p className="w-44 py-2 px-4 text-sm">
+
+                {/* MARK: CREATED AT */}
+
+                <p className="all_notebooks_list text-sm tablet:text-xs">
                   {changeDate(createdAt, true)}
                 </p>
-                <p className="w-44 py-2 px-4 text-sm">
+                {/* MARK: UPDATED AT */}
+
+                <p className="all_notebooks_list text-sm tablet:text-xs">
                   {changeDate(updatedAt, true)}
                 </p>
-                <div
-                  className="w-40 py-2 px-4 text-end flex justify-end items-center relative h-full"
-                  onMouseLeave={() => setIndex(null)}
-                >
+
+                {/* MARK: OPTIONS */}
+
+                <div className="all_notebooks_list text-end flex justify-end items-center relative h-full">
                   <p
                     className="h-full  cursor-pointer"
-                    onMouseEnter={() => setIndex(i)}
+                    onClick={() => {
+                      index === i ? setIndex(null) : setIndex(i);
+                    }}
                   >
                     <Icons.options />
                   </p>
                   {index === i && (
-                    <div className="absolute z-10 top-full  right-0 border bg-gray-50 whitespace-nowrap rounded-lg">
+                    <div
+                      className="absolute z-30 top-full mt-1  right-0 mr-2 border bg-gray-50 whitespace-nowrap rounded-lg"
+                      onMouseLeave={() => setIndex(null)}
+                    >
                       {shortcut ? (
                         <p
                           className="p-3 cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"

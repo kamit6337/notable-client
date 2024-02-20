@@ -42,8 +42,10 @@ import { FaStar } from "react-icons/fa";
 import { IoMdArrowDropright, IoMdArrowDropdown } from "react-icons/io";
 import { BsSortDown } from "react-icons/bs";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { MdZoomOutMap } from "react-icons/md";
 
 export const Icons = {
+  zoom: MdZoomOutMap,
   profile: FaRegCircleUser,
   sort: BsSortDown,
   downArrowSolid: IoMdArrowDropdown,

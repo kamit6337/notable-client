@@ -16,11 +16,14 @@ import {
 } from "../utils/api/userApi";
 import { Link, useNavigate } from "react-router-dom";
 import QuillTextarea from "./QuillTextarea";
-import changeDate from "../utils/javaScript/changeDate";
+import timeAgoDate from "../utils/javaScript/timeAgoDate";
+import { toggleHideSidebars, toggleState } from "../redux/slice/toggleSlice";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { hideSidebars } = useSelector(toggleState);
+
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
   const [isTitleTyping, setIsTitleTyping] = useState(false);
@@ -94,6 +97,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   };
 
   const handleDeleteNote = async () => {
+    dispatch(toggleHideSidebars({ bool: false }));
+
     setShowOption(false);
 
     try {
@@ -154,19 +159,36 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     }
   };
 
+  const handleHideSidebars = () => {
+    const reverseBool = !hideSidebars.bool;
+    dispatch(toggleHideSidebars({ bool: reverseBool }));
+  };
+
   return (
     <main className="h-full items-start ">
       <header className="h-24 w-full border-b flex justify-between px-4">
         <div className="w-72 h-full py-3 pl-2 flex flex-col justify-between">
-          <Link to={`/notebooks/${noteNotebook._id}`}>
-            <div className="flex items-center gap-1">
-              <p>
-                <Icons.notebooks />
-              </p>
-              <p className="text-sm">{noteNotebook.title}</p>
-            </div>
-          </Link>
+          <div className="flex items-center gap-3">
+            <p
+              className="border border-black cursor-pointer"
+              onClick={handleHideSidebars}
+            >
+              <Icons.zoom />
+            </p>
+            <div className="w-[2px] h-full bg-gray-400" />
 
+            <Link
+              to={`/notebooks/${noteNotebook._id}`}
+              onClick={() => dispatch(toggleHideSidebars({ bool: false }))}
+            >
+              <div className="flex items-center gap-1">
+                <p>
+                  <Icons.notebooks />
+                </p>
+                <p className="text-sm">{noteNotebook.title}</p>
+              </div>
+            </Link>
+          </div>
           <div className="w-full">
             <input
               {...register("title")}
@@ -220,7 +242,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             )}
           </div>
           <p className="self-end">
-            last updated : <span>{changeDate(activeNote.updatedAt, true)}</span>
+            last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
           </p>
         </div>
       </header>

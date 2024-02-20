@@ -22,3 +22,21 @@
     @apply outline-none;
   }
 }
+
+@layer utilities {
+  .sidebar_translate {
+    @apply absolute left-60 sm_lap:left-52 tablet:left-40 z-30 top-0 h-screen w-96 tablet:w-72  bg-my_tags border-r-2 transition-all duration-700;
+  }
+
+  .setting_form {
+    @apply w-[800px] h-[450px] tablet:w-[600px];
+  }
+
+  .profile_update_form {
+    @apply h-16  tablet:h-14 flex flex-col;
+  }
+
+  .all_notebooks_list {
+    @apply basis-44 tablet:basis-32 py-2 px-4;
+  }
+}

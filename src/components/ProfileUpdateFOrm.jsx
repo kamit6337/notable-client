@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import UseLoginCheck from "../hooks/query/useLoginCheck";
+import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import validator from "validator";
 import { useState } from "react";
 import Loading from "../containers/Loading";
@@ -45,24 +45,17 @@ const ProfileUpdateFOrm = ({ handleClose }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 w-full text-color_1"
+      className="flex flex-col gap-2  w-full text-color_1"
     >
       {/* MARK: NAME FIELD*/}
-      <div className="flex flex-col">
+      <div className="profile_update_form ">
         <input
           type="text"
           {...register("name", {
             required: "Name is Required",
-            // pattern: /^[A-Za-z]+$/i,
-            // validate: (value) => {
-            //   return (
-            //     validator.isAlpha(value) ||
-            //     "Check you name again. Only Alphabet is allowed."
-            //   );
-            // },
           })}
           placeholder="Name"
-          className="border  p-3 rounded-lg"
+          className="border px-3 h-full rounded-lg"
           autoComplete="off"
           spellCheck="false"
         />
@@ -74,7 +67,7 @@ const ProfileUpdateFOrm = ({ handleClose }) => {
       </div>
 
       {/* MARK: EMAIL FIELD*/}
-      <div className="flex flex-col">
+      <div className="profile_update_form">
         <input
           type="email"
           {...register("email", {
@@ -87,7 +80,7 @@ const ProfileUpdateFOrm = ({ handleClose }) => {
           })}
           disabled={true}
           placeholder="Email"
-          className="border  p-3 rounded-lg"
+          className="border px-3 h-full rounded-lg"
           autoComplete="off"
           spellCheck="false"
         />
@@ -98,8 +91,8 @@ const ProfileUpdateFOrm = ({ handleClose }) => {
       </div>
 
       {/* MARK: PASSWORD FIELD*/}
-      <div>
-        <div className="h-12 flex justify-between items-center border  rounded-lg ">
+      <div className="profile_update_form">
+        <div className="h-full flex justify-between items-center border  rounded-lg ">
           <input
             type={toggle.password ? "text" : "password"}
             {...register("password", {
@@ -132,8 +125,8 @@ const ProfileUpdateFOrm = ({ handleClose }) => {
       </div>
 
       {/* MARK: CONFIRM PASSWORD FIELD*/}
-      <div>
-        <div className="h-12 flex justify-between items-center border rounded-lg">
+      <div className="profile_update_form">
+        <div className="h-full flex justify-between items-center border rounded-lg">
           <input
             type={toggle.confirmPassword ? "text" : "password"}
             {...register("confirmPassword", {

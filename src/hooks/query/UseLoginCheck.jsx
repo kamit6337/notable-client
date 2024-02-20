@@ -5,7 +5,7 @@ const UseLoginCheck = () => {
   const query = useQuery({
     queryKey: ["checkAuth"],
     queryFn: () => getAuthReq("/login/check"),
-    refetchInterval: 300000,
+    refetchInterval: 10 * 60 * 1000,
     staleTime: Infinity,
     retry: 2,
   });

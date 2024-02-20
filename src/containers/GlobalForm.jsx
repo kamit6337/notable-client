@@ -4,10 +4,20 @@ import CreateNewTag from "../components/CreateNewTag";
 import DeleteForm from "../components/DeleteForm";
 import NewNotebookForm from "../components/NewNotebookForm";
 import SettingFormPage from "../components/SettingForm";
+import SearchForm from "../components/SearchForm";
 
 const GlobalForm = () => {
-  const { createNewNotebook, createNewTag, deleteForm, settingForm } =
-    useSelector(toggleState);
+  const {
+    createNewNotebook,
+    createNewTag,
+    deleteForm,
+    settingForm,
+    searchForm,
+  } = useSelector(toggleState);
+
+  if (searchForm.bool) {
+    return <SearchForm />;
+  }
 
   if (settingForm.bool) {
     return <SettingFormPage />;

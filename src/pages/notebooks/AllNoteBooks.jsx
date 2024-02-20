@@ -5,12 +5,19 @@ import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../../redux/slice/toggleSlice";
 import { useForm } from "react-hook-form";
 import NotebookStack from "./NotebookStack";
+import FindingScreenHeight from "../../lib/FindingScreenHeight";
+import FindingDivScrollHeight from "../../lib/FindingDivScrollHeight";
 
 const AllNoteBooks = () => {
   const dispatch = useDispatch();
   const { notebooks } = useSelector(userInitialState);
   const [showFullNotebooks, setShowFullNotebooks] = useState(true);
   const [searchedNotebook, setSearchNotebook] = useState([]);
+  const screenHeight = FindingScreenHeight();
+  const { ref: notebooksRef, height: notebooksDivHeight } =
+    FindingDivScrollHeight(notebooks);
+  const { ref: searchedNotebookRef, height: searchedNotebookDivHeight } =
+    FindingDivScrollHeight(notebooks);
 
   const { register } = useForm({
     defaultValues: {
@@ -20,27 +27,24 @@ const AllNoteBooks = () => {
 
   const handleSearch = (e) => {
     const { value } = e.target;
-
     if (!value) {
       setShowFullNotebooks(true);
       setSearchNotebook([]);
-
       return;
     }
 
     const filter = notebooks.filter((notebook) =>
       notebook.title.toLowerCase().includes(value.toLowerCase())
     );
-
     setSearchNotebook(filter);
     setShowFullNotebooks(false);
   };
 
   return (
     <>
-      <section className="w-full h-full flex flex-col px-6 py-10">
+      <section className="w-full h-full flex flex-col px-6 tablet:px-2">
         {/* MARK: HEADER */}
-        <header className="flex flex-col justify-between h-28 border-b border-gray-300 py-1">
+        <header className="flex flex-col justify-between h-40 tablet:h-32 pt-10 tablet:p-4 pb-4 border-b border-gray-300 ">
           <div className="flex justify-between items-center">
             <p className="text-2xl  tracking-wide">Notebooks</p>
             <div className="border border-gray-400 rounded-lg flex items-center py-1 px-2">
@@ -69,23 +73,41 @@ const AllNoteBooks = () => {
         </header>
 
         {/* MARK: CREATE NOTEBOOK LIST */}
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center bg-gray-100 text-gray-500">
-            <p className="flex-1 py-2 px-4">Title</p>
-            <p className="w-44 py-2 px-4">Created At</p>
-            <p className="w-44 py-2 px-4">Updated At</p>
-            <p className="w-40 py-2 px-4 text-end">Options</p>
-          </div>
 
-          {/* MARK: NOTESBOOKS WITH STACK */}
-          <div className="text-slate-800">
-            {showFullNotebooks ? (
-              <NotebookStack notebooks={notebooks} />
-            ) : (
-              <NotebookStack notebooks={searchedNotebook} />
-            )}
-          </div>
+        <div className="flex justify-between items-center bg-gray-100 text-gray-500 h-10 tablet:text-sm">
+          <p className="flex-1 py-2 px-4">Title</p>
+          <p className="all_notebooks_list">Created At</p>
+          <p className="all_notebooks_list">Updated At</p>
+          <p className="all_notebooks_list text-end mr-3">Options</p>
         </div>
+
+        {/* MARK: NOTESBOOKS WITH STACK */}
+        {showFullNotebooks ? (
+          <div
+            className="overflow-y-scroll"
+            // className={`${
+            //   notebooksDivHeight >= screenHeight - 200
+            //     ? "overflow-y-scroll"
+            //     : "overflow-y-hidden"
+            // }  text-slate-800`}
+            // ref={notebooksRef}
+            style={{ height: "calc(100% - 200px)" }}
+          >
+            <NotebookStack notebooks={notebooks} />
+          </div>
+        ) : (
+          <div
+            className={`${
+              searchedNotebookDivHeight >= screenHeight - 200
+                ? "overflow-y-scroll"
+                : "overflow-y-hidden"
+            }  text-slate-800`}
+            ref={searchedNotebookRef}
+            style={{ maxHeight: `${screenHeight - 200}px` }}
+          >
+            <NotebookStack notebooks={searchedNotebook} />
+          </div>
+        )}
       </section>
     </>
   );

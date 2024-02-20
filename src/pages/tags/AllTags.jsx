@@ -7,6 +7,8 @@ import { toggleCreateNewTag } from "../../redux/slice/toggleSlice";
 import alphabet from "../../data/alphabet";
 import ShowAlphabeticalTags from "./ShowAlphabeticalTags";
 import { useForm } from "react-hook-form";
+import FindingScreenHeight from "../../lib/FindingScreenHeight";
+import FindingDivScrollHeight from "../../lib/FindingDivScrollHeight";
 
 const AllTags = ({ reset }) => {
   const dispatch = useDispatch();
@@ -14,6 +16,7 @@ const AllTags = ({ reset }) => {
   const [showOption, setShowOption] = useState(false);
   const [showSearchedTag, setShowSearchedTag] = useState(false);
   const [searchTagList, setSearchTagList] = useState([]);
+  const screenHeight = FindingScreenHeight();
 
   const { register } = useForm({
     defaultValues: {
@@ -21,26 +24,24 @@ const AllTags = ({ reset }) => {
     },
   });
 
+  const { ref, height } = FindingDivScrollHeight(tags);
+
   const handleSearch = (e) => {
     const { value } = e.target;
-
     if (!value) {
       setShowSearchedTag(false);
       setSearchTagList([]);
       return;
     }
-
     setShowSearchedTag(true);
-
     const filterTags = tags.filter((tag) =>
       tag.title.toLowerCase().includes(value.toLowerCase())
     );
-
     setSearchTagList(filterTags);
   };
 
   return (
-    <section className="px-5  w-full pb-5 h-full">
+    <section className="px-5 tablet:px-2  w-full pb-5 h-full">
       <main className="h-40 flex flex-col justify-center gap-6">
         {/* MARK: PART-1 OF HEADER */}
         <div>
@@ -84,10 +85,14 @@ const AllTags = ({ reset }) => {
       </main>
 
       {/* MARK: TAG LIST VERTICAL SCROLLABLE */}
-
       <div
-        className="flex flex-col gap-10 overflow-y-scroll "
-        style={{ height: "calc(100% - 160px)" }}
+        ref={ref}
+        className={`${
+          height >= screenHeight - 160
+            ? "overflow-y-scroll"
+            : "overflow-y-hidden"
+        }  flex flex-col gap-10  `}
+        style={{ height: `${screenHeight - 160}px` }}
       >
         {tags.length > 0 ? (
           <>
