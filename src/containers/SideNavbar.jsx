@@ -21,7 +21,6 @@ import {
 } from "../redux/slice/toggleSlice";
 import { Icons } from "../assets/Icons";
 import ShortcutPage from "../components/ShortcutPage";
-import FindingWindowWidth from "../lib/FindingWindowWidth";
 import CheckPathname from "../components/CheckPathname";
 
 const list = [
@@ -52,8 +51,7 @@ const SideNavbar = () => {
   const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
   const [showAccountOptions, setShowAccountOptions] = useState(false);
-  const { isWidth } = FindingWindowWidth();
-  const { notelistIcon } = useSelector(toggleState);
+  const { notelistIcon, isWindowBelowTablet } = useSelector(toggleState);
   const { pathnameOK } = CheckPathname();
 
   const handleLogout = async () => {
@@ -262,11 +260,14 @@ const SideNavbar = () => {
           })}
         </div>
 
-        {isWidth && pathnameOK && (
+        {isWindowBelowTablet.bool && pathnameOK && (
           <div className="absolute bottom-0 w-full h-20 flex justify-center items-center">
-            <p className="cursor-pointer" onClick={handleOpenSidebarNoteList}>
-              Note List
-            </p>
+            <div
+              className="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-slate-600 text-white"
+              onClick={handleOpenSidebarNoteList}
+            >
+              N
+            </div>
           </div>
         )}
       </section>

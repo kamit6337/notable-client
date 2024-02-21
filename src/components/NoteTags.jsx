@@ -7,6 +7,7 @@ import {
 import { useMemo, useState } from "react";
 import { patchToBackend } from "../utils/api/userApi";
 import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
+import { Icons } from "../assets/Icons";
 
 const NoteTags = ({ activeNote }) => {
   const dispatch = useDispatch();
@@ -64,49 +65,22 @@ const NoteTags = ({ activeNote }) => {
     }
   };
 
-  console.log("height", height);
-  console.log("index", index);
-
   return (
-    <div className="flex items-center gap-2 px-6 h-full ">
-      {/* MARK: NOTE TAG LIST */}
-      {noteTagList?.length > 0 &&
-        noteTagList.map((tag, i) => {
-          const { _id, title } = tag;
-
-          return (
-            <div
-              key={i}
-              className="grow-0 shrink-0 relative h-full flex flex-col items-center justify-center"
-            >
-              <p
-                className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
-                onClick={() => (index === i ? setIndex(null) : setIndex(i))}
-              >
-                {title}
-              </p>
-
-              {index === i && (
-                <div className="absolute z-50 bottom-full mt-3">Hello</div>
-              )}
-            </div>
-          );
-        })}
-
+    <section className="h-full w-full relative flex">
       {/* MARK: ADD TAG LIST */}
-      <div className="grow-0 shrink-0 relative h-full flex flex-col items-center justify-center">
+      <div className="px-2 relative h-full pt-1">
         <p
-          className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
+          className="bg-gray-200 text-sm  rounded-full p-2 cursor-pointer"
           onClick={() => setShowTagList((prev) => !prev)}
         >
-          Add tag
+          {showTagList ? <Icons.cancel /> : <Icons.plus />}
         </p>
         {showTagList && (
           <div
             className={` 
             ${height >= 160 ? "overflow-y-scroll" : "overflow-y-hidden"}
             
-             absolute bottom-full  mb-2 rounded-md bg-my_notearea_white border-2 w-40  `}
+             absolute bottom-full left-0 ml-1 mb-2   rounded-md bg-my_notearea_white border-2 w-40  `}
             onMouseLeave={() => setShowTagList(false)}
             style={{ maxHeight: "160px" }}
             ref={ref}
@@ -128,16 +102,42 @@ const NoteTags = ({ activeNote }) => {
           </div>
         )}
       </div>
-    </div>
+
+      <div className="w-[500px] h-full ">
+        <main className="w-full flex gap-2 h-full  overflow-x-scroll px-5">
+          {/* MARK: NOTE TAG LIST */}
+          {noteTagList?.length > 0 &&
+            noteTagList.map((tag, i) => {
+              const { _id, title } = tag;
+
+              return (
+                <div
+                  key={i}
+                  className="grow-0 shrink-0 relative h-full flex flex-col items-center justify-center"
+                >
+                  <p
+                    className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
+                    onClick={() => (index === i ? setIndex(null) : setIndex(i))}
+                  >
+                    {title}
+                  </p>
+
+                  {index === i && (
+                    <p
+                      className="absolute z-50   bg-slate-800 text-white text-sm  rounded-3xl px-3 py-1 cursor-pointer whitespace-nowrap "
+                      onMouseLeave={() => setIndex(null)}
+                      onClick={() => handleRemoveNoteTag(_id)}
+                    >
+                      Remove Tag
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+        </main>
+      </div>
+    </section>
   );
 };
 
 export default NoteTags;
-
-// <p
-//                   className="absolute z-50 bottom-full  rounded-3xl bg-gray-300 w-40  cursor-pointer py-2 text-center text-sm"
-//                   onMouseLeave={() => setIndex(null)}
-//                   onClick={() => handleRemoveNoteTag(_id)}
-//                 >
-//                   Remove Tag
-//                 </p>

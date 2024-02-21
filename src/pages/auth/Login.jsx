@@ -81,7 +81,7 @@ const Login = () => {
   return (
     <div className="h-screen w-full flex flex-col justify-center items-center gap-2 bg-color_2">
       {/* NOTE: THE CENTER PAGE */}
-      <div className="bg-color_1 box_shadow h-[500px] w-[600px] border border-color_3 rounded-xl flex flex-col justify-evenly items-center px-8">
+      <div className="bg-color_1 box_shadow h-[500px] w-[600px] tablet:h-[450px] border border-color_3 rounded-xl flex flex-col justify-evenly items-center px-8">
         {/* MARK: HEADLINE*/}
         <p className="text-xl font-bold tracking-wide">Login</p>
         {/* MARK: FORM AND GO TO LOGIN BUTTON*/}

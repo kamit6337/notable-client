@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
+import { useDispatch } from "react-redux";
+import { toggleIsWindowBelowTablet } from "../redux/slice/toggleSlice";
 
-const FindingWindowWidth = (givenWidth = 768) => {
-  const [isWidth, setIsWidth] = useState(false);
+const FindingWindowWidth = (givenWidth = 980) => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
 
       if (width < givenWidth) {
-        setIsWidth(true);
+        dispatch(toggleIsWindowBelowTablet({bool : true}));
       } else {
-        setIsWidth(false);
+        dispatch(toggleIsWindowBelowTablet({bool : false}));
       }
     };
 
@@ -21,7 +23,7 @@ const FindingWindowWidth = (givenWidth = 768) => {
     };
   }, []);
 
-  return { isWidth };
+  return;
 };
 
 export default FindingWindowWidth;

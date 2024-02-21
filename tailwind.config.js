@@ -33,7 +33,7 @@ export default {
       sm_lap: { max: "1024px" },
       // => @media (max-width: 1023px) { ... }
 
-      tablet: { max: "768px" },
+      tablet: { max: "980px" },
       // => @media (max-width: 767px) { ... }
 
       mobile: { max: "640px" },

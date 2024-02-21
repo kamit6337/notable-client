@@ -70,7 +70,7 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
   };
 
   return (
-    <div className="background_blur absolute z-10 top-0 left-0 w-full h-screen flex justify-center items-center">
+    <div className="background_blur absolute z-50 top-0 left-0 w-full h-screen flex justify-center items-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="h-80 w-[550px] bg-white rounded-xl py-8 px-6 flex flex-col justify-between"
