@@ -3,17 +3,21 @@ import { useEffect, useState } from "react";
 import TextArea from "./TextArea";
 import NoteTags from "./NoteTags";
 import SideNoteListBar from "./SideNoteListBar";
-import { useSelector } from "react-redux";
-import { toggleState } from "../redux/slice/toggleSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleNoteListIcon, toggleState } from "../redux/slice/toggleSlice";
+import FindingWindowWidth from "../lib/FindingWindowWidth";
 
 const NotesArea = ({ title, icon, list }) => {
-  const { hideSidebars } = useSelector(toggleState);
+  const dispatch = useDispatch();
+  const { hideSidebars, notelistIcon } = useSelector(toggleState);
   const [activeNote, setActiveNote] = useState(null);
   const [newList, setNewlist] = useState([]);
+  const { isWidth } = FindingWindowWidth();
 
   useEffect(() => {
     if (!list) return;
     setNewlist(list);
+    dispatch(toggleNoteListIcon({ haveList: true }));
     if (!activeNote) {
       setActiveNote(list[0]);
     } else {
@@ -24,7 +28,7 @@ const NotesArea = ({ title, icon, list }) => {
         setActiveNote(findNote);
       }
     }
-  }, [list, activeNote]);
+  }, [list, activeNote, dispatch]);
 
   useEffect(() => {
     if (activeNote) {
@@ -60,7 +64,7 @@ const NotesArea = ({ title, icon, list }) => {
     <section className="relative w-full h-full flex">
       {/* NOTE: SIDE NOTE BAR */}
 
-      {/* {hideSidebars.bool || (
+      {hideSidebars.bool || isWidth || (
         <div className="w-60 sm_lap:w-52">
           <SideNoteListBar
             activeNote={activeNote}
@@ -70,9 +74,15 @@ const NotesArea = ({ title, icon, list }) => {
             title={title}
           />
         </div>
-      )} */}
+      )}
 
-      <div className="absolute z-50 left-0 h-full w-60 sm_lap:w-52">
+      <div
+        className="absolute z-20 left-0 h-full w-60 sm_lap:w-52 transition-all duration-700"
+        style={{ translate: `${notelistIcon.openNotelist ? "0" : "-200%"}` }}
+        onMouseLeave={() =>
+          dispatch(toggleNoteListIcon({ openNotelist: false, haveList: true }))
+        }
+      >
         <SideNoteListBar
           activeNote={activeNote}
           handleActiveNote={handleActiveNote}
@@ -84,12 +94,12 @@ const NotesArea = ({ title, icon, list }) => {
 
       {/* NOTE: TEXT AREA */}
       {activeNote && (
-        <div className="flex-1 h-full relative">
-          <div className="" style={{ height: "calc(100% - 80px)" }}>
+        <div className="flex-1 h-full flex flex-col justify-between">
+          <div className="" style={{ height: "calc(100% - 100px)" }}>
             <TextArea activeNote={activeNote} resetSetIndex={resetSetIndex} />
           </div>
 
-          <div className="absolute z-10 bottom-0 w-full h-10 ">
+          <div className="w-full basis-14 pr-10">
             <NoteTags activeNote={activeNote} />
           </div>
         </div>

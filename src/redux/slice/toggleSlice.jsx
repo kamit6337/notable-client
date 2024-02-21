@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  notelistIcon: {
+    haveList: false,
+    openNotelist: false,
+  },
+
   searchForm: {
     bool: false,
   },
@@ -128,6 +133,17 @@ const toggleSlice = createSlice({
 
       return state;
     },
+    toggleNoteListIcon: (state, { payload }) => {
+      const { haveList, openNotelist } = payload;
+
+      state.notelistIcon.haveList = haveList;
+
+      state.notelistIcon.openNotelist = openNotelist;
+
+      console.log("note list icon", state.notelistIcon);
+
+      return state;
+    },
   },
 });
 
@@ -139,6 +155,7 @@ export const {
   toggleSettingForm,
   toggleHideSidebars,
   toggleSearchForm,
+  toggleNoteListIcon,
 } = toggleSlice.actions;
 
 export const toggleReducer = toggleSlice.reducer;

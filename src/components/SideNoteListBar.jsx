@@ -153,8 +153,8 @@ const SideNoteListBar = ({
                 onClick={() => handleActiveNote(note)}
               >
                 <p className="text-sm">{title}</p>
-                <p className="text-sm -mt-2 break-all text-gray-500">
-                  {convertHTMLtoString(body)}
+                <p className="text-sm tablet:text-xs -mt-2 break-all text-gray-500">
+                  {convertHTMLtoString(body, 30)}
                 </p>
                 <p className=" text-xs">{convertDateType(updatedAt)}</p>
               </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const FindingDivScrollHeight = (list) => {
+const FindingDivScrollHeight = (list, list2 = null) => {
   const ref = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -10,7 +10,7 @@ const FindingDivScrollHeight = (list) => {
 
       setContentHeight(divHeight);
     }
-  }, [list]);
+  }, [list, list2]);
 
   return { ref, height: contentHeight };
 };

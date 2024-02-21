@@ -14,11 +14,15 @@ import AllTags from "../pages/tags/AllTags";
 import { useState } from "react";
 import {
   toggleNoteActivation,
+  toggleNoteListIcon,
   toggleSearchForm,
   toggleSettingForm,
+  toggleState,
 } from "../redux/slice/toggleSlice";
 import { Icons } from "../assets/Icons";
 import ShortcutPage from "../components/ShortcutPage";
+import FindingWindowWidth from "../lib/FindingWindowWidth";
+import CheckPathname from "../components/CheckPathname";
 
 const list = [
   {
@@ -48,14 +52,18 @@ const SideNavbar = () => {
   const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
   const [showAccountOptions, setShowAccountOptions] = useState(false);
+  const { isWidth } = FindingWindowWidth();
+  const { notelistIcon } = useSelector(toggleState);
+  const { pathnameOK } = CheckPathname();
 
   const handleLogout = async () => {
     setShowAccountOptions(false);
-
     try {
       await getAuthReq("/logout");
       Cookies.remove("_at", { secure: true, path: "/", sameSite: true }); // removed!
       queryCache.clear();
+      localStorage.removeItem("notesId");
+      localStorage.removeItem("sort");
       navigate("/login", { state: { refresh: true } });
       window.location.reload();
     } catch (error) {
@@ -109,8 +117,14 @@ const SideNavbar = () => {
     dispatch(toggleSettingForm({ bool: true }));
   };
 
-  const photoUrl = `${environment.SERVER_URL}/${data.photo}`;
+  const handleOpenSidebarNoteList = () => {
+    const reverse = !notelistIcon.openNotelist;
 
+    console.log("reverse", reverse);
+    dispatch(toggleNoteListIcon({ openNotelist: reverse, haveList: true }));
+  };
+
+  const photoUrl = `${environment.SERVER_URL}/${data.photo}`;
   return (
     <>
       <section className="relative z-40 text-sm bg-my_sidenavbar text-my_sidenavbar_icon w-full h-full">
@@ -247,6 +261,14 @@ const SideNavbar = () => {
             );
           })}
         </div>
+
+        {isWidth && pathnameOK && (
+          <div className="absolute bottom-0 w-full h-20 flex justify-center items-center">
+            <p className="cursor-pointer" onClick={handleOpenSidebarNoteList}>
+              Note List
+            </p>
+          </div>
+        )}
       </section>
 
       <div

@@ -4,25 +4,22 @@ import {
   updatedTheNote,
   userInitialState,
 } from "../redux/slice/initialUserDataSlice";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { patchToBackend } from "../utils/api/userApi";
+import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
 
 const NoteTags = ({ activeNote }) => {
   const dispatch = useDispatch();
   const { tags, notes } = useSelector(userInitialState);
   const [showTagList, setShowTagList] = useState(false);
   const [index, setIndex] = useState(null);
-  const tagOptionRef = useRef(null);
 
   const [modifyTags, noteTagList] = useMemo(() => {
     let filterTags = [...tags];
     const findNote = notes.find((note) => note._id === activeNote._id);
-
     const populateTags = findNote?.tags.map((tagId) => {
       const findtag = tags.find((tag) => tag._id === tagId);
-
       filterTags = filterTags.filter((tag) => tag._id !== tagId);
-
       return {
         _id: findtag._id,
         title: findtag.title,
@@ -32,21 +29,7 @@ const NoteTags = ({ activeNote }) => {
     return [filterTags, populateTags];
   }, [activeNote, notes, tags]);
 
-  useEffect(() => {
-    if (tagOptionRef.current) {
-      const height = tagOptionRef.current.clientHeight;
-
-      console.log("height", height);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (tagOptionRef.current) {
-      const height = tagOptionRef.current.clientHeight;
-
-      console.log("height", height);
-    }
-  }, [modifyTags]);
+  const { ref, height } = FindingDivScrollHeight(modifyTags, showTagList);
 
   const handleAddTagToNote = async (id) => {
     setShowTagList(false);
@@ -81,8 +64,12 @@ const NoteTags = ({ activeNote }) => {
     }
   };
 
+  console.log("height", height);
+  console.log("index", index);
+
   return (
-    <div className="flex items-center gap-2 px-6 h-full">
+    <div className="flex items-center gap-2 px-6 h-full ">
+      {/* MARK: NOTE TAG LIST */}
       {noteTagList?.length > 0 &&
         noteTagList.map((tag, i) => {
           const { _id, title } = tag;
@@ -90,29 +77,24 @@ const NoteTags = ({ activeNote }) => {
           return (
             <div
               key={i}
-              className="relative h-full flex flex-col items-center justify-center"
+              className="grow-0 shrink-0 relative h-full flex flex-col items-center justify-center"
             >
               <p
                 className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
-                onClick={() => setIndex(i)}
+                onClick={() => (index === i ? setIndex(null) : setIndex(i))}
               >
                 {title}
               </p>
 
               {index === i && (
-                <p
-                  className="absolute bottom-full mb-2 rounded-3xl bg-gray-300 w-40  cursor-pointer py-2 text-center text-sm"
-                  onMouseLeave={() => setIndex(null)}
-                  onClick={() => handleRemoveNoteTag(_id)}
-                >
-                  Remove Tag
-                </p>
+                <div className="absolute z-50 bottom-full mt-3">Hello</div>
               )}
             </div>
           );
         })}
 
-      <div className="relative h-full flex flex-col items-center justify-center">
+      {/* MARK: ADD TAG LIST */}
+      <div className="grow-0 shrink-0 relative h-full flex flex-col items-center justify-center">
         <p
           className="bg-gray-200 text-sm  rounded-3xl px-3 py-1 cursor-pointer"
           onClick={() => setShowTagList((prev) => !prev)}
@@ -121,11 +103,13 @@ const NoteTags = ({ activeNote }) => {
         </p>
         {showTagList && (
           <div
-            className={`${
-              modifyTags.length > 0 && "border"
-            }  absolute bottom-full mb-4 rounded-md bg-my_notearea_white border-2 w-40 max-h-40 overflow-y-scroll`}
+            className={` 
+            ${height >= 160 ? "overflow-y-scroll" : "overflow-y-hidden"}
+            
+             absolute bottom-full  mb-2 rounded-md bg-my_notearea_white border-2 w-40  `}
             onMouseLeave={() => setShowTagList(false)}
-            ref={tagOptionRef}
+            style={{ maxHeight: "160px" }}
+            ref={ref}
           >
             {modifyTags.length > 0 &&
               modifyTags.map((tag, i) => {
@@ -149,3 +133,11 @@ const NoteTags = ({ activeNote }) => {
 };
 
 export default NoteTags;
+
+// <p
+//                   className="absolute z-50 bottom-full  rounded-3xl bg-gray-300 w-40  cursor-pointer py-2 text-center text-sm"
+//                   onMouseLeave={() => setIndex(null)}
+//                   onClick={() => handleRemoveNoteTag(_id)}
+//                 >
+//                   Remove Tag
+//                 </p>
