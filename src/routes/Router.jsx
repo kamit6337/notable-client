@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Home from "../pages/home/Home";
 import Login from "../pages/auth/Login";
-import SignUp from "../pages/auth/SignUp";
 import Notes from "../pages/notes/AllNotes";
 import CheckLogin from "../pages/auth/CheckLogin";
 import Notebooks from "../pages/notebooks/AllNoteBooks";
@@ -12,6 +11,7 @@ import ForgotPasswordPage from "../pages/auth/ForgotPassword";
 import TagNotes from "../pages/tagNotes/TagNotes";
 import SingleNote from "../pages/SingleNote/SingleNote";
 import NotFound from "../pages/notFound/NotFound";
+import SignUp from "../pages/auth/SignUp";
 
 const Router = () => {
   return (
