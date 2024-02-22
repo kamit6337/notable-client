@@ -4,26 +4,33 @@ import ReactQuill from "react-quill";
 import UpdateNote from "../hooks/mutation/UpdateNote";
 import { updatedTheNote } from "../redux/slice/initialUserDataSlice";
 import { useDispatch } from "react-redux";
+import Toastify from "../lib/Toastify";
 
 const QuillTextarea = ({ deafultTitle, deafultBody, activeNote }) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const ref = useRef(null);
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
-  const { mutate, data } = UpdateNote(activeNote._id);
+  const { mutate, data, error, reset } = UpdateNote(activeNote._id);
+
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   useEffect(() => {
-    console.log("deafultBody", deafultBody);
-
     setValue(deafultBody);
   }, [deafultBody]);
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       dispatch(updatedTheNote(data.data));
     }
   }, [data, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      showErrorMessage({ message: error.message || "Something went wrong" });
+      reset();
+    }
+  }, [error, showErrorMessage, reset]);
 
   useEffect(() => {
     if (ref.current) {
@@ -47,8 +54,6 @@ const QuillTextarea = ({ deafultTitle, deafultBody, activeNote }) => {
       };
 
       mutate(obj);
-
-      console.log(obj);
     }, 1000);
 
     setTypingTimeout(timeout);
@@ -84,18 +89,21 @@ const QuillTextarea = ({ deafultTitle, deafultBody, activeNote }) => {
   ];
 
   return (
-    <div className="h-full">
-      <ReactQuill
-        ref={ref}
-        theme="snow"
-        value={value}
-        onChange={handleChange}
-        modules={modules}
-        formats={formats}
-        className="w-full h-full"
-        placeholder="Write your text here"
-      />
-    </div>
+    <>
+      <div className="h-full">
+        <ReactQuill
+          ref={ref}
+          theme="snow"
+          value={value}
+          onChange={handleChange}
+          modules={modules}
+          formats={formats}
+          className="w-full h-full"
+          placeholder="Write your text here"
+        />
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 

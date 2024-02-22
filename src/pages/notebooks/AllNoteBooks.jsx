@@ -5,19 +5,12 @@ import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../../redux/slice/toggleSlice";
 import { useForm } from "react-hook-form";
 import NotebookStack from "./NotebookStack";
-import FindingScreenHeight from "../../lib/FindingScreenHeight";
-import FindingDivScrollHeight from "../../lib/FindingDivScrollHeight";
 
 const AllNoteBooks = () => {
   const dispatch = useDispatch();
   const { notebooks } = useSelector(userInitialState);
   const [showFullNotebooks, setShowFullNotebooks] = useState(true);
   const [searchedNotebook, setSearchNotebook] = useState([]);
-  const screenHeight = FindingScreenHeight();
-  const { ref: notebooksRef, height: notebooksDivHeight } =
-    FindingDivScrollHeight(notebooks);
-  const { ref: searchedNotebookRef, height: searchedNotebookDivHeight } =
-    FindingDivScrollHeight(notebooks);
 
   const { register } = useForm({
     defaultValues: {
@@ -84,26 +77,15 @@ const AllNoteBooks = () => {
         {/* MARK: NOTESBOOKS WITH STACK */}
         {showFullNotebooks ? (
           <div
-            className="overflow-y-scroll"
-            // className={`${
-            //   notebooksDivHeight >= screenHeight - 200
-            //     ? "overflow-y-scroll"
-            //     : "overflow-y-hidden"
-            // }  text-slate-800`}
-            // ref={notebooksRef}
+            className="overflow-y-scroll text-slate-800"
             style={{ height: "calc(100% - 200px)" }}
           >
             <NotebookStack notebooks={notebooks} />
           </div>
         ) : (
           <div
-            className={`${
-              searchedNotebookDivHeight >= screenHeight - 200
-                ? "overflow-y-scroll"
-                : "overflow-y-hidden"
-            }  text-slate-800`}
-            ref={searchedNotebookRef}
-            style={{ maxHeight: `${screenHeight - 200}px` }}
+            className="overflow-y-scroll text-slate-800"
+            style={{ height: "calc(100% - 200px)" }}
           >
             <NotebookStack notebooks={searchedNotebook} />
           </div>

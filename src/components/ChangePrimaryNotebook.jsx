@@ -7,11 +7,13 @@ import {
 import { useMemo, useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { patchToBackend } from "../utils/api/userApi";
+import Toastify from "../lib/Toastify";
 
 const ChangePrimaryNotebook = ({ handleClose }) => {
   const dispatch = useDispatch();
   const { primaryNotebook, notebooks } = useSelector(userInitialState);
   const [value, setvalue] = useState("");
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const filterNotebooks = useMemo(() => {
     const filter = notebooks.filter(
@@ -43,51 +45,54 @@ const ChangePrimaryNotebook = ({ handleClose }) => {
         })
       );
     } catch (error) {
-      console.log("error in changing primary notebook", error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
   return (
-    <div>
-      <div className="flex gap-2">
-        <p>Current Primary Notebook : </p>
-        <p className="font-semibold tracking-wide">{primaryNotebook.title}</p>
-      </div>
+    <>
+      <div>
+        <div className="flex gap-2">
+          <p>Current Primary Notebook : </p>
+          <p className="font-semibold tracking-wide">{primaryNotebook.title}</p>
+        </div>
 
-      <div className="mt-10">
-        <p className="mb-2 font-semibold tracking-wide">
-          Change Primary Notebook
-        </p>
+        <div className="mt-10">
+          <p className="mb-2 font-semibold tracking-wide">
+            Change Primary Notebook
+          </p>
 
-        <FormControl fullWidth>
-          <Select
-            value={value}
-            onChange={handleSelect}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-          >
-            <MenuItem value="">
-              <em>Select Notebook</em>
-            </MenuItem>
-            {filterNotebooks.map((notebook, i) => {
-              const { _id, title } = notebook;
+          <FormControl fullWidth>
+            <Select
+              value={value}
+              onChange={handleSelect}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+            >
+              <MenuItem value="">
+                <em>Select Notebook</em>
+              </MenuItem>
+              {filterNotebooks.map((notebook, i) => {
+                const { _id, title } = notebook;
 
-              return (
-                <MenuItem key={i} value={_id}>
-                  {title}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
+                return (
+                  <MenuItem key={i} value={_id}>
+                    {title}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </div>
+        <div
+          className="py-2 px-4 text-white w-max cursor-pointer rounded-sm mt-10 ml-auto bg-my_light_green_dark"
+          onClick={handleChangePrimaryNotebook}
+        >
+          Change
+        </div>
       </div>
-      <div
-        className="py-2 px-4 text-white w-max cursor-pointer rounded-sm mt-10 ml-auto bg-my_light_green_dark"
-        onClick={handleChangePrimaryNotebook}
-      >
-        Change
-      </div>
-    </div>
+      <ToastContainer />
+    </>
   );
 };
 

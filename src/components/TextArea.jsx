@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import QuillTextarea from "./QuillTextarea";
 import timeAgoDate from "../utils/javaScript/timeAgoDate";
 import { toggleHideSidebars, toggleState } from "../redux/slice/toggleSlice";
+import Toastify from "../lib/Toastify";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const [deafultBody, setDefaultBody] = useState("");
   const { notebooks } = useSelector(userInitialState);
 
+  const { ToastContainer, showErrorMessage } = Toastify();
+
   const { register, getValues, reset, setFocus } = useForm({
     defaultValues: {
       title: "",
@@ -38,13 +41,17 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     },
   });
 
-  const { mutate, data } = UpdateNote(activeNote._id);
+  const {
+    mutate,
+    data,
+    error,
+    reset: updateNoteReset,
+  } = UpdateNote(activeNote._id);
 
   const noteNotebook = useMemo(() => {
     const findNotebook = notebooks.find(
       (notebook) => notebook._id === activeNote.notebook
     );
-
     return findNotebook;
   }, [activeNote, notebooks]);
 
@@ -69,10 +76,16 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       dispatch(updatedTheNote(data.data));
     }
   }, [data, dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      showErrorMessage({ message: error.message || "Something went wrong" });
+      updateNoteReset();
+    }
+  }, [error, showErrorMessage, updateNoteReset]);
 
   const changeTitle = (e) => {
     const { value } = e.target;
@@ -89,8 +102,6 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
       };
 
       mutate(obj);
-
-      console.log(obj);
     }, 1000);
 
     setTypingTimeout(timeout);
@@ -98,14 +109,11 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const handleDeleteNote = async () => {
     dispatch(toggleHideSidebars({ bool: false }));
-
     setShowOption(false);
-
     try {
-      const deleteNote = await deleteToBackend("/notes", {
+      await deleteToBackend("/notes", {
         id: activeNote._id,
       });
-      console.log(deleteNote);
 
       let localNotes = JSON.parse(localStorage.getItem("notesId"));
       if (localNotes) {
@@ -125,7 +133,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -136,11 +144,9 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         noteId: activeNote._id,
       });
 
-      console.log("updated Note", updatedNote);
-
       dispatch(updatedTheNote(updatedNote.data));
     } catch (error) {
-      console.log("error from add to shortcut", error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -151,11 +157,9 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         noteId: activeNote._id,
       });
 
-      console.log("updated Note", updatedNote);
-
       dispatch(updatedTheNote(updatedNote.data));
     } catch (error) {
-      console.log("error from add to shortcut", error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -165,95 +169,98 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   };
 
   return (
-    <main className="h-full items-start ">
-      <header className="h-24 w-full border-b flex justify-between px-4">
-        <div className="w-72 h-full py-3 pl-2 flex flex-col justify-between">
-          <div className="flex items-center gap-3">
-            <p
-              className="border border-black cursor-pointer"
-              onClick={handleHideSidebars}
-            >
-              <Icons.zoom />
-            </p>
-            <div className="w-[2px] h-full bg-gray-400" />
+    <>
+      <main className="h-full items-start ">
+        <header className="h-24 w-full border-b flex justify-between px-4">
+          <div className="w-72 h-full py-3 pl-2 flex flex-col justify-between">
+            <div className="flex items-center gap-3">
+              <p
+                className="border border-black cursor-pointer"
+                onClick={handleHideSidebars}
+              >
+                <Icons.zoom />
+              </p>
+              <div className="w-[2px] h-full bg-gray-400" />
 
-            <Link
-              to={`/notebooks/${noteNotebook._id}`}
-              onClick={() => dispatch(toggleHideSidebars({ bool: false }))}
-            >
-              <div className="flex items-center gap-1">
-                <p>
-                  <Icons.notebooks />
-                </p>
-                <p className="text-sm">{noteNotebook.title}</p>
-              </div>
-            </Link>
-          </div>
-          <div className="w-full">
-            <input
-              {...register("title")}
-              className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
-              placeholder="title"
-              onChange={changeTitle}
-              onClick={() => setIsTitleTyping(true)}
-              autoComplete="off"
-              spellCheck="false"
-              onKeyDown={(e) => e.key === "Enter" && setIsTitleTyping(false)}
-            />
-          </div>
-        </div>
-
-        <div className="h-full w-48 flex flex-col justify-between text-xs p-2">
-          <div
-            className="p-2 relative w-full flex justify-end"
-            onMouseLeave={() => setShowOption(false)}
-          >
-            <p
-              className="cursor-pointer"
-              onMouseEnter={() => setShowOption(true)}
-            >
-              <Icons.options className="text-xl" />
-            </p>
-
-            {showOption && (
-              <div className="absolute z-10 top-full right-0 bg-gray-100 rounded-lg whitespace-nowrap ">
-                {activeNote.shortcut ? (
-                  <p
-                    className="p-4 text-sm cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
-                    onClick={handleRemoveShortcut}
-                  >
-                    Remove From Shortcut
+              <Link
+                to={`/notebooks/${noteNotebook._id}`}
+                onClick={() => dispatch(toggleHideSidebars({ bool: false }))}
+              >
+                <div className="flex items-center gap-1">
+                  <p>
+                    <Icons.notebooks />
                   </p>
-                ) : (
-                  <p
-                    className="p-4 text-sm cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
-                    onClick={handleAddToShortcut}
-                  >
-                    Add to Shortcut
-                  </p>
-                )}
-                <p
-                  className="p-4 text-sm cursor-pointer border-t-2 hover:bg-gray-200 hover:rounded-b-lg"
-                  onClick={handleDeleteNote}
-                >
-                  Delete Note
-                </p>
-              </div>
-            )}
+                  <p className="text-sm">{noteNotebook.title}</p>
+                </div>
+              </Link>
+            </div>
+            <div className="w-full">
+              <input
+                {...register("title")}
+                className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
+                placeholder="title"
+                onChange={changeTitle}
+                onClick={() => setIsTitleTyping(true)}
+                autoComplete="off"
+                spellCheck="false"
+                onKeyDown={(e) => e.key === "Enter" && setIsTitleTyping(false)}
+              />
+            </div>
           </div>
-          <p className="self-end">
-            last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
-          </p>
+
+          <div className="h-full w-48 flex flex-col justify-between text-xs p-2">
+            <div
+              className="p-2 relative w-full flex justify-end"
+              onMouseLeave={() => setShowOption(false)}
+            >
+              <p
+                className="cursor-pointer"
+                onMouseEnter={() => setShowOption(true)}
+              >
+                <Icons.options className="text-xl" />
+              </p>
+
+              {showOption && (
+                <div className="absolute z-10 top-full right-0 bg-gray-100 rounded-lg whitespace-nowrap ">
+                  {activeNote.shortcut ? (
+                    <p
+                      className="p-4 text-sm cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
+                      onClick={handleRemoveShortcut}
+                    >
+                      Remove From Shortcut
+                    </p>
+                  ) : (
+                    <p
+                      className="p-4 text-sm cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
+                      onClick={handleAddToShortcut}
+                    >
+                      Add to Shortcut
+                    </p>
+                  )}
+                  <p
+                    className="p-4 text-sm cursor-pointer border-t-2 hover:bg-gray-200 hover:rounded-b-lg"
+                    onClick={handleDeleteNote}
+                  >
+                    Delete Note
+                  </p>
+                </div>
+              )}
+            </div>
+            <p className="self-end">
+              last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
+            </p>
+          </div>
+        </header>
+        <div className="w-full" style={{ height: "calc(100% - 100px)" }}>
+          <QuillTextarea
+            deafultTitle={deafultTitle}
+            deafultBody={deafultBody}
+            activeNote={activeNote}
+          />
         </div>
-      </header>
-      <div className="w-full" style={{ height: "calc(100% - 100px)" }}>
-        <QuillTextarea
-          deafultTitle={deafultTitle}
-          deafultBody={deafultBody}
-          activeNote={activeNote}
-        />
-      </div>
-    </main>
+      </main>
+      <ToastContainer />
+    </>
   );
 };
 

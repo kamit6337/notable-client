@@ -11,4 +11,5 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false, // Disable strict mode
     }),
+  devTools: false,
 });

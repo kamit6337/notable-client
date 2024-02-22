@@ -9,17 +9,18 @@ import {
 import { toggleCreateNewTag } from "../redux/slice/toggleSlice";
 import { useEffect } from "react";
 import { patchToBackend, postToBackend } from "../utils/api/userApi";
+import Toastify from "../lib/Toastify";
 
 /* eslint-disable react/prop-types */
 const CreateNewTag = ({ update = false, name = "", id }) => {
   const dispatch = useDispatch();
   const { tags } = useSelector(userInitialState);
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const {
     register,
     handleSubmit,
     reset,
-    setError,
     setFocus,
     formState: { errors },
   } = useForm({
@@ -40,28 +41,23 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     try {
       if (!update) {
         const tagCreated = await postToBackend("/tags", { name: data.title });
         handleCancel();
-        console.log("tagcreated", tagCreated);
         dispatch(createdNewTag(tagCreated.data));
 
         return;
       }
-
       const tagUpdated = await patchToBackend("/tags", {
         id,
         name: data.title,
       });
       handleCancel();
-      console.log("tagUpdated", tagUpdated);
+
       dispatch(updateTheTag(tagUpdated.data));
     } catch (error) {
-      console.log(error);
-      setError("root", { message: error.message });
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -124,6 +120,7 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

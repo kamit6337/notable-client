@@ -10,11 +10,13 @@ import {
   toggleCreateNewNotebook,
   toggleDeleteForm,
 } from "../../redux/slice/toggleSlice";
+import Toastify from "../../lib/Toastify";
 
 const NotebookStack = ({ notebooks }) => {
   const dispatch = useDispatch();
-
   const [index, setIndex] = useState(null);
+
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const handleAddShortcut = async (id) => {
     setIndex(null);
@@ -25,7 +27,7 @@ const NotebookStack = ({ notebooks }) => {
       console.log("updateNotebook", updateNotebook);
       dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something Went Wrong." });
     }
   };
 
@@ -39,7 +41,7 @@ const NotebookStack = ({ notebooks }) => {
       console.log("updateNotebook", updateNotebook);
       dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something Went Wrong." });
     }
   };
 
@@ -150,6 +152,7 @@ const NotebookStack = ({ notebooks }) => {
           <p>No notebook available</p>
         </div>
       )}
+      <ToastContainer />
     </>
   );
 };

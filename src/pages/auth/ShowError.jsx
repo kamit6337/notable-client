@@ -1,12 +1,21 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icons } from "../../assets/Icons";
+import { useEffect } from "react";
 
 const ShowError = () => {
   const navigate = useNavigate();
 
   const { state } = useLocation();
 
-  const errMsg = state?.errMsg || "Something went wrong.";
+  const errMsg = state?.errMsg || state?.message || "Something went wrong.";
+
+  useEffect(() => {
+    if (navigator.onLine) {
+      navigate("/");
+
+      return;
+    }
+  }, [navigate]);
 
   const handleRefreshClick = () => {
     // Use window.location.reload() to refresh the page

@@ -6,9 +6,11 @@ import {
 } from "../redux/slice/initialUserDataSlice";
 import { deleteToBackend } from "../utils/api/userApi";
 import { toggleDeleteForm } from "../redux/slice/toggleSlice";
+import Toastify from "../lib/Toastify";
 
 const DeleteForm = ({ data: { title, _id }, tag = false }) => {
   const dispatch = useDispatch();
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const handleCancel = () => {
     dispatch(toggleDeleteForm({ bool: false }));
@@ -19,20 +21,18 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
       await deleteToBackend("/notebooks", { id: _id });
       handleCancel();
       dispatch(deletedNotebook(_id));
-      console.log("successfully deleted");
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
   const deleteTag = async () => {
     try {
-      const data = await deleteToBackend("/tags", { id: _id });
+      await deleteToBackend("/tags", { id: _id });
       handleCancel();
       dispatch(deletedTheTag(_id));
-      console.log("successfully deleted tag", data);
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -59,6 +59,7 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

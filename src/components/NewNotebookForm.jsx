@@ -10,10 +10,13 @@ import {
   userInitialState,
 } from "../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../redux/slice/toggleSlice";
+import Toastify from "../lib/Toastify";
 
 const NewNotebookForm = ({ update = false, name = "", id }) => {
   const { notebooks } = useSelector(userInitialState);
   const dispatch = useDispatch();
+  const { ToastContainer, showErrorMessage } = Toastify();
+
   const {
     register,
     handleSubmit,
@@ -43,14 +46,11 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
-
     try {
       if (!update) {
         const newNotebook = await postToBackend("/notebooks", {
           name: data.name,
         });
-        console.log("newNotebook", newNotebook);
         handleCancel();
         dispatch(pushNewNotebook(newNotebook.data));
 
@@ -61,11 +61,10 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
         id,
         name: data.name,
       });
-      console.log("updateNotebook", updateNotebook);
       handleCancel();
       dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
-      console.log(error);
+      showErrorMessage({ message: error.message || "Something went wrong" });
     }
   };
 
@@ -129,6 +128,7 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

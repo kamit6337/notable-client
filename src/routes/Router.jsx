@@ -3,7 +3,6 @@ import MainLayout from "../layout/MainLayout";
 import Home from "../pages/home/Home";
 import Login from "../pages/auth/Login";
 import SignUp from "../pages/auth/SignUp";
-import NotFound from "../pages/NotFound";
 import Notes from "../pages/notes/AllNotes";
 import CheckLogin from "../pages/auth/CheckLogin";
 import Notebooks from "../pages/notebooks/AllNoteBooks";
@@ -12,6 +11,7 @@ import ShowError from "../pages/auth/ShowError";
 import ForgotPasswordPage from "../pages/auth/ForgotPassword";
 import TagNotes from "../pages/tagNotes/TagNotes";
 import SingleNote from "../pages/SingleNote/SingleNote";
+import NotFound from "../pages/notFound/NotFound";
 
 const Router = () => {
   return (

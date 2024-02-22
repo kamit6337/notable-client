@@ -12,11 +12,8 @@ const TagNotes = () => {
 
   const [noteList, tagName] = useMemo(() => {
     const findTag = tags.find((tag) => tag._id === id);
-
     const tagName = findTag?.title;
-
     const noteList = notes.filter((note) => note.tags.includes(id));
-
     return [noteList, tagName];
   }, [id, tags, notes]);
 

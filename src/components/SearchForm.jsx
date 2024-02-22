@@ -27,7 +27,6 @@ const SearchForm = () => {
     if (ref.current) {
       const divHeight = ref.current.scrollHeight;
       setContentHeight(divHeight);
-      console.log("DivHeight", divHeight);
     }
   }, [searchedList]);
 

@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Toastify = () => {
   const showErrorMessage = ({
     message,
-    time = 3000,
+    time = 2000,
     position = "top-right",
   } = {}) => {
     toast.error(message, {
@@ -15,7 +15,7 @@ const Toastify = () => {
 
   const showSuccessMessage = ({
     message,
-    time = 3000,
+    time = 2000,
     position = "top-right",
   } = {}) => {
     toast.success(message, {
@@ -26,7 +26,7 @@ const Toastify = () => {
 
   const showAlertMessage = ({
     message,
-    time = 3000,
+    time = 2000,
     position = "top-right",
   } = {}) => {
     toast.warn(message, {
