@@ -97,13 +97,6 @@ const SignUp = () => {
               type="text"
               {...register("name", {
                 required: "Name is Required",
-                // pattern: /^[A-Za-z]+$/i,
-                // validate: (value) => {
-                //   return (
-                //     validator.isAlpha(value) ||
-                //     "Check you name again. Only Alphabet is allowed."
-                //   );
-                // },
               })}
               placeholder="Name"
               className="border  p-3 rounded-lg"
