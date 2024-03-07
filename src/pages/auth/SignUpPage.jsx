@@ -10,7 +10,7 @@ import { postAuthReq } from "../../utils/api/authApi";
 
 const SERVER_URL = environment.SERVER_URL;
 
-const SignUp = () => {
+const SignUpPage = () => {
   const navigate = useNavigate();
   const [toggle, setToggle] = useState({
     password: false,
@@ -238,4 +238,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;

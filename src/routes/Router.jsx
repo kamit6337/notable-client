@@ -11,7 +11,7 @@ import ForgotPasswordPage from "../pages/auth/ForgotPassword";
 import TagNotes from "../pages/tagNotes/TagNotes";
 import SingleNote from "../pages/SingleNote/SingleNote";
 import NotFound from "../pages/notFound/NotFound";
-import SignUp from "../pages/auth/SignUp";
+import SignUpPage from "../pages/auth/SignUpPage";
 
 const Router = () => {
   return (
@@ -32,7 +32,7 @@ const Router = () => {
       </Route>
 
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
+      <Route path="/signup" element={<SignUpPage />} />
       <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/login/check" element={<CheckLogin />} />
       <Route path="/error" element={<ShowError />} />
