@@ -1,4 +1,4 @@
-const convertHTMLtoString = (html, length = 50) => {
+const convertHTMLtoString = (html, { length = 50, slice = true } = {}) => {
   if (!html) return "";
 
   // const htmlBody = "<p>gfdgfd</p><p>gjkdflgndf fngfgnf nfsdgjfngf fngjfdngfdgfd</p>";
@@ -12,9 +12,12 @@ const convertHTMLtoString = (html, length = 50) => {
   // Extract the text content from the parsed document
   const textContent = doc.body.textContent;
 
-  const sliceString = textContent.slice(0, length);
+  if (slice) {
+    const sliceString = textContent.slice(0, length);
+    return sliceString;
+  }
 
-  return sliceString;
+  return textContent;
 };
 
 export default convertHTMLtoString;

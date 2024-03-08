@@ -80,7 +80,7 @@ const NoteTags = ({ activeNote }) => {
               onMouseLeave={() => setShowTagList(false)}
               style={{ maxHeight: "200px" }}
             >
-              {modifyTags.length > 0 &&
+              {modifyTags.length > 0 ? (
                 modifyTags.map((tag, i) => {
                   const { _id, title } = tag;
 
@@ -93,7 +93,12 @@ const NoteTags = ({ activeNote }) => {
                       {title}
                     </p>
                   );
-                })}
+                })
+              ) : (
+                <div className="w-full h-40 flex justify-center items-center">
+                  <p>No Tags available</p>
+                </div>
+              )}
             </div>
           )}
         </div>

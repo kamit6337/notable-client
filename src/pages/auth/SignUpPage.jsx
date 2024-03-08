@@ -33,7 +33,7 @@ const SignUpPage = () => {
     },
   });
 
-  const { ToastContainer, showSuccessMessage, showErrorMessage } = Toastify();
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   useEffect(() => {
     if (errors.root) {
@@ -50,11 +50,8 @@ const SignUpPage = () => {
 
     try {
       await postAuthReq("/signup", formData);
-      showSuccessMessage({ message: "Successfully Logged In.", time: 2000 });
 
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
       setError("root", {
         message: error.message,

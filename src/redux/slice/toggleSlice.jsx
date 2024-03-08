@@ -5,8 +5,7 @@ const initialState = {
     bool: false,
   },
   notelistIcon: {
-    haveList: false,
-    openNotelist: false,
+    bool: false,
   },
   searchForm: {
     bool: false,
@@ -143,9 +142,8 @@ const toggleSlice = createSlice({
       return state;
     },
     toggleNoteListIcon: (state, { payload }) => {
-      const { haveList, openNotelist } = payload;
-      state.notelistIcon.haveList = haveList;
-      state.notelistIcon.openNotelist = openNotelist;
+      const { bool } = payload;
+      state.notelistIcon.bool = bool;
       return state;
     },
   },

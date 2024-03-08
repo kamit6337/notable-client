@@ -27,7 +27,7 @@ const MainLayout = () => {
   // WORK: IF ERROR COMES IN CONTINUOUS CHECKING, SHOW ERROR PAGE WHICH THEN TAKE TO LOGIN PAGE
   useEffect(() => {
     if (isError || initialFetchIsError) {
-      navigate("/login", {
+      navigate(`/login?msg=${error.message}`, {
         state: { errMsg: error.message || initialFetchIsError.message },
       });
     }

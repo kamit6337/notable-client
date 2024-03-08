@@ -16,6 +16,7 @@ const SideNoteListBar = ({
   list,
   activeNote,
   handleActiveNote,
+  scrolling,
 }) => {
   const dispatch = useDispatch();
   const [showSortOption, setShowSortOption] = useState(false);
@@ -54,9 +55,18 @@ const SideNoteListBar = ({
   useLayoutEffect(() => {
     const childRef = document.getElementById(activeNote._id);
     if (childRef) {
-      childRef.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
     }
-  }, [activeNote, newList]);
+  }, [activeNote, newList, scrolling]);
+
+  const showActiveNoteIntoView = () => {
+    console.log("click on icon to show active note", activeNote);
+
+    const childRef = document.getElementById(activeNote?._id);
+    if (childRef) {
+      childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
+    }
+  };
 
   const handleSort = (id) => {
     setShowSortOption(false);
@@ -101,6 +111,12 @@ const SideNoteListBar = ({
         </div>
         <div className="flex justify-between items-center">
           <p>{newList.length} Notes</p>
+          <p
+            className="ml-auto mr-4 cursor-pointer"
+            onClick={showActiveNoteIntoView}
+          >
+            <Icons.searchNote />
+          </p>
           <div className="relative">
             <p
               className="text-xl"
@@ -153,9 +169,9 @@ const SideNoteListBar = ({
                 }`}
                 onClick={() => handleActiveNote(note)}
               >
-                <p className="text-sm">{title}</p>
-                <p className="text-sm tablet:text-xs -mt-2 break-all text-gray-500">
-                  {convertHTMLtoString(body, 30)}
+                <p className="text-sm line-clamp-1">{title}</p>
+                <p className="text-sm tablet:text-xs -mt-2 break-all text-gray-500 line-clamp-2">
+                  {convertHTMLtoString(body, { slice: false })}
                 </p>
                 <p className=" text-xs">{convertDateType(updatedAt)}</p>
               </div>

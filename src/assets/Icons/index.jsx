@@ -43,8 +43,10 @@ import { IoMdArrowDropright, IoMdArrowDropdown } from "react-icons/io";
 import { BsSortDown } from "react-icons/bs";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdZoomOutMap } from "react-icons/md";
+import { LuFileSearch2 } from "react-icons/lu";
 
 export const Icons = {
+  searchNote: LuFileSearch2,
   zoom: MdZoomOutMap,
   profile: FaRegCircleUser,
   sort: BsSortDown,

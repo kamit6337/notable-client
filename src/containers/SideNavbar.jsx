@@ -126,10 +126,8 @@ const SideNavbar = () => {
     dispatch(toggleSettingForm({ bool: true }));
   };
 
-  const handleOpenSidebarNoteList = () => {
-    const reverse = !notelistIcon.openNotelist;
-
-    dispatch(toggleNoteListIcon({ openNotelist: reverse, haveList: true }));
+  const handleOpenSidebarNoteList = (bool) => {
+    dispatch(toggleNoteListIcon({ bool }));
   };
 
   const photoUrl = `${environment.SERVER_URL}/${data.photo}`;
@@ -145,7 +143,7 @@ const SideNavbar = () => {
             <div className="w-8 sm_lap:w-7 rounded-full">
               <img
                 src={photoUrl}
-                alt="profiel"
+                alt="profile"
                 loading="lazy"
                 className="w-full rounded-full object-cover"
               />
@@ -164,9 +162,9 @@ const SideNavbar = () => {
                   <div className="w-8 rounded-full">
                     <img
                       src={photoUrl}
-                      alt="profiel"
+                      alt="profile"
                       loading="lazy"
-                      className="w-full rounded-full object-cover"
+                      className="w-full rounded-full object-cover bg-white"
                     />
                   </div>
                   <p>{data?.email}</p>
@@ -271,12 +269,21 @@ const SideNavbar = () => {
 
         {isWindowBelowTablet.bool && pathnameOK && (
           <div className="absolute bottom-0 w-full h-20 flex justify-center items-center">
-            <div
-              className="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-slate-600 text-white"
-              onClick={handleOpenSidebarNoteList}
-            >
-              N
-            </div>
+            {notelistIcon.bool ? (
+              <p
+                className="cursor-pointer p-3 rounded-full bg-slate-600 text-white"
+                onClick={() => handleOpenSidebarNoteList(false)}
+              >
+                <Icons.cancel className="text-xl" />
+              </p>
+            ) : (
+              <div
+                className="cursor-pointer p-3 rounded-full bg-slate-600 text-white"
+                onClick={() => handleOpenSidebarNoteList(true)}
+              >
+                <Icons.notes className="text-xl" />
+              </div>
+            )}
           </div>
         )}
       </section>

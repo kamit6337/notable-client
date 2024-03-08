@@ -195,7 +195,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
                 </div>
               </Link>
             </div>
-            <div className="w-full">
+            <div className="w-full ">
               <input
                 {...register("title")}
                 className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"

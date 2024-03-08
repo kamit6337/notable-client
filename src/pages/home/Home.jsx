@@ -76,10 +76,10 @@ const Home = () => {
                     <Link
                       to={`/notes/${_id}`}
                       key={i}
-                      className="grow-0 shrink-0 basis-40"
+                      className="grow-0 shrink-0 basis-40 tablet:basis-32"
                     >
                       <div
-                        className="p-3 border-2 rounded-lg border-my_home_notelist_border shadow-xl  h-64 text-sm mb-4 flex flex-col justify-between
+                        className="p-3 border-2 rounded-lg border-my_home_notelist_border shadow-xl  h-64 tablet:h-56 text-sm mb-4 flex flex-col justify-between
                       hover:bg-gray-50
                       "
                       >
@@ -87,11 +87,13 @@ const Home = () => {
                           <p className="font-semibold tracking-wide mb-1 text-my_single_note_title">
                             {title}
                           </p>
-                          <p className="tracking-wide break-all text-my_single_note_body">
-                            {convertHTMLtoString(body, 100)}
+                          <p className="tracking-wide break-all text-my_single_note_body line-clamp-5 tablet:text-xs mt-2">
+                            {convertHTMLtoString(body, { slice: false })}
                           </p>
                         </div>
-                        <p className="text-xs">{convertDateType(updatedAt)}</p>
+                        <p className="text-xs tablet:text-[10px]">
+                          {convertDateType(updatedAt)}
+                        </p>
                       </div>
                     </Link>
                   );

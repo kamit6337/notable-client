@@ -15,7 +15,7 @@ const Login = () => {
 
   const { state } = useLocation();
 
-  const { ToastContainer, showErrorMessage, showSuccessMessage } = Toastify();
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const {
     register,
@@ -53,10 +53,7 @@ const Login = () => {
     try {
       await postAuthReq("/login", data);
 
-      showSuccessMessage({ message: "Successfully Logged In.", time: 2000 });
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
       setError("root", { message: error.message });
     }

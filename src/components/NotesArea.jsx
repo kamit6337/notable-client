@@ -9,6 +9,7 @@ import {
   toggleNoteListIcon,
   toggleState,
 } from "../redux/slice/toggleSlice";
+import FindingWindowWidth from "../lib/FindingWindowWidth";
 
 const NotesArea = ({ title, icon, list }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const NotesArea = ({ title, icon, list }) => {
     useSelector(toggleState);
   const [activeNote, setActiveNote] = useState(null);
   const [newList, setNewlist] = useState([]);
+  FindingWindowWidth();
 
   useEffect(() => {
     if (!list) return;
@@ -76,7 +78,7 @@ const NotesArea = ({ title, icon, list }) => {
 
       {hideSidebars.bool ||
         (activeNote && (
-          <div className="w-60 sm_lap:w-52">
+          <div className="w-60 sm_lap:w-52 tablet:hidden">
             <SideNoteListBar
               activeNote={activeNote}
               handleActiveNote={handleActiveNote}
@@ -90,12 +92,7 @@ const NotesArea = ({ title, icon, list }) => {
       {activeNote && (
         <div
           className="absolute z-20 left-0 h-full w-60 sm_lap:w-52 transition-all duration-700"
-          style={{ translate: `${notelistIcon.openNotelist ? "0" : "-200%"}` }}
-          onMouseLeave={() =>
-            dispatch(
-              toggleNoteListIcon({ openNotelist: false, haveList: true })
-            )
-          }
+          style={{ translate: `${notelistIcon.bool ? "0" : "-200%"}` }}
         >
           <SideNoteListBar
             activeNote={activeNote}
@@ -103,6 +100,7 @@ const NotesArea = ({ title, icon, list }) => {
             icon={icon}
             list={newList}
             title={title}
+            scrolling={notelistIcon.bool}
           />
         </div>
       )}
