@@ -6,7 +6,6 @@ import {
 } from "../redux/slice/initialUserDataSlice";
 import { useMemo, useState } from "react";
 import { patchToBackend } from "../utils/api/userApi";
-import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
 import { Icons } from "../assets/Icons";
 import Toastify from "../lib/Toastify";
 
@@ -15,7 +14,6 @@ const NoteTags = ({ activeNote }) => {
   const { tags, notes } = useSelector(userInitialState);
   const [showTagList, setShowTagList] = useState(false);
   const [index, setIndex] = useState(null);
-
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const [modifyTags, noteTagList] = useMemo(() => {
@@ -32,8 +30,6 @@ const NoteTags = ({ activeNote }) => {
 
     return [filterTags, populateTags];
   }, [activeNote, notes, tags]);
-
-  const { ref, height } = FindingDivScrollHeight(modifyTags, showTagList);
 
   const handleAddTagToNote = async (id) => {
     setShowTagList(false);
@@ -70,9 +66,9 @@ const NoteTags = ({ activeNote }) => {
     <>
       <section className="h-full w-full relative flex">
         {/* MARK: ADD TAG LIST */}
-        <div className="px-2 relative h-full pt-1">
+        <div className="w-16 relative h-full pt-1 flex justify-center items-start">
           <p
-            className="bg-gray-200 text-sm  rounded-full p-2 cursor-pointer"
+            className="bg-gray-200 rounded-full p-3 cursor-pointer"
             onClick={() => setShowTagList((prev) => !prev)}
           >
             {showTagList ? <Icons.cancel /> : <Icons.plus />}
@@ -80,12 +76,9 @@ const NoteTags = ({ activeNote }) => {
           {showTagList && (
             <div
               className={` 
-            ${height >= 160 ? "overflow-y-scroll" : "overflow-y-hidden"}
-            
-             absolute bottom-full left-0 ml-1 mb-2   rounded-md bg-my_notearea_white border-2 w-40  `}
+            overflow-y-auto absolute bottom-full left-0 ml-1 mb-2   rounded-md bg-my_notearea_white border-2 w-48  `}
               onMouseLeave={() => setShowTagList(false)}
-              style={{ maxHeight: "160px" }}
-              ref={ref}
+              style={{ maxHeight: "200px" }}
             >
               {modifyTags.length > 0 &&
                 modifyTags.map((tag, i) => {
@@ -105,8 +98,8 @@ const NoteTags = ({ activeNote }) => {
           )}
         </div>
 
-        <div className="w-[500px] h-full ">
-          <main className="w-full flex gap-2 h-full  overflow-x-scroll px-5">
+        <div className="h-full" style={{ width: "calc(100% - 80px)" }}>
+          <main className="w-full flex gap-2 h-full  overflow-x-auto px-5">
             {/* MARK: NOTE TAG LIST */}
             {noteTagList?.length > 0 &&
               noteTagList.map((tag, i) => {

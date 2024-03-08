@@ -19,6 +19,7 @@ import QuillTextarea from "./QuillTextarea";
 import timeAgoDate from "../utils/javaScript/timeAgoDate";
 import { toggleHideSidebars, toggleState } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
+import convertDateType from "../utils/javaScript/convertDateType";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
@@ -125,7 +126,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         resetSetIndex(activeNote._id);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the timeout
+      await new Promise((resolve) => setTimeout(resolve, 300)); // Adjust the timeout
 
       dispatch(deleteTheNote(activeNote._id));
 
@@ -208,7 +209,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             </div>
           </div>
 
-          <div className="h-full w-48 flex flex-col justify-between text-xs p-2">
+          <div className="h-full  flex flex-col justify-between text-xs p-1">
             <div
               className="p-2 relative w-full flex justify-end"
               onMouseLeave={() => setShowOption(false)}
@@ -246,9 +247,13 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
                 </div>
               )}
             </div>
-            <p className="self-end">
-              last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
-            </p>
+            <div className="self-end">
+              <p>Created At : {convertDateType(activeNote.createdAt)}</p>
+
+              <p>
+                last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
+              </p>
+            </div>
           </div>
         </header>
         <div className="w-full" style={{ height: "calc(100% - 100px)" }}>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { Icons } from "../assets/Icons";
 import convertDateType from "../utils/javaScript/convertDateType";
 import convertHTMLtoString from "../utils/javaScript/convertHTMLtoString";
@@ -9,8 +9,6 @@ import {
 } from "../utils/javaScript/sortOptionsList";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNoteActivation, toggleState } from "../redux/slice/toggleSlice";
-import FindingScreenHeight from "../lib/FindingScreenHeight";
-import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
 
 const SideNoteListBar = ({
   title,
@@ -20,13 +18,11 @@ const SideNoteListBar = ({
   handleActiveNote,
 }) => {
   const dispatch = useDispatch();
-  const lastNoteRef = useRef(null);
   const [showSortOption, setShowSortOption] = useState(false);
+  const [showTitleHover, setShowTitleHover] = useState(false);
   const [newList, setNewList] = useState(list);
   const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
   const { isNoteActivated } = useSelector(toggleState);
-  const screenHeight = FindingScreenHeight();
-  const { height, ref } = FindingDivScrollHeight(newList);
 
   useEffect(() => {
     if (!list) return;
@@ -49,23 +45,18 @@ const SideNoteListBar = ({
   }, [list]);
 
   useEffect(() => {
-    if (
-      isNoteActivated.bool &&
-      newList &&
-      newList.length > 0 &&
-      lastNoteRef.current
-    ) {
+    if (isNoteActivated.bool) {
       handleActiveNote(isNoteActivated.data);
       dispatch(toggleNoteActivation({ bool: false }));
-
-      setTimeout(() => {
-        lastNoteRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
-      }, 200);
     }
-  }, [isNoteActivated, newList, dispatch, handleActiveNote]);
+  }, [isNoteActivated, dispatch, handleActiveNote]);
+
+  useLayoutEffect(() => {
+    const childRef = document.getElementById(activeNote._id);
+    if (childRef) {
+      childRef.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [activeNote, newList]);
 
   const handleSort = (id) => {
     setShowSortOption(false);
@@ -91,7 +82,22 @@ const SideNoteListBar = ({
       <header className="h-24 border-b border-gray-400 w-full flex flex-col justify-between pb-2 pt-4 gap-1 px-5">
         <div className="flex gap-1 items-center ">
           <p className="text-2xl sm_lap:text-lg">{icon}</p>
-          <p className="text-lg  sm_lap:text-sm">{title}</p>
+          <div
+            className="relative flex flex-col items-center"
+            onMouseLeave={() => setShowTitleHover(false)}
+          >
+            <p
+              className="text-lg  sm_lap:text-sm line-clamp-1"
+              onMouseEnter={() => setShowTitleHover(true)}
+            >
+              {title}
+            </p>
+            {showTitleHover && (
+              <div className="absolute z-10 top-full whitespace-nowrap bg-gray-200 p-2 rounded-md text-sm">
+                {title}
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex justify-between items-center">
           <p>{newList.length} Notes</p>
@@ -130,13 +136,8 @@ const SideNoteListBar = ({
 
       {/* MARK: NOTE LIST */}
       <div
-        ref={ref}
-        className={`${
-          height >= screenHeight - 100
-            ? "overflow-y-scroll"
-            : "overflow-y-hidden"
-        }  w-full p-[2px]  overflow-x-hidden`}
-        style={{ maxHeight: `${screenHeight - 100}px` }}
+        className={`overflow-y-auto w-full p-[2px]  overflow-x-hidden`}
+        style={{ maxHeight: "calc(100% - 100px)" }}
       >
         {newList.length > 0 ? (
           newList.map((note, i) => {
@@ -145,7 +146,7 @@ const SideNoteListBar = ({
             return (
               <div
                 key={i}
-                ref={activeNote?._id === _id ? lastNoteRef : null}
+                id={_id}
                 className={`w-full h-32 flex flex-col justify-between  p-5  border-b hover:bg-white cursor-pointer ${
                   activeNote?._id === _id &&
                   "border border-my_single_note_title"

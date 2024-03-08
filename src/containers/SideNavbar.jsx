@@ -22,6 +22,7 @@ import {
 import { Icons } from "../assets/Icons";
 import ShortcutPage from "../components/ShortcutPage";
 import CheckPathname from "../components/CheckPathname";
+import Toastify from "../lib/Toastify";
 
 const list = [
   {
@@ -53,6 +54,7 @@ const SideNavbar = () => {
   const [showAccountOptions, setShowAccountOptions] = useState(false);
   const { notelistIcon, isWindowBelowTablet } = useSelector(toggleState);
   const { pathnameOK } = CheckPathname();
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const handleLogout = async () => {
     setShowAccountOptions(false);
@@ -65,6 +67,9 @@ const SideNavbar = () => {
       navigate("/login", { state: { refresh: true } });
       window.location.reload();
     } catch (error) {
+      showErrorMessage({
+        message: error.message || "Issue in Logout. Try later",
+      });
       console.log("Error in logout");
     }
   };
@@ -94,11 +99,17 @@ const SideNavbar = () => {
       }
 
       const newNote = await postToBackend("/notes", obj);
-      console.log("success", newNote);
       dispatch(createdNewNote(newNote.data));
-      navigate(navigateLink);
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
       dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+      navigate(navigateLink);
     } catch (error) {
+      showErrorMessage({
+        message: error.message || "Issue in create note. Try later",
+      });
       console.log("Error in create note", error);
     }
   };
@@ -118,7 +129,6 @@ const SideNavbar = () => {
   const handleOpenSidebarNoteList = () => {
     const reverse = !notelistIcon.openNotelist;
 
-    console.log("reverse", reverse);
     dispatch(toggleNoteListIcon({ openNotelist: reverse, haveList: true }));
   };
 
@@ -127,7 +137,6 @@ const SideNavbar = () => {
     <>
       <section className="relative z-40 text-sm bg-my_sidenavbar text-my_sidenavbar_icon w-full h-full">
         {/* MARK: PROFILE BAR */}
-
         <div className="relative mx-6 ">
           <div
             className="flex py-3 gap-2 items-center cursor-pointer"
@@ -181,7 +190,7 @@ const SideNavbar = () => {
         </div>
 
         {/* MARK: SEARCH BAR */}
-        <div className="m-3 flex flex-col gap-3">
+        <div className="w-full p-3 flex flex-col gap-3">
           <div
             className="p-2 sm_lap:p-[6px] sm_lap:px-3 px-4 bg-slate-700 rounded-2xl w-full flex items-center gap-2 cursor-pointer"
             onClick={() => dispatch(toggleSearchForm({ bool: true }))}
@@ -286,6 +295,7 @@ const SideNavbar = () => {
       >
         <ShortcutPage reset={resetShortcuts} />
       </div>
+      <ToastContainer />
     </>
   );
 };

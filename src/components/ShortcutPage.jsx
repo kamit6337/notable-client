@@ -4,21 +4,26 @@ import { useSelector } from "react-redux";
 import { userInitialState } from "../redux/slice/initialUserDataSlice";
 import { Link } from "react-router-dom";
 import { Icons } from "../assets/Icons";
-import FindingDivScrollHeight from "../lib/FindingDivScrollHeight";
+import { sortByDate } from "../utils/javaScript/sortOptionsList";
 
 const ShortcutPage = ({ reset }) => {
   const { notebooks, notes } = useSelector(userInitialState);
 
   const [shortcutNotes, shortcutNotebooks] = useMemo(() => {
-    const filterNotebooks = notebooks.filter((notebook) => notebook.shortcut);
-    const filterNotes = notes.filter((note) => note.shortcut);
+    let filterNotebooks = notebooks.filter((notebook) => notebook.shortcut);
+
+    if (filterNotebooks.length > 0) {
+      filterNotebooks = sortByDate("updatedAt", filterNotebooks);
+    }
+
+    let filterNotes = notes.filter((note) => note.shortcut);
+
+    if (filterNotes.length > 0) {
+      filterNotes = sortByDate("updatedAt", filterNotes);
+    }
+
     return [filterNotes, filterNotebooks];
   }, [notebooks, notes]);
-
-  const { ref: notesRef, height: notesHeight } =
-    FindingDivScrollHeight(shortcutNotes);
-  const { ref: notebooksRef, height: notebooksHeight } =
-    FindingDivScrollHeight(shortcutNotebooks);
 
   return (
     <section className="px-5 w-full  h-full">
@@ -31,10 +36,7 @@ const ShortcutPage = ({ reset }) => {
           <p>Notes</p>
           <p className="w-full h-[1px]  bg-black" />
           <div
-            ref={notesRef}
-            className={`${
-              notesHeight >= 200 ? "overflow-y-scroll" : "overflow-y-hidden"
-            } py-2`}
+            className={`overflow-y-auto py-2`}
             style={{ maxHeight: "200px" }}
           >
             {shortcutNotes.map((note, i) => {
@@ -60,10 +62,7 @@ const ShortcutPage = ({ reset }) => {
           <p>Notebooks</p>
           <p className="w-full h-[1px]  bg-black" />
           <div
-            ref={notebooksRef}
-            className={`${
-              notebooksHeight >= 200 ? "overflow-y-scroll" : "overflow-y-hidden"
-            } py-2`}
+            className={`overflow-y-auto py-2`}
             style={{ maxHeight: "200px" }}
           >
             {shortcutNotebooks.map((note, i) => {

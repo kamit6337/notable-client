@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Icons } from "../assets/Icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { userInitialState } from "../redux/slice/initialUserDataSlice";
 import { Link } from "react-router-dom";
@@ -8,9 +8,7 @@ import { toggleSearchForm } from "../redux/slice/toggleSlice";
 
 const SearchForm = () => {
   const dispatch = useDispatch();
-  const ref = useRef(null);
   const { notebooks, notes } = useSelector(userInitialState);
-  const [contentHeight, setContentHeight] = useState(0);
   const [searchedList, setSearchedList] = useState([]);
 
   const { register, setFocus } = useForm({
@@ -22,13 +20,6 @@ const SearchForm = () => {
   useEffect(() => {
     setFocus("search");
   }, [setFocus]);
-
-  useEffect(() => {
-    if (ref.current) {
-      const divHeight = ref.current.scrollHeight;
-      setContentHeight(divHeight);
-    }
-  }, [searchedList]);
 
   const handleSearch = (e) => {
     const { value } = e.target;
@@ -69,13 +60,7 @@ const SearchForm = () => {
           />
         </div>
 
-        <div
-          ref={ref}
-          className={`${
-            contentHeight > 250 ? "overflow-y-scroll" : "overflow-y-hidden"
-          }   mt-2`}
-          style={{ maxHeight: "250px" }}
-        >
+        <div className={`overflow-y-auto mt-2`} style={{ maxHeight: "250px" }}>
           {searchedList.length > 0 &&
             searchedList.map((obj, i) => {
               const { _id, title, notebook } = obj;

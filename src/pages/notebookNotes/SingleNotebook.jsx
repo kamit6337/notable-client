@@ -16,6 +16,21 @@ const SingleNotebook = () => {
     return [filterNotebookNotes, findNotebook.title];
   }, [id, notes, notebooks]);
 
+  if (noteList.length === 0) {
+    return (
+      <div className="w-full h-full flex flex-col gap-2 justify-center items-center ">
+        <p className="text-2xl">No Notes Available</p>
+        <p>
+          for <span className="italic font-semibold">{notebookName}</span>
+        </p>
+        <p>
+          Click on <span className="italic font-semibold">Note</span> to create
+          a new Note on this Nootbook
+        </p>
+      </div>
+    );
+  }
+
   return (
     <NotesArea
       list={noteList}

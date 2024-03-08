@@ -8,11 +8,9 @@ import LoadingState from "../containers/Loading";
 import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import GlobalForm from "../containers/GlobalForm";
 import { toggleState } from "../redux/slice/toggleSlice";
-import FindingWindowWidth from "../lib/FindingWindowWidth";
 
 const MainLayout = () => {
   const { hideSidebars } = useSelector(toggleState);
-  FindingWindowWidth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -47,7 +45,7 @@ const MainLayout = () => {
     <section className="w-full h-screen">
       <div className="flex w-full h-full">
         {hideSidebars.bool || (
-          <div className="h-full w-60 sm_lap:w-52 tablet:w-40  ">
+          <div className="h-full w-60 sm_lap:w-52 tablet:w-40 ">
             <SideNavbar />
           </div>
         )}

@@ -48,7 +48,7 @@ export const sortString = (list, bool = true) => {
   return myList;
 };
 
-const sortByDate = (variable, list, bool = true) => {
+export const sortByDate = (variable, list, bool = true) => {
   const myList = [...list];
   console.log("my list", myList);
   if (bool) {

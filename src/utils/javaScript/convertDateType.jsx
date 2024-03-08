@@ -1,3 +1,5 @@
+import addZeroToDigit from "./addZeroToDigit";
+
 const shortMonthList = [
   "Jan",
   "Feb",
@@ -22,7 +24,9 @@ const convertDateType = (givenDate) => {
   const hour = updateTheDate.getHours();
   const minute = updateTheDate.getMinutes();
 
-  return `${shortMonthList[month]} ${date}, ${year} - ${hour}:${minute}`;
+  return `${shortMonthList[month]} ${addZeroToDigit(
+    date
+  )}, ${year} - ${addZeroToDigit(hour)}:${addZeroToDigit(minute)}`;
 };
 
 export default convertDateType;
