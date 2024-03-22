@@ -86,9 +86,8 @@ const ForgotPasswordPage = () => {
             </div>
           </div>
           <p className="text-xs mt-10">
-            An One-Time-Password will be send to your email. After successful
-            login, change your password or make new password{" "}
-            <strong>immediately</strong> from you profile section.
+            A <strong>link</strong> will be send to your email to create new
+            password and then you can login with your new password.
           </p>
         </form>
       </section>
