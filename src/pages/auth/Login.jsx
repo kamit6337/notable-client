@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import validator from "validator";
 import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
@@ -12,8 +12,9 @@ const SERVER_URL = environment.SERVER_URL;
 const Login = () => {
   const navigate = useNavigate();
   const [togglePassword, setTogglePassword] = useState(false);
+  const searchParams = useSearchParams()[0];
 
-  const { state } = useLocation();
+  const errMsg = searchParams.get("msg");
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -30,15 +31,11 @@ const Login = () => {
     },
   });
 
-  const [isErrorShown, setIsErrorShown] = useState(false);
-
   useEffect(() => {
-    if (state && !isErrorShown) {
-      showErrorMessage({ message: state.message });
-      // Mark that the error message has been shown
-      setIsErrorShown(true);
+    if (errMsg) {
+      showErrorMessage({ message: errMsg });
     }
-  }, [state, isErrorShown, showErrorMessage]);
+  }, []);
 
   useEffect(() => {
     if (errors.root) {
@@ -52,7 +49,6 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       await postAuthReq("/login", data);
-
       navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
       setError("root", { message: error.message });

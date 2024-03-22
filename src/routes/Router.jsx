@@ -12,6 +12,7 @@ import TagNotes from "../pages/tagNotes/TagNotes";
 import SingleNote from "../pages/SingleNote/SingleNote";
 import NotFound from "../pages/notFound/NotFound";
 import SignUpPage from "../pages/auth/SignUpPage";
+import CreateNewPassword from "../pages/auth/CreateNewPassword";
 
 const Router = () => {
   return (
@@ -34,6 +35,7 @@ const Router = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
+      <Route path="/createNewPassword" element={<CreateNewPassword />} />
       <Route path="/login/check" element={<CheckLogin />} />
       <Route path="/error" element={<ShowError />} />
 

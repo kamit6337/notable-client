@@ -1,44 +1,37 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import validator from "validator";
 import { Link, useNavigate } from "react-router-dom";
 import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
-import UseForgotPassword from "../../hooks/mutation/UseForgotPassword";
+import { postAuthReq } from "../../utils/api/authApi";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
-  const { mutate, isPending, isError, error, isSuccess } = UseForgotPassword();
   const { ToastContainer, showSuccessMessage, showErrorMessage } = Toastify();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       email: "",
     },
   });
 
-  useEffect(() => {
-    if (isError) {
-      showErrorMessage({ message: error?.message, time: 3000 });
-    }
-  }, [isError, error, showErrorMessage]);
-
-  useEffect(() => {
-    if (isSuccess) {
+  const onSubmit = async (data) => {
+    const { email } = data;
+    try {
+      await postAuthReq("/forgot", { email });
       showSuccessMessage({ message: "Successfully Sent OTP to your Email ID" });
       setTimeout(() => {
         navigate("/login");
-      }, 3000);
+      }, 2000);
+    } catch (error) {
+      showErrorMessage({
+        message: error.message || "Something went wrong. Try later...",
+      });
     }
-  }, [isSuccess, navigate, showSuccessMessage]);
-
-  const onSubmit = (data) => {
-    const { email } = data;
-    mutate(email);
   };
 
   return (
@@ -55,10 +48,12 @@ const ForgotPasswordPage = () => {
             <div className="w-full h-12 rounded-xl border border-color_3 text-color_1">
               <input
                 {...register("email", {
-                  required: true,
+                  required: "Email is required",
                   validate: (value) => {
-                    console.log(value);
-                    return validator.isEmail(value);
+                    return (
+                      validator.isEmail(value) ||
+                      "Please provide a valid email."
+                    );
                   },
                 })}
                 placeholder="Type your email "
@@ -70,14 +65,12 @@ const ForgotPasswordPage = () => {
               role="alert"
               className="w-full h-4 mt-1 ml-2 text-red-200 text-xs "
             >
-              {errors.email?.type === "required" && " Email is required"}
-              {errors.email?.type === "validate" &&
-                "Please provide a valid Email!"}
+              {errors.email?.message}
             </p>
           </div>
           <div>
             <div className="w-full h-12 bg-color_1 border border-color_3 flex justify-center items-center rounded-xl bg-purple-300 font-semibold text-lg tracking-wide cursor-pointer  text-color_1">
-              {isPending ? (
+              {isSubmitting ? (
                 <LoadingState hScreen={false} small={true} />
               ) : (
                 <input type="submit" className="w-full h-full cursor-pointer" />

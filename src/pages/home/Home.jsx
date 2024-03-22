@@ -18,9 +18,9 @@ const Home = () => {
 
   useEffect(() => {
     if (state?.message) {
-      showSuccessMessage({ message: state.message, time: 2000 });
+      showSuccessMessage({ message: state.message });
     }
-  }, [state, showSuccessMessage]);
+  }, []);
 
   const noteList = useMemo(() => {
     const notesId = JSON.parse(localStorage.getItem("notesId"));

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +21,6 @@ const SignUpPage = () => {
     register,
     handleSubmit,
     getValues,
-    setError,
-    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -35,27 +33,15 @@ const SignUpPage = () => {
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
-  useEffect(() => {
-    if (errors.root) {
-      showErrorMessage({
-        message: errors.root.message || "Error in Custom SignUp",
-      });
-      clearErrors("root");
-    }
-  }, [errors.root, showErrorMessage, clearErrors]);
-
   const onSubmit = async (data) => {
     const formData = { ...data };
     delete formData.confirmPassword;
 
     try {
       await postAuthReq("/signup", formData);
-
       navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
-      setError("root", {
-        message: error.message,
-      });
+      showErrorMessage({ message: error.message || "Error in Custom SignUp" });
     }
   };
 
