@@ -38,24 +38,23 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
 
   return (
     <div className="background_blur absolute z-50 top-0 left-0 w-full h-screen flex justify-center items-center">
-      <div className="h-80 w-[550px] bg-white rounded-xl py-8 px-6 flex flex-col justify-between">
-        <p className="text-lg font-semibold">
-          Are you sure you want to delete this {tag ? "Tag" : "Notebook"}
-        </p>
-        <p>{title}</p>
+      <div className="w-[550px] bg-white rounded-xl py-8 flex flex-col justify-between gap-8">
+        <div className="px-6 space-y-6">
+          <p className="text-lg font-semibold">
+            Delete {tag ? "Tag" : "Notebook"}
+          </p>
+          <p>Are you sure you want to delete : {title}</p>
+        </div>
 
-        <div className="flex justify-end gap-4 border-t border-gray-500 pt-4 px-0">
-          <p
-            className="px-3 py-1 cursor-pointer rounded-xl bg-gray-300"
-            onClick={handleCancel}
-          >
+        <div className="flex justify-end items-center gap-4 border-t border-gray-500 pt-4 px-6">
+          <p className="px-3 py-1 cursor-pointer" onClick={handleCancel}>
             Cancel
           </p>
           <div
-            className="px-3 py-1 cursor-pointer bg-green-400 rounded-xl text-green-800"
+            className="px-6 py-2 cursor-pointer bg-red-600 rounded-xl text-white"
             onClick={() => (tag ? deleteTag() : deleteNotebook())}
           >
-            Done
+            Delete
           </div>
         </div>
       </div>

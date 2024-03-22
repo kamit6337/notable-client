@@ -72,9 +72,9 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
     <div className="background_blur absolute z-50 top-0 left-0 w-full h-screen flex justify-center items-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="h-80 w-[550px] bg-white rounded-xl py-8 px-6 flex flex-col justify-between"
+        className="h-80 w-[550px] bg-white rounded-xl py-8 flex flex-col justify-between"
       >
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center px-6">
           <p className="text-lg font-semibold">
             {update ? "Update Notebook" : "Create New Notebook"}
           </p>
@@ -82,7 +82,7 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
             <Icons.cancel className="text-xl" />
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-6">
           <p className="text-sm ml-1">Title</p>
           <div className="border  border-black rounded-lg p-2">
             <input
@@ -113,18 +113,15 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
             {errors.name && errors.name.message}
           </p>
         </div>
-        <div className="flex justify-end gap-4 border-t border-gray-500 pt-4 px-0">
-          <p
-            className="px-3 py-1 cursor-pointer rounded-xl bg-gray-300"
-            onClick={handleCancel}
-          >
+        <div className="flex justify-end items-center gap-4 border-t border-gray-500 pt-4 px-6">
+          <p className="px-3 py-1 cursor-pointer" onClick={handleCancel}>
             Cancel
           </p>
           <button
             type="submit"
-            className="px-3 py-1 cursor-pointer bg-green-400 rounded-xl text-green-800"
+            className="px-6 text-lg py-2 cursor-pointer bg-green-500 rounded-md text-white"
           >
-            Done
+            Create
           </button>
         </div>
       </form>

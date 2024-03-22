@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
+import { Helmet } from "react-helmet";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,10 @@ const ForgotPasswordPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Forgot Password</title>
+        <meta name="discription" content="Send reset password link" />
+      </Helmet>
       <section className="w-full h-screen flex flex-col justify-center items-center bg-color_1">
         <form
           className="h-[600px] w-[600px] bg-color_2 border border-color_3 text-color_4 flex flex-col justify-center  gap-4 px-8 rounded-xl"

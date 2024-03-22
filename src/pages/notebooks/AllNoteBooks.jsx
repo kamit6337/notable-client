@@ -5,6 +5,7 @@ import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../../redux/slice/toggleSlice";
 import { useForm } from "react-hook-form";
 import NotebookStack from "./NotebookStack";
+import { Helmet } from "react-helmet";
 
 const AllNoteBooks = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,10 @@ const AllNoteBooks = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Notebooks</title>
+        <meta name="discription" content="All Notebooks related to user" />
+      </Helmet>
       <section className="w-full h-full flex flex-col px-6 tablet:px-2">
         {/* MARK: HEADER */}
         <header className="flex flex-col justify-between h-40 tablet:h-32 pt-10 tablet:p-4 pb-4 border-b border-gray-300 ">
@@ -66,7 +71,6 @@ const AllNoteBooks = () => {
         </header>
 
         {/* MARK: CREATE NOTEBOOK LIST */}
-
         <div className="flex justify-between items-center bg-gray-100 text-gray-500 h-10 tablet:text-sm">
           <p className="flex-1 py-2 px-4">Title</p>
           <p className="all_notebooks_list">Created At</p>
@@ -77,15 +81,15 @@ const AllNoteBooks = () => {
         {/* MARK: NOTESBOOKS WITH STACK */}
         {showFullNotebooks ? (
           <div
-            className="overflow-y-scroll text-slate-800"
-            style={{ height: "calc(100% - 200px)" }}
+            className="overflow-y-scroll text-slate-800 hide_scroll_bar"
+            style={{ height: "calc(100% - 250px)" }}
           >
             <NotebookStack notebooks={notebooks} />
           </div>
         ) : (
           <div
             className="overflow-y-scroll text-slate-800"
-            style={{ height: "calc(100% - 200px)" }}
+            style={{ height: "calc(100% - 250px)" }}
           >
             <NotebookStack notebooks={searchedNotebook} />
           </div>

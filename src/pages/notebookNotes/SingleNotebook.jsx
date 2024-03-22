@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import NotesArea from "../../components/NotesArea";
 import { Icons } from "../../assets/Icons";
+import { Helmet } from "react-helmet";
 
 const SingleNotebook = () => {
   const { notes, notebooks } = useSelector(userInitialState);
@@ -32,11 +33,17 @@ const SingleNotebook = () => {
   }
 
   return (
-    <NotesArea
-      list={noteList}
-      title={notebookName}
-      icon={<Icons.notebooks />}
-    />
+    <>
+      <Helmet>
+        <title>Notebooks | {notebookName}</title>
+        <meta name="discription" content="A Note making Web Apps" />
+      </Helmet>
+      <NotesArea
+        list={noteList}
+        title={notebookName}
+        icon={<Icons.notebooks />}
+      />
+    </>
   );
 };
 

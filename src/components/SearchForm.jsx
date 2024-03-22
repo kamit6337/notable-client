@@ -53,7 +53,7 @@ const SearchForm = () => {
             {...register("search")}
             type="text"
             onChange={handleSearch}
-            placeholder="Search"
+            placeholder="Search Notebooks or Notes"
             className="rounded-md w-full border py-1 px-3"
             spellCheck="false"
             autoComplete="off"

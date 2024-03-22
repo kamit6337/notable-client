@@ -9,6 +9,7 @@ import convertHTMLtoString from "../../utils/javaScript/convertHTMLtoString";
 import { Icons } from "../../assets/Icons";
 import Toastify from "../../lib/Toastify";
 import convertDateType from "../../utils/javaScript/convertDateType";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
   const { data } = UseLoginCheck();
@@ -37,6 +38,10 @@ const Home = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Notable | Home</title>
+        <meta name="discription" content="A Note making Web Apps" />
+      </Helmet>
       <section className="relative w-full h-full bg-my_notearea_white flex flex-col gap-6">
         <div className="w-full">
           <img

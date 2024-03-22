@@ -7,6 +7,7 @@ import { toggleCreateNewTag } from "../../redux/slice/toggleSlice";
 import alphabet from "../../data/alphabet";
 import ShowAlphabeticalTags from "./ShowAlphabeticalTags";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet";
 
 const AllTags = ({ reset }) => {
   const dispatch = useDispatch();
@@ -36,6 +37,12 @@ const AllTags = ({ reset }) => {
   };
 
   return (
+    <>
+ <Helmet>
+        <title>Tags</title>
+        <meta name="discription" content="A Note making Web Apps" />
+      </Helmet>
+
     <section className="px-5 tablet:px-2 w-full pb-5 h-full">
       <main className="h-40 flex flex-col justify-center gap-6">
         {/* MARK: PART-1 OF HEADER */}
@@ -118,6 +125,7 @@ const AllTags = ({ reset }) => {
         )}
       </div>
     </section>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
+import { Helmet } from "react-helmet";
 
 const CreateNewPassword = () => {
   const navigate = useNavigate();
@@ -50,6 +51,10 @@ const CreateNewPassword = () => {
 
   return (
     <>
+     <Helmet>
+        <title>Create New Password</title>
+        <meta name="discription" content="create new password" />
+      </Helmet>
       <section className="h-screen w-full flex justify-center items-center">
         <form
           onSubmit={handleSubmit(onSubmit)}

@@ -4,6 +4,7 @@ import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { useMemo } from "react";
 import NotesArea from "../../components/NotesArea";
 import { Icons } from "../../assets/Icons";
+import { Helmet } from "react-helmet";
 
 const TagNotes = () => {
   const { notes, tags } = useSelector(userInitialState);
@@ -33,7 +34,13 @@ const TagNotes = () => {
   }
 
   return (
-    <NotesArea list={noteList} title={tagName} icon={<Icons.tagOutline />} />
+    <>
+      <Helmet>
+        <title>Tags | {tagName}</title>
+        <meta name="discription" content="A Note making Web Apps" />
+      </Helmet>
+      <NotesArea list={noteList} title={tagName} icon={<Icons.tagOutline />} />
+    </>
   );
 };
 

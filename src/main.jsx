@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -11,7 +12,9 @@ import NetworkStatusProvider from "./providers/NetworkStatusProvider.jsx";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import environment from "./utils/environment.js";
 
-if (environment.NODE_ENV === "production") disableReactDevTools();
+const PRODUCTION = "production";
+
+if (environment.NODE_ENV === PRODUCTION) disableReactDevTools();
 
 const queryClient = new QueryClient();
 
@@ -24,6 +27,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </NetworkStatusProvider>
       </BrowserRouter>
     </Provider>
-    <ReactQueryDevtools initialIsOpen={false} />
+
+    {environment.NODE_ENV !== PRODUCTION && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )}
   </QueryClientProvider>
 );

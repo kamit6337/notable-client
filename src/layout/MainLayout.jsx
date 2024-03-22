@@ -15,11 +15,11 @@ const MainLayout = () => {
   const dispatch = useDispatch();
 
   // WORK: MAKING CONTINUOUS CHECKING ONLY AFTER SUCCESSFUL LOGGED IN THAT IS USER IS AUTHENTICATED EVERY 5 MINUTES, THAT IT DOES NOT MAKE ANY CHANGE IN TOKEN
-  const { isError, error, data, isSuccess } = UseLoginCheck();
+  const { isError, error, data, isSuccess, isLoading } = UseLoginCheck();
 
   // WORK: INITIALLY FETCH ALL NOTEBOOKS AND NOTES RELATED TO THAT USER
   const {
-    isLoading,
+    isLoading: initialFetchIsLoading,
     isError: initialFetchIsError,
     isSuccess: initialFetchIsSuccess,
   } = UseInitialFetch(isSuccess);
@@ -31,7 +31,7 @@ const MainLayout = () => {
     }
   }, [isError, error, dispatch, navigate, initialFetchIsError]);
 
-  if (isLoading) {
+  if (isLoading || initialFetchIsLoading) {
     return <LoadingState />;
   }
 

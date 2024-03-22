@@ -6,6 +6,7 @@ import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
 import environment from "../../utils/environment";
 import { postAuthReq } from "../../utils/api/authApi";
+import { Helmet } from "react-helmet";
 
 const SERVER_URL = environment.SERVER_URL;
 
@@ -72,6 +73,12 @@ const Login = () => {
   };
 
   return (
+    <>
+     <Helmet>
+        <title>Login</title>
+        <meta name="discription" content="A Note making Web Apps" />
+      </Helmet>
+    
     <div className="h-screen w-full flex flex-col justify-center items-center gap-2 bg-color_2">
       {/* NOTE: THE CENTER PAGE */}
       <div className="bg-color_1 box_shadow h-[500px] w-[600px] tablet:h-[450px] border border-color_3 rounded-xl flex flex-col justify-evenly items-center px-8">
@@ -164,6 +171,7 @@ const Login = () => {
       </div>
       <ToastContainer />
     </div>
+    </>
   );
 };
 
