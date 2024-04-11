@@ -152,7 +152,7 @@ const SideNavbar = () => {
           </div>
           {showAccountOptions && (
             <div
-              className="absolute z-20 top-full left-0 w-64 border-2 bg-white text-my_single_note_title rounded-lg py-5"
+              className="absolute z-20 top-full left-0 border-2 bg-white text-my_single_note_title rounded-lg py-5"
               onMouseLeave={() => setShowAccountOptions(false)}
             >
               <div className="px-5 flex flex-col gap-3">

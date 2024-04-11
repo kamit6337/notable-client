@@ -81,14 +81,14 @@ const AllNoteBooks = () => {
         {/* MARK: NOTESBOOKS WITH STACK */}
         {showFullNotebooks ? (
           <div
-            className="overflow-y-scroll text-slate-800 hide_scroll_bar"
+            className="overflow-y-auto text-slate-800 hide_scroll_bar"
             style={{ height: "calc(100% - 250px)" }}
           >
             <NotebookStack notebooks={notebooks} />
           </div>
         ) : (
           <div
-            className="overflow-y-scroll text-slate-800"
+            className="overflow-y-auto text-slate-800"
             style={{ height: "calc(100% - 250px)" }}
           >
             <NotebookStack notebooks={searchedNotebook} />

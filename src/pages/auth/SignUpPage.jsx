@@ -8,6 +8,7 @@ import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
 import { Helmet } from "react-helmet";
+import CustomImages from "../../assets/images";
 
 const SERVER_URL = environment.SERVER_URL;
 
@@ -220,10 +221,17 @@ const SignUpPage = () => {
 
           {/* MARK: GO TO LOGIN PAGE*/}
           <div
-            className=" rounded-lg p-3 w-full cursor-pointer bg-red-500 font-semibold  tracking-wide text-center"
+            className="border rounded-lg p-3 w-full cursor-pointer  font-semibold  tracking-wide flex justify-center items-center gap-4"
             onClick={googleOAuth}
           >
-            Login in Google
+            <div className="w-6">
+              <img
+                src={CustomImages.googleIcon}
+                alt="Google Icon"
+                className="w-full object-cover bg-inherit"
+              />
+            </div>
+            <p>Login in Google</p>
           </div>
         </div>
         <ToastContainer />
