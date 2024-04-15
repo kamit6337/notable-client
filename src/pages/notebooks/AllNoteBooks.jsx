@@ -1,5 +1,5 @@
 import { Icons } from "../../assets/Icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../../redux/slice/toggleSlice";
@@ -12,6 +12,7 @@ const AllNoteBooks = () => {
   const { notebooks } = useSelector(userInitialState);
   const [showFullNotebooks, setShowFullNotebooks] = useState(true);
   const [searchedNotebook, setSearchNotebook] = useState([]);
+  const parentRef = useRef(null);
 
   const { register } = useForm({
     defaultValues: {
@@ -86,8 +87,9 @@ const AllNoteBooks = () => {
           <div
             className="overflow-y-auto text-slate-800"
             style={{ height: "calc(100% - 250px)" }}
+            ref={parentRef}
           >
-            <NotebookStack notebooks={notebooks} />
+            <NotebookStack notebooks={notebooks} parentRef={parentRef} />
           </div>
         ) : (
           <div

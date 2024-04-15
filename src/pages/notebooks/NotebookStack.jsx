@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux";
 import { updateTheNotebook } from "../../redux/slice/initialUserDataSlice";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { patchToBackend, postToBackend } from "../../utils/api/userApi";
 import changeDate from "../../utils/javaScript/changeDate";
 import { Link } from "react-router-dom";
@@ -12,11 +12,29 @@ import {
 } from "../../redux/slice/toggleSlice";
 import Toastify from "../../lib/Toastify";
 
-const NotebookStack = ({ notebooks }) => {
+const NotebookStack = ({ notebooks, parentRef }) => {
   const dispatch = useDispatch();
   const [index, setIndex] = useState(null);
-
+  const notebookRef = useRef(null);
+  const [showNotebookOptionTop, setShowNotebookOptionTop] = useState(false);
   const { ToastContainer, showErrorMessage } = Toastify();
+
+  const handleClick = (event) => {
+    const parentHeight = parentRef.current.clientHeight;
+
+    const parentTop = parentRef.current.getBoundingClientRect().top;
+    const childBottom = event.target.getBoundingClientRect().bottom;
+    const verticalPosition = childBottom - parentTop;
+
+    const totalHeightBecomesOnClick = verticalPosition + 120;
+
+    if (totalHeightBecomesOnClick >= parentHeight) {
+      setShowNotebookOptionTop(true);
+      return;
+    }
+
+    setShowNotebookOptionTop(false);
+  };
 
   const handleAddShortcut = async (id) => {
     setIndex(null);
@@ -24,7 +42,6 @@ const NotebookStack = ({ notebooks }) => {
       const updateNotebook = await postToBackend("/shortcut", {
         notebookId: id,
       });
-      console.log("updateNotebook", updateNotebook);
       dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something Went Wrong." });
@@ -38,7 +55,6 @@ const NotebookStack = ({ notebooks }) => {
       const updateNotebook = await patchToBackend("/shortcut", {
         notebookId: id,
       });
-      console.log("updateNotebook", updateNotebook);
       dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something Went Wrong." });
@@ -55,7 +71,11 @@ const NotebookStack = ({ notebooks }) => {
           const even = i % 2 === 0;
 
           return (
-            <div key={i} className={`${!even && "bg-gray-100"} `}>
+            <div
+              key={i}
+              className={`${!even && "bg-gray-100"} `}
+              onClick={handleClick}
+            >
               <div className="flex justify-between items-center">
                 {/* MARK: TITLE */}
                 <div className="flex-1 flex py-2 px-4 tablet:p-2 cursor-pointer">
@@ -91,19 +111,22 @@ const NotebookStack = ({ notebooks }) => {
                   </p>
                   {index === i && (
                     <div
-                      className="absolute z-30 top-full mt-1  right-0 mr-2 border bg-gray-50 whitespace-nowrap rounded-lg"
+                      className={`${
+                        showNotebookOptionTop ? "bottom-full" : "top-full"
+                      }  absolute z-30  right-0 mr-2 border bg-gray-50 whitespace-nowrap rounded-md text-sm`}
                       onMouseLeave={() => setIndex(null)}
+                      ref={notebookRef}
                     >
                       {shortcut ? (
                         <p
-                          className="p-3 cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
+                          className="h-9 px-3 flex items-center cursor-pointer hover:bg-gray-200 hover:rounded-t-md"
                           onClick={() => handleRemoveShortcut(_id)}
                         >
                           Remove From Shortcut
                         </p>
                       ) : (
                         <p
-                          className="p-3 cursor-pointer hover:bg-gray-200 hover:rounded-t-lg"
+                          className="h-9 px-3 flex items-center cursor-pointer hover:bg-gray-200 hover:rounded-t-md"
                           onClick={() => handleAddShortcut(_id)}
                         >
                           Add to Shortcut
@@ -111,7 +134,7 @@ const NotebookStack = ({ notebooks }) => {
                       )}
 
                       <p
-                        className="p-3 cursor-pointer hover:bg-gray-200"
+                        className="h-9 px-3 flex items-center cursor-pointer hover:bg-gray-200"
                         onClick={() =>
                           dispatch(
                             toggleCreateNewNotebook({
@@ -127,7 +150,7 @@ const NotebookStack = ({ notebooks }) => {
                       </p>
                       {!primary && (
                         <p
-                          className="border-b p-3 cursor-pointer hover:bg-gray-200 hover:rounded-b-lg"
+                          className="h-9 px-3 flex items-center border-b cursor-pointer hover:bg-gray-200 hover:rounded-b-md"
                           onClick={() => {
                             dispatch(
                               toggleDeleteForm({

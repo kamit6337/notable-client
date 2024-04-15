@@ -50,11 +50,9 @@ export const sortString = (list, bool = true) => {
 
 export const sortByDate = (variable, list, bool = true) => {
   const myList = [...list];
-  console.log("my list", myList);
   if (bool) {
     // descending order of time means latest date come first
     myList.sort((a, b) => new Date(b[variable]) - new Date(a[variable]));
-    console.log("sorted my list", myList);
 
     return myList;
   }
