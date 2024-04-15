@@ -52,6 +52,9 @@ const AllNoteBooks = () => {
                 onChange={handleSearch}
                 placeholder="Find Notebook"
                 className="rounded-lg"
+                autoComplete="off"
+                spellCheck="false"
+                autoCorrect="off"
               />
               <Icons.search className="text-xl" />
             </div>
@@ -75,13 +78,13 @@ const AllNoteBooks = () => {
           <p className="flex-1 py-2 px-4">Title</p>
           <p className="all_notebooks_list">Created At</p>
           <p className="all_notebooks_list">Updated At</p>
-          <p className="all_notebooks_list text-end mr-3">Options</p>
+          <p className="all_notebooks_list text-end">Options</p>
         </div>
 
         {/* MARK: NOTESBOOKS WITH STACK */}
         {showFullNotebooks ? (
           <div
-            className="overflow-y-auto text-slate-800 hide_scroll_bar"
+            className="overflow-y-auto text-slate-800"
             style={{ height: "calc(100% - 250px)" }}
           >
             <NotebookStack notebooks={notebooks} />
