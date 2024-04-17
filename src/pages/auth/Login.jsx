@@ -23,8 +23,6 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    setError,
-    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -39,21 +37,14 @@ const Login = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (errors.root) {
-      showErrorMessage({
-        message: errors.root.message || "Error in Custom Login",
-      });
-      clearErrors("root");
-    }
-  }, [errors.root, showErrorMessage, clearErrors]);
-
   const onSubmit = async (data) => {
     try {
       await postAuthReq("/login", data);
       navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
-      setError("root", { message: error.message });
+      showErrorMessage({
+        message: errors.message,
+      });
     }
   };
 

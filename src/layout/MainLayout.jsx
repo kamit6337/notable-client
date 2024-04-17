@@ -24,10 +24,16 @@ const MainLayout = () => {
     isSuccess: initialFetchIsSuccess,
   } = UseInitialFetch(isSuccess);
 
+  useEffect(() => {
+    if (error) {
+      localStorage.removeItem("notesId");
+    }
+  }, [error]);
+
   // WORK: IF ERROR COMES IN CONTINUOUS CHECKING, SHOW ERROR PAGE WHICH THEN TAKE TO LOGIN PAGE
   useEffect(() => {
     if (isError || initialFetchIsError) {
-      navigate(`/login?msg=${error.message}`);
+      navigate(`/login?msg=${error.message || initialFetchIsError}`);
     }
   }, [isError, error, dispatch, navigate, initialFetchIsError]);
 

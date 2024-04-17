@@ -3,7 +3,6 @@ import MainLayout from "../layout/MainLayout";
 import Home from "../pages/home/Home";
 import Login from "../pages/auth/Login";
 import Notes from "../pages/notes/AllNotes";
-import CheckLogin from "../pages/auth/CheckLogin";
 import Notebooks from "../pages/notebooks/AllNoteBooks";
 import SingleNotebook from "../pages/notebookNotes/SingleNotebook";
 import ShowError from "../pages/auth/ShowError";
@@ -36,7 +35,6 @@ const Router = () => {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/createNewPassword" element={<CreateNewPassword />} />
-      <Route path="/login/check" element={<CheckLogin />} />
       <Route path="/error" element={<ShowError />} />
 
       <Route path="*" element={<NotFound />} />
