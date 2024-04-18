@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import UpdateNote from "../hooks/mutation/UpdateNote";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTheNote,
@@ -42,13 +41,6 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     },
   });
 
-  const {
-    mutate,
-    data,
-    error,
-    reset: updateNoteReset,
-  } = UpdateNote(activeNote._id);
-
   const noteNotebook = useMemo(() => {
     const findNotebook = notebooks.find(
       (notebook) => notebook._id === activeNote.notebook
@@ -57,7 +49,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   }, [activeNote, notebooks]);
 
   useEffect(() => {
-    if (activeNote) {
+    if (activeNote._id) {
       const resetValues = {
         title: activeNote.title,
         body: activeNote.body,
@@ -67,20 +59,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
       setDefaultTitle(activeNote.title);
       setDefaultBody(activeNote.body);
     }
-  }, [activeNote, reset]);
-
-  useEffect(() => {
-    if (data) {
-      dispatch(updatedTheNote(data.data));
-    }
-  }, [data, dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      showErrorMessage({ message: error.message || "Something went wrong" });
-      updateNoteReset();
-    }
-  }, [error, showErrorMessage, updateNoteReset]);
+  }, [activeNote._id, reset]);
 
   const changeTitle = (e) => {
     const { value } = e.target;
@@ -90,13 +69,21 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     }
     // Set a timeout to trigger patch request after 500ms of user stopping typing
     const timeout = setTimeout(() => {
-      const obj = {
-        id: activeNote._id,
-        title: value,
-        body: getValues().body,
-      };
+      (async () => {
+        try {
+          const obj = {
+            id: activeNote._id,
+            title: value,
+            body: getValues().body,
+          };
 
-      mutate(obj);
+          const updateNote = await patchToBackend("/notes", { ...obj });
+
+          dispatch(updatedTheNote(updateNote.data));
+        } catch (error) {
+          showErrorMessage({ message: error.message });
+        }
+      })();
     }, 1000);
 
     setTypingTimeout(timeout);

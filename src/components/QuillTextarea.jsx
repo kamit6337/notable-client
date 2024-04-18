@@ -2,10 +2,10 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
-import UpdateNote from "../hooks/mutation/UpdateNote";
 import { updatedTheNote } from "../redux/slice/initialUserDataSlice";
 import { useDispatch } from "react-redux";
 import Toastify from "../lib/Toastify";
+import { patchToBackend } from "../utils/api/userApi";
 
 const QuillTextarea = ({
   deafultTitle,
@@ -18,26 +18,11 @@ const QuillTextarea = ({
   const [value, setValue] = useState("");
   const ref = useRef(null);
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
-  const { mutate, data, error, reset } = UpdateNote(activeNote._id);
-
   const { ToastContainer, showErrorMessage } = Toastify();
 
   useEffect(() => {
     setValue(deafultBody);
   }, [deafultBody]);
-
-  useEffect(() => {
-    if (data) {
-      dispatch(updatedTheNote(data.data));
-    }
-  }, [data, dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      showErrorMessage({ message: error.message || "Something went wrong" });
-      reset();
-    }
-  }, [error, showErrorMessage, reset]);
 
   useEffect(() => {
     if (ref.current) {
@@ -90,13 +75,21 @@ const QuillTextarea = ({
     }
     // Set a timeout to trigger patch request after 500ms of user stopping typing
     const timeout = setTimeout(() => {
-      const obj = {
-        id: activeNote._id,
-        title: deafultTitle,
-        body: content,
-      };
+      (async () => {
+        try {
+          const obj = {
+            id: activeNote._id,
+            title: deafultTitle,
+            body: content,
+          };
 
-      mutate(obj);
+          const updateNote = await patchToBackend("/notes", { ...obj });
+
+          dispatch(updatedTheNote(updateNote.data));
+        } catch (error) {
+          showErrorMessage({ message: error.message });
+        }
+      })();
     }, 1000);
 
     setTypingTimeout(timeout);
@@ -136,8 +129,8 @@ const QuillTextarea = ({
       <div className="h-full">
         <ReactQuill
           ref={ref}
-          theme="snow"
           value={value}
+          theme="snow"
           onChange={handleChange}
           modules={modules}
           formats={formats}
