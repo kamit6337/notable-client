@@ -28,14 +28,14 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
-  const [isTitleTyping, setIsTitleTyping] = useState(false);
   const [deafultTitle, setDefaultTitle] = useState("");
   const [deafultBody, setDefaultBody] = useState("");
+  const [focusToBody, setFocusToBody] = useState(false);
   const { notebooks } = useSelector(userInitialState);
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
-  const { register, getValues, reset, setFocus } = useForm({
+  const { register, getValues, reset } = useForm({
     defaultValues: {
       title: "",
       body: "",
@@ -55,12 +55,6 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     );
     return findNotebook;
   }, [activeNote, notebooks]);
-
-  useEffect(() => {
-    if (!isTitleTyping) {
-      setFocus("body");
-    }
-  }, [setFocus, activeNote, isTitleTyping]);
 
   useEffect(() => {
     if (activeNote) {
@@ -169,6 +163,10 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     dispatch(toggleHideSidebars({ bool: reverseBool }));
   };
 
+  const resetFocusToBody = () => {
+    setFocusToBody(false);
+  };
+
   return (
     <>
       <main className="h-full items-start ">
@@ -201,10 +199,9 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
                 className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
                 placeholder="title"
                 onChange={changeTitle}
-                onClick={() => setIsTitleTyping(true)}
                 autoComplete="off"
                 spellCheck="false"
-                onKeyDown={(e) => e.key === "Enter" && setIsTitleTyping(false)}
+                onKeyDown={(e) => e.key === "Enter" && setFocusToBody(true)}
               />
             </div>
           </div>
@@ -261,6 +258,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             deafultTitle={deafultTitle}
             deafultBody={deafultBody}
             activeNote={activeNote}
+            focusToBody={focusToBody}
+            resetFocusToBody={resetFocusToBody}
           />
         </div>
       </main>

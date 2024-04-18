@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
@@ -6,7 +7,13 @@ import { updatedTheNote } from "../redux/slice/initialUserDataSlice";
 import { useDispatch } from "react-redux";
 import Toastify from "../lib/Toastify";
 
-const QuillTextarea = ({ deafultTitle, deafultBody, activeNote }) => {
+const QuillTextarea = ({
+  deafultTitle,
+  deafultBody,
+  activeNote,
+  focusToBody,
+  resetFocusToBody,
+}) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const ref = useRef(null);
@@ -37,6 +44,39 @@ const QuillTextarea = ({ deafultTitle, deafultBody, activeNote }) => {
       ref.current.editor.root.setAttribute("spellcheck", "false");
     }
   }, []);
+
+  useEffect(() => {
+    if (ref.current) {
+      if (!value) {
+        // Set focus on the Quill editor whenever activeNote changes
+        ref.current.editor.focus();
+        return;
+      }
+
+      setTimeout(() => {
+        const quill = ref.current.getEditor();
+        quill.setSelection(quill.getLength(), quill.getLength());
+      }, 200);
+    }
+  }, [activeNote._id]);
+
+  useEffect(() => {
+    if (!focusToBody || !ref.current) return;
+
+    if (!value) {
+      // Set focus on the Quill editor whenever activeNote changes
+      ref.current.editor.focus();
+      resetFocusToBody();
+      return;
+    }
+
+    setTimeout(() => {
+      const quill = ref.current.getEditor();
+      quill.setSelection(quill.getLength(), quill.getLength());
+    }, 200);
+
+    resetFocusToBody();
+  }, [focusToBody]);
 
   const handleChange = (content) => {
     // Update the value state whenever the content changes
