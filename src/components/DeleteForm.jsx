@@ -43,7 +43,10 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
           <p className="text-lg font-semibold">
             Delete {tag ? "Tag" : "Notebook"}
           </p>
-          <p>Are you sure you want to delete : {title}</p>
+          <p>
+            Are you sure you want to delete :{" "}
+            <span className="italic">{title}</span>
+          </p>
         </div>
 
         <div className="flex justify-end items-center gap-4 border-t border-gray-500 pt-4 px-6">

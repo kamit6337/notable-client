@@ -66,9 +66,9 @@ const NoteTags = ({ activeNote }) => {
     <>
       <section className="h-full w-full relative flex">
         {/* MARK: ADD TAG LIST */}
-        <div className="w-16 relative h-full pt-1 flex justify-center items-start">
+        <div className="w-16 relative h-full pt-1 flex justify-center items-center">
           <p
-            className="bg-gray-200 rounded-full p-3 cursor-pointer"
+            className="bg-gray-200 rounded-full p-2 cursor-pointer"
             onClick={() => setShowTagList((prev) => !prev)}
           >
             {showTagList ? <Icons.cancel /> : <Icons.plus />}
@@ -126,7 +126,7 @@ const NoteTags = ({ activeNote }) => {
 
                     {index === i && (
                       <p
-                        className="absolute z-50   bg-slate-800 text-white text-sm  rounded-3xl px-3 py-1 cursor-pointer whitespace-nowrap "
+                        className="absolute z-50   bg-slate-800 text-white text-xs  rounded-3xl px-3 py-1 cursor-pointer whitespace-nowrap "
                         onMouseLeave={() => setIndex(null)}
                         onClick={() => handleRemoveNoteTag(_id)}
                       >

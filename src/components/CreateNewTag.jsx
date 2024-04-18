@@ -41,6 +41,8 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
   };
 
   const onSubmit = async (data) => {
+    console.log("data", data);
+
     try {
       if (!update) {
         const tagCreated = await postToBackend("/tags", { name: data.title });

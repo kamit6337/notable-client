@@ -24,11 +24,11 @@ const SingleNote = () => {
         <meta name="discription" content="A Note making Web Apps" />
       </Helmet>
       <div className="flex-1 h-full relative">
-        <div style={{ height: "calc(100% - 100px)" }}>
+        <div style={{ height: "calc(100% - 90px)" }}>
           <TextArea activeNote={activeNote} backToHome={true} />
         </div>
 
-        <div className="absolute z-10 bottom-0 left-0 w-full h-14 ">
+        <div className="absolute z-10 bottom-0 left-0 w-full h-12 ">
           <NoteTags activeNote={activeNote} />
         </div>
       </div>

@@ -256,7 +256,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             </div>
           </div>
         </header>
-        <div className="w-full" style={{ height: "calc(100% - 100px)" }}>
+        <div className="w-full " style={{ height: "calc(100% - 100px)" }}>
           <QuillTextarea
             deafultTitle={deafultTitle}
             deafultBody={deafultBody}

@@ -108,11 +108,11 @@ const NotesArea = ({ title, icon, list }) => {
       {/* NOTE: TEXT AREA */}
       {activeNote && (
         <div className="flex-1 h-screen relative">
-          <div className="" style={{ height: "calc(100% - 100px)" }}>
+          <div className="" style={{ height: "calc(100% - 90px)" }}>
             <TextArea activeNote={activeNote} resetSetIndex={resetSetIndex} />
           </div>
 
-          <div className="absolute z-10 bottom-0 left-0 w-full h-14 ">
+          <div className="absolute z-10 bottom-0 left-0 w-full h-12 ">
             <NoteTags activeNote={activeNote} />
           </div>
         </div>
