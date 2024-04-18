@@ -171,7 +171,7 @@ const NotebookStack = ({ notebooks, parentRef }) => {
           );
         })
       ) : (
-        <div>
+        <div className="p-5">
           <p>No notebook available</p>
         </div>
       )}
