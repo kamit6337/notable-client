@@ -79,6 +79,9 @@ const QuillTextarea = ({
   }, [focusToBody]);
 
   const handleChange = (content) => {
+    // Replace multiple spaces with non-breaking space entity
+    content = content.replace(/\s+/g, "&nbsp;");
+
     // Update the value state whenever the content changes
     setValue(content);
 
