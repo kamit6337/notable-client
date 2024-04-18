@@ -73,7 +73,7 @@ const SignUpPage = () => {
 
       <div className="h-screen w-full flex flex-col gap-2 justify-center items-center bg-color_2">
         {/* NOTE: THE CENTER PAGE */}
-        <div className="bg-color_1 box_shadow  h-[600px] w-[600px] tablet:h-screen border border-color_3 rounded-xl  justify-between items-center   flex flex-col p-6">
+        <div className="h-[600px] w-[600px] tablet:h-screen border shadow-lg rounded-xl  justify-between items-center   flex flex-col p-6">
           {/* MARK: FORM AND GO TO LOGIN BUTTON*/}
           <p className="text-xl font-bold tracking-wide">Sign Up</p>
 
