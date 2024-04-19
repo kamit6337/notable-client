@@ -78,13 +78,12 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
           };
 
           const updateNote = await patchToBackend("/notes", { ...obj });
-
           dispatch(updatedTheNote(updateNote.data));
         } catch (error) {
           showErrorMessage({ message: error.message });
         }
       })();
-    }, 1000);
+    }, 500);
 
     setTypingTimeout(timeout);
   };

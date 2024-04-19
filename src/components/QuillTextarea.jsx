@@ -31,7 +31,7 @@ const QuillTextarea = ({
   }, []);
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && activeNote._id) {
       if (!value) {
         // Set focus on the Quill editor whenever activeNote changes
         ref.current.editor.focus();
@@ -90,7 +90,7 @@ const QuillTextarea = ({
           showErrorMessage({ message: error.message });
         }
       })();
-    }, 1000);
+    }, 500);
 
     setTypingTimeout(timeout);
   };
@@ -134,7 +134,7 @@ const QuillTextarea = ({
           onChange={handleChange}
           modules={modules}
           formats={formats}
-          className="w-full h-full"
+          className="w-full h-full break-all"
           placeholder="Write your text here"
         />
       </div>
