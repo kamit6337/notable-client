@@ -86,6 +86,8 @@ const SideNoteListBar = ({
     setNewSortOptions(updateSortOptions);
   };
 
+  console.log("activeNote", activeNote);
+
   return (
     <div className="w-full bg-gray-50 h-full  border-r border-gray-300">
       {/* MARK: HEADER */}
@@ -169,11 +171,13 @@ const SideNoteListBar = ({
                 }`}
                 onClick={() => handleActiveNote(note)}
               >
-                <p className="text-sm line-clamp-1">{title}</p>
-                <p className="text-sm tablet:text-xs -mt-2 break-all text-gray-500 line-clamp-2">
+                <p className="text-sm line-clamp-1 ">{title}</p>
+                <p className="text-sm  tablet:text-xs -mt-2 break-all text-gray-500 line-clamp-2">
                   {convertHTMLtoString(body, { slice: false })}
                 </p>
-                <p className=" text-xs">{convertDateType(updatedAt)}</p>
+                <p className="text-xs text-gray-500">
+                  {convertDateType(updatedAt)}
+                </p>
               </div>
             );
           })

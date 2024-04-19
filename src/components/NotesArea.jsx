@@ -17,6 +17,7 @@ const NotesArea = ({ title, icon, list }) => {
     useSelector(toggleState);
   const [activeNote, setActiveNote] = useState(null);
   const [newList, setNewlist] = useState([]);
+
   FindingWindowWidth();
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const NotesArea = ({ title, icon, list }) => {
   }, [list, activeNote, dispatch]);
 
   useEffect(() => {
-    if (activeNote) {
+    if (activeNote?._id) {
       let isAvailable = JSON.parse(localStorage.getItem("notesId"));
       if (!isAvailable) {
         localStorage.setItem("notesId", JSON.stringify([activeNote._id]));
@@ -50,7 +51,7 @@ const NotesArea = ({ title, icon, list }) => {
       const addedNote = [activeNote._id, ...filterNotes];
       localStorage.setItem("notesId", JSON.stringify(addedNote));
     }
-  }, [activeNote]);
+  }, [activeNote?._id]);
 
   useEffect(() => {
     if (isNoteActivated.bool) {

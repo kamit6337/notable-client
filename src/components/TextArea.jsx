@@ -64,6 +64,12 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const changeTitle = (e) => {
     const { value } = e.target;
 
+    const updatedActiveNote = { ...activeNote };
+    updatedActiveNote.title = value;
+    updatedActiveNote.body = getValues().body;
+
+    dispatch(updatedTheNote(updatedActiveNote));
+
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
@@ -77,8 +83,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             body: getValues().body,
           };
 
-          const updateNote = await patchToBackend("/notes", { ...obj });
-          dispatch(updatedTheNote(updateNote.data));
+          await patchToBackend("/notes", { ...obj });
         } catch (error) {
           showErrorMessage({ message: error.message });
         }
