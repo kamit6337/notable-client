@@ -236,7 +236,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
               )}
             </div>
             <div className="self-end">
-              <p>Created At : {convertDateType(activeNote.createdAt)}</p>
+              <p>created at : {convertDateType(activeNote.createdAt)}</p>
 
               <p>
                 last updated :{" "}
