@@ -27,8 +27,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
-  const [deafultTitle, setDefaultTitle] = useState("");
-  const [deafultBody, setDefaultBody] = useState("");
+  const [defaultTitle, setDefaultTitle] = useState("");
+  const [defaultBody, setDefaultBody] = useState("");
   const [focusToBody, setFocusToBody] = useState(false);
   const { notebooks } = useSelector(userInitialState);
 
@@ -249,8 +249,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         </header>
         <div className="w-full " style={{ height: "calc(100% - 100px)" }}>
           <QuillTextarea
-            deafultTitle={deafultTitle}
-            deafultBody={deafultBody}
+            defaultTitle={defaultTitle}
+            defaultBody={defaultBody}
             activeNote={activeNote}
             focusToBody={focusToBody}
             resetFocusToBody={resetFocusToBody}

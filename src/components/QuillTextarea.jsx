@@ -8,8 +8,8 @@ import Toastify from "../lib/Toastify";
 import { patchToBackend } from "../utils/api/userApi";
 
 const QuillTextarea = ({
-  deafultTitle,
-  deafultBody,
+  defaultTitle,
+  defaultBody,
   activeNote,
   focusToBody,
   resetFocusToBody,
@@ -21,8 +21,8 @@ const QuillTextarea = ({
   const { ToastContainer, showErrorMessage } = Toastify();
 
   useEffect(() => {
-    setValue(deafultBody);
-  }, [deafultBody]);
+    setValue(defaultBody);
+  }, [defaultBody]);
 
   useEffect(() => {
     if (ref.current) {
@@ -79,15 +79,12 @@ const QuillTextarea = ({
         try {
           const obj = {
             id: activeNote._id,
-            title: deafultTitle,
+            title: defaultTitle,
             body: content,
           };
 
-          console.log("obj", obj);
-
           const updateNote = await patchToBackend("/notes", { ...obj });
 
-          console.log("updateNote", updateNote);
           dispatch(updatedTheNote(updateNote.data));
         } catch (error) {
           showErrorMessage({ message: error.message });
