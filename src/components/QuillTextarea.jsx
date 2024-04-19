@@ -83,8 +83,11 @@ const QuillTextarea = ({
             body: content,
           };
 
+          console.log("obj", obj);
+
           const updateNote = await patchToBackend("/notes", { ...obj });
 
+          console.log("updateNote", updateNote);
           dispatch(updatedTheNote(updateNote.data));
         } catch (error) {
           showErrorMessage({ message: error.message });

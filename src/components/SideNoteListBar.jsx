@@ -60,8 +60,6 @@ const SideNoteListBar = ({
   }, [activeNote, newList, scrolling]);
 
   const showActiveNoteIntoView = () => {
-    console.log("click on icon to show active note", activeNote);
-
     const childRef = document.getElementById(activeNote?._id);
     if (childRef) {
       childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
@@ -85,8 +83,6 @@ const SideNoteListBar = ({
     });
     setNewSortOptions(updateSortOptions);
   };
-
-  console.log("activeNote", activeNote);
 
   return (
     <div className="w-full bg-gray-50 h-full  border-r border-gray-300">

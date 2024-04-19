@@ -36,8 +36,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const { register, getValues, reset } = useForm({
     defaultValues: {
-      title: "",
-      body: "",
+      title: activeNote.title,
+      body: activeNote.body,
     },
   });
 
@@ -63,6 +63,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const changeTitle = (e) => {
     const { value } = e.target;
+
+    setDefaultTitle(value);
 
     const updatedActiveNote = { ...activeNote };
     updatedActiveNote.title = value;
