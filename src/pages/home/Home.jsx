@@ -81,7 +81,7 @@ const Home = () => {
                     <Link
                       to={`/notes/${_id}`}
                       key={i}
-                      className="w-40 tablet:w-32"
+                      className="grow-0 shrink-0 w-40 tablet:w-32 "
                     >
                       <div
                         className="p-3 border-2 rounded-lg border-my_home_notelist_border shadow-xl h-64 tablet:h-56 text-sm mb-4 flex flex-col justify-between

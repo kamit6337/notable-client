@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userNotableDataReducer } from "./slice/initialUserDataSlice";
 import { toggleReducer } from "./slice/toggleSlice";
+import environment from "../utils/environment";
 
 export const store = configureStore({
   reducer: {
@@ -11,5 +12,5 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false, // Disable strict mode
     }),
-  devTools: false,
+  devTools: environment.NODE_ENV === "production" ? false : true,
 });
