@@ -53,7 +53,7 @@ const MainLayout = () => {
             <SideNavbar />
           </div>
         )}
-        <div className="w-full h-full">
+        <div className="flex-1 h-full">
           <Outlet />
         </div>
       </div>
