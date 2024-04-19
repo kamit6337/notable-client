@@ -110,7 +110,6 @@ const SideNavbar = () => {
       showErrorMessage({
         message: error.message || "Issue in create note. Try later",
       });
-      console.log("Error in create note", error);
     }
   };
 
