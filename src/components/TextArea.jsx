@@ -15,10 +15,10 @@ import {
 } from "../utils/api/userApi";
 import { Link, useNavigate } from "react-router-dom";
 import QuillTextarea from "./QuillTextarea";
-import timeAgoDate from "../utils/javaScript/timeAgoDate";
 import { toggleHideSidebars, toggleState } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
 import convertDateType from "../utils/javaScript/convertDateType";
+import changeDate from "../utils/javaScript/changeDate";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
@@ -239,7 +239,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
               <p>Created At : {convertDateType(activeNote.createdAt)}</p>
 
               <p>
-                last updated : <span>{timeAgoDate(activeNote.updatedAt)}</span>
+                last updated :{" "}
+                <span>{changeDate(activeNote.updatedAt, true)}</span>
               </p>
             </div>
           </div>

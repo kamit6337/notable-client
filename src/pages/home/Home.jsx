@@ -89,7 +89,7 @@ const Home = () => {
                       "
                       >
                         <div>
-                          <p className="font-semibold tracking-wide mb-1 text-my_single_note_title">
+                          <p className="font-semibold tracking-wide mb-1 text-my_single_note_title truncate">
                             {title}
                           </p>
                           <p className="tracking-wide break-all text-my_single_note_body line-clamp-5 tablet:text-xs mt-2">
