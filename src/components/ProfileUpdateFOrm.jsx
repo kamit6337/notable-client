@@ -36,7 +36,8 @@ const ProfileUpdateForm = ({ handleClose }) => {
     delete formData.confirmPassword;
 
     try {
-      await patchAuthReq("/update", formData);
+      const updateProfile = await patchAuthReq("/update", formData);
+      console.log("updateProfile", updateProfile);
       handleClose();
       refetch();
     } catch (error) {
@@ -61,6 +62,7 @@ const ProfileUpdateForm = ({ handleClose }) => {
             className="border px-3 h-full rounded-lg"
             autoComplete="off"
             spellCheck="false"
+            disabled={true}
           />
 
           <p role="alert" className="text-xs text-red-500 pl-2 h-4">

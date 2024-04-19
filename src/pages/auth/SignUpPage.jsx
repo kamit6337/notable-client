@@ -43,7 +43,7 @@ const SignUpPage = () => {
       await postAuthReq("/signup", formData);
       navigate("/", { state: { message: "Successfully Logged In." } });
     } catch (error) {
-      showErrorMessage({ message: error.message || "Error in Custom SignUp" });
+      showErrorMessage({ message: error.message });
     }
   };
 
@@ -53,13 +53,17 @@ const SignUpPage = () => {
     const openWindow = window.open(url, "_self");
 
     if (!openWindow) {
-      console.error("Failed to open the Google OAuth window");
+      showErrorMessage({
+        message:
+          "Error in Google OAuth login. Try login with Email and Password",
+      });
     } else {
       openWindow.onerror = (event) => {
-        console.error(
-          "Error occurred while opening the Google OAuth window:",
-          event
-        );
+        showErrorMessage({
+          message:
+            event ||
+            "Error in Google OAuth login. Try login with Email and Password",
+        });
       };
     }
   };
