@@ -231,7 +231,7 @@ const SignUpPage = () => {
                 className="w-full object-cover bg-inherit"
               />
             </div>
-            <p>Login in Google</p>
+            <p>Login with Google</p>
           </div>
         </div>
         <ToastContainer />

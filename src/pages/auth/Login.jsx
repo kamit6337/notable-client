@@ -175,7 +175,7 @@ const Login = () => {
                 className="w-full object-cover bg-transparent"
               />
             </div>
-            <p>Login in Google</p>
+            <p>Login with Google</p>
           </div>
         </div>
         <ToastContainer />
