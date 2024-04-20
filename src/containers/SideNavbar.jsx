@@ -1,10 +1,8 @@
-import Cookies from "js-cookie";
 import { QueryCache } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postToBackend } from "../utils/api/userApi";
 import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import { getAuthReq } from "../utils/api/authApi";
-import environment from "../utils/environment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createdNewNote,
@@ -60,7 +58,6 @@ const SideNavbar = () => {
     setShowAccountOptions(false);
     try {
       await getAuthReq("/logout");
-      Cookies.remove("_at", { secure: true, path: "/", sameSite: true }); // removed!
       queryCache.clear();
       localStorage.removeItem("notesId");
       localStorage.removeItem("sort");
@@ -70,7 +67,6 @@ const SideNavbar = () => {
       showErrorMessage({
         message: error.message || "Issue in Logout. Try later",
       });
-      console.log("Error in logout");
     }
   };
 
@@ -129,7 +125,6 @@ const SideNavbar = () => {
     dispatch(toggleNoteListIcon({ bool }));
   };
 
-  const photoUrl = `${environment.SERVER_URL}/${data.photo}`;
   return (
     <>
       <section className="relative z-40 text-sm bg-my_sidenavbar text-my_sidenavbar_icon w-full h-full">
@@ -141,7 +136,7 @@ const SideNavbar = () => {
           >
             <div className="w-8 sm_lap:w-7 rounded-full">
               <img
-                src={photoUrl}
+                src={data?.photo}
                 alt="profile"
                 loading="lazy"
                 className="w-full rounded-full object-cover"
@@ -160,7 +155,7 @@ const SideNavbar = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-8 rounded-full">
                     <img
-                      src={photoUrl}
+                      src={data?.photo}
                       alt="profile"
                       loading="lazy"
                       className="w-full rounded-full object-cover bg-white"

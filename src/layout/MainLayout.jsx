@@ -15,12 +15,12 @@ const MainLayout = () => {
   const dispatch = useDispatch();
 
   // WORK: MAKING CONTINUOUS CHECKING ONLY AFTER SUCCESSFUL LOGGED IN THAT IS USER IS AUTHENTICATED EVERY 5 MINUTES, THAT IT DOES NOT MAKE ANY CHANGE IN TOKEN
-  const { isError, error, data, isSuccess, isLoading } = UseLoginCheck();
+  const { isError, error, isSuccess, isLoading } = UseLoginCheck();
 
   // WORK: INITIALLY FETCH ALL NOTEBOOKS AND NOTES RELATED TO THAT USER
   const {
     isLoading: initialFetchIsLoading,
-    isError: initialFetchIsError,
+    error: initialFetchError,
     isSuccess: initialFetchIsSuccess,
   } = UseInitialFetch(isSuccess);
 
@@ -32,16 +32,22 @@ const MainLayout = () => {
 
   // WORK: IF ERROR COMES IN CONTINUOUS CHECKING, SHOW ERROR PAGE WHICH THEN TAKE TO LOGIN PAGE
   useEffect(() => {
-    if (isError || initialFetchIsError) {
-      navigate(`/login?msg=${error.message || initialFetchIsError}`);
+    if (isError) {
+      navigate(`/login?msg=${error?.message}`);
+      return;
     }
-  }, [isError, error, dispatch, navigate, initialFetchIsError]);
+
+    if (initialFetchError) {
+      navigate(`/login?msg=${initialFetchError?.message}`);
+      return;
+    }
+  }, [isError, error, dispatch, navigate, initialFetchError]);
 
   if (isLoading || initialFetchIsLoading) {
     return <LoadingState />;
   }
 
-  if (!data || !initialFetchIsSuccess) {
+  if (!isSuccess || !initialFetchIsSuccess) {
     return null;
   }
 
