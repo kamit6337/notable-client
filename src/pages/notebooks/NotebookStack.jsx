@@ -11,6 +11,7 @@ import {
   toggleDeleteForm,
 } from "../../redux/slice/toggleSlice";
 import Toastify from "../../lib/Toastify";
+import { sortByDate } from "../../utils/javaScript/sortOptionsList";
 
 const NotebookStack = ({ notebooks, parentRef }) => {
   const dispatch = useDispatch();
@@ -61,10 +62,12 @@ const NotebookStack = ({ notebooks, parentRef }) => {
     }
   };
 
+  const sortedNotebooks = sortByDate("updatedAt", notebooks);
+
   return (
     <>
-      {notebooks.length > 0 ? (
-        notebooks.map((notebook, i) => {
+      {sortedNotebooks.length > 0 ? (
+        sortedNotebooks.map((notebook, i) => {
           const { _id, title, createdAt, updatedAt, primary, shortcut } =
             notebook;
 

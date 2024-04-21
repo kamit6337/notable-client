@@ -11,6 +11,7 @@ import {
 } from "../redux/slice/initialUserDataSlice";
 import { toggleCreateNewNotebook } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
+import Loading from "../containers/Loading";
 
 const NewNotebookForm = ({ update = false, name = "", id }) => {
   const { notebooks } = useSelector(userInitialState);
@@ -22,7 +23,7 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
     handleSubmit,
     reset,
     setFocus,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       name: name,
@@ -117,12 +118,20 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
           <p className="px-3 py-1 cursor-pointer" onClick={handleCancel}>
             Cancel
           </p>
-          <button
-            type="submit"
-            className="px-6 text-lg py-2 cursor-pointer bg-green-500 rounded-md text-white"
-          >
-            Create
-          </button>
+          <div className="w-28">
+            {isSubmitting ? (
+              <div>
+                <Loading hScreen={false} small={true} />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="w-full text-lg py-2 bg-green-500 rounded-md text-white"
+              >
+                {update ? "Update" : "Create"}
+              </button>
+            )}
+          </div>
         </div>
       </form>
       <ToastContainer />

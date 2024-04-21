@@ -10,6 +10,7 @@ import { toggleCreateNewTag } from "../redux/slice/toggleSlice";
 import { useEffect } from "react";
 import { patchToBackend, postToBackend } from "../utils/api/userApi";
 import Toastify from "../lib/Toastify";
+import Loading from "../containers/Loading";
 
 /* eslint-disable react/prop-types */
 const CreateNewTag = ({ update = false, name = "", id }) => {
@@ -22,7 +23,7 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
     handleSubmit,
     reset,
     setFocus,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       title: name,
@@ -41,8 +42,6 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
-
     try {
       if (!update) {
         const tagCreated = await postToBackend("/tags", { name: data.title });
@@ -111,12 +110,20 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
           <p className="px-3 py-1 cursor-pointer" onClick={handleCancel}>
             Cancel
           </p>
-          <button
-            type="submit"
-            className="px-6 text-lg py-2 cursor-pointer bg-green-500 rounded-md text-white"
-          >
-            Create
-          </button>
+          <div className="w-28">
+            {isSubmitting ? (
+              <div>
+                <Loading hScreen={false} small={true} />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="w-full text-lg py-2 bg-green-500 rounded-md text-white"
+              >
+                {update ? "Update" : "Create"}
+              </button>
+            )}
+          </div>
         </div>
       </form>
       <ToastContainer />

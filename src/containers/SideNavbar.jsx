@@ -82,13 +82,13 @@ const SideNavbar = () => {
         navigateLink = pathname;
       }
 
-      if (pathname.startsWith("/notebooks")) {
+      if (pathname.startsWith("/notebooks/")) {
         const notebookId = pathname.split("/").at(-1);
         obj.id = notebookId;
         navigateLink = pathname;
       }
 
-      if (pathname.startsWith("/tags")) {
+      if (pathname.startsWith("/tags/")) {
         const tagId = pathname.split("/").at(-1);
         obj.tagId = tagId;
         navigateLink = pathname;
@@ -138,7 +138,6 @@ const SideNavbar = () => {
               <img
                 src={data?.photo}
                 alt="profile"
-                loading="lazy"
                 className="w-full rounded-full object-cover"
               />
             </div>
@@ -157,8 +156,7 @@ const SideNavbar = () => {
                     <img
                       src={data?.photo}
                       alt="profile"
-                      loading="lazy"
-                      className="w-full rounded-full object-cover bg-white"
+                      className="w-full rounded-full object-cover"
                     />
                   </div>
                   <p>{data?.email}</p>

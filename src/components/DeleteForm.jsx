@@ -7,10 +7,13 @@ import {
 import { deleteToBackend } from "../utils/api/userApi";
 import { toggleDeleteForm } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
+import { useState } from "react";
+import Loading from "../containers/Loading";
 
 const DeleteForm = ({ data: { title, _id }, tag = false }) => {
   const dispatch = useDispatch();
   const { ToastContainer, showErrorMessage } = Toastify();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCancel = () => {
     dispatch(toggleDeleteForm({ bool: false }));
@@ -18,21 +21,27 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
 
   const deleteNotebook = async () => {
     try {
+      setIsSubmitting(true);
       await deleteToBackend("/notebooks", { id: _id });
       handleCancel();
       dispatch(deletedNotebook(_id));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const deleteTag = async () => {
     try {
+      setIsSubmitting(true);
       await deleteToBackend("/tags", { id: _id });
       handleCancel();
       dispatch(deletedTheTag(_id));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -53,11 +62,19 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
           <p className="px-3 py-1 cursor-pointer" onClick={handleCancel}>
             Cancel
           </p>
-          <div
-            className="px-6 py-2 cursor-pointer bg-red-600 rounded-xl text-white"
-            onClick={() => (tag ? deleteTag() : deleteNotebook())}
-          >
-            Delete
+          <div className="w-28">
+            {isSubmitting ? (
+              <div>
+                <Loading hScreen={false} small={true} />
+              </div>
+            ) : (
+              <button
+                className="px-6 py-2 bg-red-600 rounded-xl text-white"
+                onClick={() => (tag ? deleteTag() : deleteNotebook())}
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       </div>
