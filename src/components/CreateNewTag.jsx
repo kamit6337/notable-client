@@ -95,9 +95,10 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
               })}
               type="text"
               placeholder="New Tag Title"
-              className="bg-inherit"
+              className="bg-inherit w-full"
               autoComplete="off"
               spellCheck="false"
+              maxLength={30}
             />
           </div>
           {/* MARK: SHOW ERROR MESSAGE IF THERE */}

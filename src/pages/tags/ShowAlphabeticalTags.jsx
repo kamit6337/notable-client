@@ -10,8 +10,8 @@ const ShowAlphabeticalTags = ({ letter, tags, reset }) => {
 
     return (
       <main className="flex flex-col gap-2">
-        <p className="uppercase border-b border-gray-300 w-full pl-4">0-9</p>
-        <div>
+        <p className="uppercase border-b border-gray-300 w-full pl-8">0-9</p>
+        <div className="">
           <TagListPage reset={reset} tags={tagList} />
         </div>
       </main>
@@ -26,8 +26,8 @@ const ShowAlphabeticalTags = ({ letter, tags, reset }) => {
 
   return (
     <main className="flex flex-col gap-2">
-      <p className="uppercase border-b border-gray-300 w-full pl-4">{letter}</p>
-      <div>
+      <p className="uppercase border-b border-gray-300 w-full pl-8">{letter}</p>
+      <div className="">
         <TagListPage reset={reset} tags={tagList} />
       </div>
     </main>

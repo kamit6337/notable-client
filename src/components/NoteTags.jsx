@@ -23,7 +23,7 @@ const NoteTags = ({ activeNote }) => {
       const findtag = tags.find((tag) => tag._id === tagId);
       filterTags = filterTags.filter((tag) => tag._id !== tagId);
       return {
-        _id: findtag._id,
+        _id: findtag?._id,
         title: findtag.title,
       };
     });
@@ -76,9 +76,8 @@ const NoteTags = ({ activeNote }) => {
           {showTagList && (
             <div
               className={` 
-            overflow-y-auto absolute bottom-full left-0 ml-1 mb-2   rounded-md bg-my_notearea_white border-2 w-48  `}
+            overflow-y-auto absolute bottom-full left-0 ml-1 mb-2   rounded-md bg-my_notearea_white border-2 w-60  max-h-72`}
               onMouseLeave={() => setShowTagList(false)}
-              style={{ maxHeight: "200px" }}
             >
               {modifyTags.length > 0 ? (
                 modifyTags.map((tag, i) => {
@@ -86,7 +85,7 @@ const NoteTags = ({ activeNote }) => {
 
                   return (
                     <p
-                      className="text-center p-2 border-b last:border-none cursor-pointer"
+                      className="text-center p-2 border-b last:border-none cursor-pointer break-all"
                       key={i}
                       onClick={() => handleAddTagToNote(_id)}
                     >

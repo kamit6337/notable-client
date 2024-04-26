@@ -43,8 +43,8 @@ const AllTags = ({ reset }) => {
         <meta name="discription" content="A Note making Web Apps" />
       </Helmet>
 
-      <section className="px-5 tablet:px-2 w-full pb-5 h-full">
-        <main className="h-40 flex flex-col justify-center gap-6">
+      <section className=" tablet:px-2 w-full pb-5 h-full">
+        <main className=" px-5 h-40 flex flex-col justify-center gap-6">
           {/* MARK: PART-1 OF HEADER */}
           <div>
             <div className="flex justify-between items-center ">
