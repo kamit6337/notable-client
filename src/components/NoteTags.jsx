@@ -24,7 +24,7 @@ const NoteTags = ({ activeNote }) => {
       filterTags = filterTags.filter((tag) => tag._id !== tagId);
       return {
         _id: findtag?._id,
-        title: findtag.title,
+        title: findtag?.title,
       };
     });
 
