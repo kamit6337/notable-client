@@ -1,15 +1,25 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { userInitialState } from "../../redux/slice/initialUserDataSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  createdNewNote,
+  userInitialState,
+} from "../../redux/slice/initialUserDataSlice";
 import { useMemo } from "react";
 import NotesArea from "../../components/NotesArea";
 import { Icons } from "../../assets/Icons";
 import { Helmet } from "react-helmet";
+import { postToBackend } from "../../utils/api/userApi";
+import { toggleNoteActivation } from "../../redux/slice/toggleSlice";
+import Toastify from "../../lib/Toastify";
 
 const TagNotes = () => {
-  const { notes, tags } = useSelector(userInitialState);
-
+  const { notes, tags, primaryNotebook } = useSelector(userInitialState);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const { id } = useParams();
+
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const [noteList, tagName] = useMemo(() => {
     const findTag = tags.find((tag) => tag._id === id);
@@ -17,6 +27,45 @@ const TagNotes = () => {
     const noteList = notes.filter((note) => note.tags.includes(id));
     return [noteList, tagName];
   }, [id, tags, notes]);
+
+  const handleNoteCreation = async () => {
+    try {
+      const obj = {
+        id: primaryNotebook._id,
+      };
+
+      let navigateLink = `/notebooks/${primaryNotebook._id}`;
+
+      if (pathname.startsWith("/notes")) {
+        navigateLink = pathname;
+      }
+
+      if (pathname.startsWith("/notebooks/")) {
+        const notebookId = pathname.split("/").at(-1);
+        obj.id = notebookId;
+        navigateLink = pathname;
+      }
+
+      if (pathname.startsWith("/tags/")) {
+        const tagId = pathname.split("/").at(-1);
+        obj.tagId = tagId;
+        navigateLink = pathname;
+      }
+
+      const newNote = await postToBackend("/notes", obj);
+      dispatch(createdNewNote(newNote.data));
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+      dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
+      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+      navigate(navigateLink);
+    } catch (error) {
+      showErrorMessage({
+        message: error.message || "Issue in create note. Try later",
+      });
+    }
+  };
 
   if (noteList.length === 0) {
     return (
@@ -32,10 +81,17 @@ const TagNotes = () => {
             for <span className="italic font-semibold">{tagName}</span>
           </p>
           <p>
-            Click on <span className="italic font-semibold">Note</span> to
-            create a new Note on this Tag
+            Click on{" "}
+            <span
+              className="italic font-semibold cursor-pointer"
+              onClick={handleNoteCreation}
+            >
+              Note
+            </span>{" "}
+            to create a new Note on this Tag
           </p>
         </div>
+        <ToastContainer />
       </>
     );
   }
