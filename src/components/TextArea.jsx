@@ -20,7 +20,7 @@ import Toastify from "../lib/Toastify";
 import convertDateType from "../utils/javaScript/convertDateType";
 import changeDate from "../utils/javaScript/changeDate";
 
-const UNTITLED = "untitled";
+const UNTITLED = "Untitled";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
