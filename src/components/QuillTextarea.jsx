@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import Toastify from "../lib/Toastify";
 import { patchToBackend } from "../utils/api/userApi";
 
-const UNTITLED = "untitled";
+const UNTITLED = "Untitled";
 
 const QuillTextarea = ({
   defaultTitle,
