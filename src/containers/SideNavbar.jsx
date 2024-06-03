@@ -79,7 +79,7 @@ const SideNavbar = () => {
       let navigateLink = `/notebooks/${primaryNotebook._id}`;
 
       if (pathname.startsWith("/notes")) {
-        navigateLink = pathname;
+        navigateLink = "/notes";
       }
 
       if (pathname.startsWith("/notebooks/")) {

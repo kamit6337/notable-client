@@ -20,6 +20,8 @@ import Toastify from "../lib/Toastify";
 import convertDateType from "../utils/javaScript/convertDateType";
 import changeDate from "../utils/javaScript/changeDate";
 
+const UNTITLED = "untitled";
+
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   const { register, getValues, reset } = useForm({
     defaultValues: {
-      title: activeNote.title,
+      title: activeNote.title === UNTITLED ? "" : activeNote.title,
       body: activeNote.body,
     },
   });
@@ -51,12 +53,12 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   useEffect(() => {
     if (activeNote._id) {
       const resetValues = {
-        title: activeNote.title,
+        title: activeNote.title === UNTITLED ? "" : activeNote.title,
         body: activeNote.body,
       };
       reset(resetValues);
 
-      setDefaultTitle(activeNote.title);
+      setDefaultTitle(activeNote.title === UNTITLED ? "" : activeNote.title);
       setDefaultBody(activeNote.body);
     }
   }, [activeNote._id, reset]);
@@ -67,7 +69,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     setDefaultTitle(value);
 
     const updatedActiveNote = { ...activeNote };
-    updatedActiveNote.title = value;
+    updatedActiveNote.title = value || UNTITLED;
     updatedActiveNote.body = getValues().body;
 
     dispatch(updatedTheNote(updatedActiveNote));
@@ -81,7 +83,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         try {
           const obj = {
             id: activeNote._id,
-            title: value,
+            title: value || UNTITLED,
             body: getValues().body,
           };
 
@@ -190,7 +192,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
               <input
                 {...register("title")}
                 className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
-                placeholder="title"
+                placeholder="Untitled"
                 onChange={changeTitle}
                 autoComplete="off"
                 spellCheck="false"

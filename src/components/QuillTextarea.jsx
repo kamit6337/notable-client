@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import Toastify from "../lib/Toastify";
 import { patchToBackend } from "../utils/api/userApi";
 
+const UNTITLED = "untitled";
+
 const QuillTextarea = ({
   defaultTitle,
   defaultBody,
@@ -79,7 +81,7 @@ const QuillTextarea = ({
         try {
           const obj = {
             id: activeNote._id,
-            title: defaultTitle,
+            title: defaultTitle || UNTITLED,
             body: content,
           };
 
