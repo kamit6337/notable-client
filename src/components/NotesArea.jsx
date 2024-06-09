@@ -55,6 +55,7 @@ const NotesArea = ({ title, icon, list }) => {
 
   useEffect(() => {
     if (isNoteActivated.bool) {
+      console.log("Note created", isNoteActivated.data);
       setActiveNote(isNoteActivated.data);
       dispatch(toggleNoteActivation({ bool: false }));
     }

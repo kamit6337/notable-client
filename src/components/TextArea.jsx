@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTheNote,
@@ -14,34 +13,30 @@ import {
   postToBackend,
 } from "../utils/api/userApi";
 import { Link, useNavigate } from "react-router-dom";
-import QuillTextarea from "./QuillTextarea";
 import { toggleHideSidebars, toggleState } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
 import convertDateType from "../utils/javaScript/convertDateType";
 import changeDate from "../utils/javaScript/changeDate";
+import ReactQuill from "react-quill";
 
 const UNTITLED = "Untitled";
 
 const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
+  const ref = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { hideSidebars } = useSelector(toggleState);
-
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
-  const [defaultTitle, setDefaultTitle] = useState("");
-  const [defaultBody, setDefaultBody] = useState("");
   const [focusToBody, setFocusToBody] = useState(false);
   const { notebooks } = useSelector(userInitialState);
 
-  const { ToastContainer, showErrorMessage } = Toastify();
-
-  const { register, getValues, reset } = useForm({
-    defaultValues: {
-      title: activeNote.title === UNTITLED ? "" : activeNote.title,
-      body: activeNote.body,
-    },
+  const [value, setValue] = useState({
+    title: "",
+    body: "",
   });
+
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const noteNotebook = useMemo(() => {
     const findNotebook = notebooks.find(
@@ -52,28 +47,14 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
   useEffect(() => {
     if (activeNote._id) {
-      const resetValues = {
-        title: activeNote.title === UNTITLED ? "" : activeNote.title,
+      setValue({
+        title: activeNote.title,
         body: activeNote.body,
-      };
-      reset(resetValues);
-
-      setDefaultTitle(activeNote.title === UNTITLED ? "" : activeNote.title);
-      setDefaultBody(activeNote.body);
+      });
     }
-  }, [activeNote._id, reset]);
+  }, [activeNote._id]);
 
-  const changeTitle = (e) => {
-    const { value } = e.target;
-
-    setDefaultTitle(value);
-
-    const updatedActiveNote = { ...activeNote };
-    updatedActiveNote.title = value || UNTITLED;
-    updatedActiveNote.body = getValues().body;
-
-    dispatch(updatedTheNote(updatedActiveNote));
-
+  const handleDatabaseChange = (title, body) => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
@@ -83,18 +64,44 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         try {
           const obj = {
             id: activeNote._id,
-            title: value || UNTITLED,
-            body: getValues().body,
+            title: title,
+            body: body,
           };
+          const updated = await patchToBackend("/notes", { ...obj });
 
-          await patchToBackend("/notes", { ...obj });
+          dispatch(updatedTheNote(updated.data));
         } catch (error) {
           showErrorMessage({ message: error.message });
         }
       })();
-    }, 500);
+    }, 200);
 
     setTypingTimeout(timeout);
+  };
+
+  const changeBody = (content) => {
+    const formattedContent = content.replace(/\s+/g, "&nbsp;");
+
+    setValue((prev) => {
+      return {
+        ...prev,
+        body: formattedContent,
+      };
+    });
+
+    handleDatabaseChange(activeNote.title || UNTITLED, formattedContent);
+  };
+
+  const changeTitle = (e) => {
+    const { value: newTitle } = e.target;
+
+    const newValue = {
+      ...value,
+      title: newTitle || UNTITLED,
+    };
+
+    setValue(newValue);
+    handleDatabaseChange(newTitle || UNTITLED, value.body);
   };
 
   const handleDeleteNote = async () => {
@@ -115,10 +122,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         resetSetIndex(activeNote._id);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 300)); // Adjust the timeout
-
+      await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the timeout
       dispatch(deleteTheNote(activeNote._id));
-
       if (backToHome) {
         navigate("/");
       }
@@ -158,9 +163,41 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
     dispatch(toggleHideSidebars({ bool: reverseBool }));
   };
 
-  const resetFocusToBody = () => {
+  useEffect(() => {
+    if (!focusToBody || !ref.current) return;
+    if (!value.body) {
+      // Set focus on the Quill editor whenever activeNote changes
+      ref.current.editor.focus();
+      setFocusToBody(false);
+      return;
+    }
+
+    setTimeout(() => {
+      const quill = ref.current.getEditor();
+      quill.setSelection(quill.getLength(), quill.getLength());
+    }, 200);
+
     setFocusToBody(false);
+  }, [focusToBody]);
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+    ],
   };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+  ];
 
   return (
     <>
@@ -189,9 +226,10 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
                 </div>
               </Link>
             </div>
-            <div className="w-full ">
+            <div className="w-full">
               <input
-                {...register("title")}
+                type="text"
+                value={value.title === UNTITLED ? "" : value.title}
                 className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
                 placeholder="Untitled"
                 onChange={changeTitle}
@@ -253,12 +291,15 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
 
         {/* MARK: BODY */}
         <div className="w-full " style={{ height: "calc(100% - 100px)" }}>
-          <QuillTextarea
-            defaultTitle={defaultTitle}
-            defaultBody={defaultBody}
-            activeNote={activeNote}
-            focusToBody={focusToBody}
-            resetFocusToBody={resetFocusToBody}
+          <ReactQuill
+            ref={ref}
+            value={value.body}
+            theme="snow"
+            onChange={changeBody}
+            modules={modules}
+            formats={formats}
+            className="w-full h-full break-all"
+            placeholder="Write your text here"
           />
         </div>
       </main>
