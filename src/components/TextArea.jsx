@@ -165,6 +165,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   return (
     <>
       <main className="h-full items-start ">
+        {/* MARK: HEADER - TITLE */}
         <header className="h-24 w-full border-b flex justify-between px-4">
           <div className="w-72 h-full py-3 pl-2 flex flex-col justify-between">
             <div className="flex items-center gap-3">
@@ -249,6 +250,8 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             </div>
           </div>
         </header>
+
+        {/* MARK: BODY */}
         <div className="w-full " style={{ height: "calc(100% - 100px)" }}>
           <QuillTextarea
             defaultTitle={defaultTitle}
