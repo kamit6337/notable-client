@@ -50,7 +50,7 @@ const SideNavbar = () => {
   const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
   const [showAccountOptions, setShowAccountOptions] = useState(false);
-  const { notelistIcon, isWindowBelowTablet } = useSelector(toggleState);
+  const { notelistIcon } = useSelector(toggleState);
   const { pathnameOK } = CheckPathname();
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -259,8 +259,8 @@ const SideNavbar = () => {
           })}
         </div>
 
-        {isWindowBelowTablet.bool && pathnameOK && (
-          <div className="absolute bottom-0 w-full h-20 flex justify-center items-center">
+        {pathnameOK && (
+          <div className="absolute bottom-0 w-full h-20 tablet:flex justify-center items-center hidden">
             {notelistIcon.bool ? (
               <p
                 className="cursor-pointer p-3 rounded-full bg-slate-600 text-white"

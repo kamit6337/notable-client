@@ -9,7 +9,6 @@ import {
   toggleNoteListIcon,
   toggleState,
 } from "../redux/slice/toggleSlice";
-import FindingWindowWidth from "../lib/FindingWindowWidth";
 
 const NotesArea = ({ title, icon, list }) => {
   const dispatch = useDispatch();
@@ -17,8 +16,6 @@ const NotesArea = ({ title, icon, list }) => {
     useSelector(toggleState);
   const [activeNote, setActiveNote] = useState(null);
   const [newList, setNewlist] = useState([]);
-
-  FindingWindowWidth();
 
   useEffect(() => {
     if (!list) return;
@@ -112,7 +109,6 @@ const NotesArea = ({ title, icon, list }) => {
           <div className="" style={{ height: "calc(100% - 90px)" }}>
             <TextArea activeNote={activeNote} resetSetIndex={resetSetIndex} />
           </div>
-
           <div className="absolute z-10 bottom-0 left-0 w-full h-12 ">
             <NoteTags activeNote={activeNote} />
           </div>

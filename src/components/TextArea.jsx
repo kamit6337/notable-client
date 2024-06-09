@@ -204,7 +204,7 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
       <main className="h-full items-start ">
         {/* MARK: HEADER - TITLE */}
         <header className="h-24 w-full border-b flex justify-between px-4">
-          <div className="w-72 h-full py-3 pl-2 flex flex-col justify-between">
+          <div className="w-96 tablet:w-72 h-full py-3 pl-2 flex flex-col justify-between">
             <div className="flex items-center gap-3">
               <p
                 className="border border-black cursor-pointer"
@@ -279,12 +279,13 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
               )}
             </div>
             <div className="self-end">
-              <p>created at : {convertDateType(activeNote.createdAt)}</p>
-
-              <p>
-                last updated :{" "}
+              <p>{convertDateType(activeNote.createdAt)}</p>
+              <div className="flex items-center gap-2">
+                <span>
+                  <Icons.update />
+                </span>
                 <span>{changeDate(activeNote.updatedAt, true)}</span>
-              </p>
+              </div>
             </div>
           </div>
         </header>

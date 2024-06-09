@@ -44,8 +44,10 @@ import { BsSortDown } from "react-icons/bs";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdZoomOutMap } from "react-icons/md";
 import { LuFileSearch2 } from "react-icons/lu";
+import { RxUpdate } from "react-icons/rx";
 
 export const Icons = {
+  update: RxUpdate,
   searchNote: LuFileSearch2,
   zoom: MdZoomOutMap,
   profile: FaRegCircleUser,

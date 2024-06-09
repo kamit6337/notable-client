@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isWindowBelowTablet: {
-    bool: false,
-  },
   notelistIcon: {
     bool: false,
   },
@@ -13,7 +10,6 @@ const initialState = {
   hideSidebars: {
     bool: false,
   },
-
   settingForm: {
     bool: false,
   },
@@ -134,13 +130,6 @@ const toggleSlice = createSlice({
 
       return state;
     },
-    toggleIsWindowBelowTablet: (state, { payload }) => {
-      const { bool } = payload;
-
-      state.isWindowBelowTablet.bool = bool;
-
-      return state;
-    },
     toggleNoteListIcon: (state, { payload }) => {
       const { bool } = payload;
       state.notelistIcon.bool = bool;
@@ -158,7 +147,6 @@ export const {
   toggleHideSidebars,
   toggleSearchForm,
   toggleNoteListIcon,
-  toggleIsWindowBelowTablet,
 } = toggleSlice.actions;
 
 export const toggleReducer = toggleSlice.reducer;
