@@ -1,10 +1,32 @@
 # Notable
 
-<p>It's a Note making web app build in MERN stack where you can write your notes, create notebooks and tag each note to filter out notes</p>
+<p>It's a Note making web app build in MERN stack showing all CRUD operations.</p>
 
-<a href="https://notable-client.onrender.com"><u>Live Website</u></p>
+You can visit the [Live website](https://notable-client.vercel.app)  
 
-<h1>Tech used : </h1>
+## Table of Contents
+
+- [Description](#description)
+- [Features](#features)
+- [Tech](#tech)
+- [Screenshots](#screenshots)
+
+## Description
+
+This is a Note making website like any other websites like Evernote, Notion etc. where you can make notes about the study, time table, personal diary or any other stuff that you don't want to forget.
+
+## Features
+
+- Login with Google OAuth or Email and Password
+- Reset Your Password functionality in case you forget your password
+- create notebook based of different topic and create notes in each notebooks
+- attach tag to note to filter out notes
+- having text-editor to customise your notes
+- search functionality
+- make favourites your specific note and notebook to find out easily
+
+
+## Tech
 <ul>
 <li>React JS</li>
 <li>Tailwind CSS - <i>designing of web pages with less code</i></li>
@@ -16,3 +38,11 @@
 <li>React Toastify - <i>show better UI notification using pre-built components</i></li>
 <li>Material UI - <i>implementing designing and interactive features on pages using pre-built components</i></li>
 </ul>
+
+## Screenshots
+
+Here are the screenshots of my project:
+
+![Project Screenshot 1](https://notable-client.s3.ap-south-1.amazonaws.com/images/notable1.png)
+
+![Project Screenshot 2](https://notable-client.s3.ap-south-1.amazonaws.com/images/notable2.png)
