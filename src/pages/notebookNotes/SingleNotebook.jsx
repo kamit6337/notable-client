@@ -16,10 +16,9 @@ import Toastify from "../../lib/Toastify";
 const SingleNotebook = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { notes, notebooks, primaryNotebook } = useSelector(userInitialState);
+  const { notes, notebooks } = useSelector(userInitialState);
   const { pathname } = useLocation();
   const { id } = useParams();
-
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const [noteList, notebookName] = useMemo(() => {
@@ -30,28 +29,11 @@ const SingleNotebook = () => {
 
   const handleNoteCreation = async () => {
     try {
+      const notebookId = pathname.split("/").at(-1);
       const obj = {
-        id: primaryNotebook._id,
+        id: notebookId,
       };
-
-      let navigateLink = `/notebooks/${primaryNotebook._id}`;
-
-      if (pathname.startsWith("/notes")) {
-        navigateLink = pathname;
-      }
-
-      if (pathname.startsWith("/notebooks/")) {
-        const notebookId = pathname.split("/").at(-1);
-        obj.id = notebookId;
-        navigateLink = pathname;
-      }
-
-      if (pathname.startsWith("/tags/")) {
-        const tagId = pathname.split("/").at(-1);
-        obj.tagId = tagId;
-        navigateLink = pathname;
-      }
-
+      const navigateLink = pathname;
       const newNote = await postToBackend("/notes", obj);
       dispatch(createdNewNote(newNote.data));
       await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time

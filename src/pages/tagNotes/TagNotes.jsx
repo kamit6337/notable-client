@@ -30,27 +30,13 @@ const TagNotes = () => {
 
   const handleNoteCreation = async () => {
     try {
+      const navigateLink = pathname;
       const obj = {
         id: primaryNotebook._id,
       };
 
-      let navigateLink = `/notebooks/${primaryNotebook._id}`;
-
-      if (pathname.startsWith("/notes")) {
-        navigateLink = pathname;
-      }
-
-      if (pathname.startsWith("/notebooks/")) {
-        const notebookId = pathname.split("/").at(-1);
-        obj.id = notebookId;
-        navigateLink = pathname;
-      }
-
-      if (pathname.startsWith("/tags/")) {
-        const tagId = pathname.split("/").at(-1);
-        obj.tagId = tagId;
-        navigateLink = pathname;
-      }
+      const tagId = pathname.split("/").at(-1);
+      obj.tagId = tagId;
 
       const newNote = await postToBackend("/notes", obj);
       dispatch(createdNewNote(newNote.data));
