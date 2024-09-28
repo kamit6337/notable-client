@@ -3,7 +3,7 @@ import Router from "./routes/Router";
 import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/react";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 Sentry.init({
   dsn: "https://87656cf037342f8bc97274102135bddf@o4507616912736256.ingest.us.sentry.io/4507618105425920",
@@ -22,18 +22,6 @@ Sentry.init({
 
 function App() {
   const location = useLocation();
-  const [redirect, setRedirect] = useState(false);
-
-  useEffect(() => {
-    const currentUrl = window.location.href;
-
-    if (currentUrl.includes("localhost") || currentUrl.includes("vercel")) {
-      setRedirect(false);
-    } else {
-      setRedirect(true);
-      window.location.href = "https://notable-client.vercel.app";
-    }
-  }, []);
 
   useEffect(() => {
     ReactGA.send({
@@ -41,10 +29,6 @@ function App() {
       page: location.pathname + location.search,
     });
   }, [location]);
-
-  if (redirect) {
-    return null;
-  }
 
   return (
     <>
