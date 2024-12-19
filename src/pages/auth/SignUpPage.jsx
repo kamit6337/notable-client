@@ -9,7 +9,6 @@ import LoadingState from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
 import { Helmet } from "react-helmet";
 import CustomImages from "../../assets/images";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const SERVER_URL = environment.SERVER_URL;
 
@@ -37,11 +36,6 @@ const SignUpPage = () => {
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "customSignup",
-      label: "Email and Password SignUp",
-    });
-
     const formData = { ...data };
     delete formData.confirmPassword;
 
@@ -54,11 +48,6 @@ const SignUpPage = () => {
   };
 
   const googleOAuth = () => {
-    trackAnalyticsEvent({
-      action: "GoogleOAuthSignUp",
-      label: "Google OAuth from SignUp",
-    });
-
     const url = `${SERVER_URL}/auth/google`;
 
     const openWindow = window.open(url, "_self");

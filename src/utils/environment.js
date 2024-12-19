@@ -1,7 +1,8 @@
 const environment = {
-  SERVER_URL: import.meta.env.VITE_APP_SERVER_URL,
-  NODE_ENV: import.meta.env.VITE_APP_NODE_ENV,
-  GT4_MEASUREMENT_ID: import.meta.env.VITE_APP_GT4_MEASUREMENT_ID,
+  SERVER_URL:
+    window?.env?.VITE_APP_SERVER_URL || import.meta.env.VITE_APP_SERVER_URL,
+
+  NODE_ENV: window?.env?.VITE_APP_NODE_ENV || import.meta.env.VITE_APP_NODE_ENV,
 };
 
 export default environment;

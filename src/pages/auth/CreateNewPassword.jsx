@@ -5,7 +5,6 @@ import Loading from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import { Helmet } from "react-helmet";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const CreateNewPassword = () => {
   const navigate = useNavigate();
@@ -32,11 +31,6 @@ const CreateNewPassword = () => {
   });
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "createNewPassword",
-      label: "Create New Password",
-    });
-
     const { password } = data;
 
     try {

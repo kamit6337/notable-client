@@ -5,7 +5,6 @@ import Toastify from "../../lib/Toastify";
 import LoadingState from "../../containers/Loading";
 import { postAuthReq } from "../../utils/api/authApi";
 import { Helmet } from "react-helmet";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -22,11 +21,6 @@ const ForgotPasswordPage = () => {
   });
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "forgotPassword",
-      label: "Forgot Password Button",
-    });
-
     const { email } = data;
     try {
       await postAuthReq("/forgot", { email });

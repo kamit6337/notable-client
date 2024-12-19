@@ -8,7 +8,6 @@ import environment from "../../utils/environment";
 import { postAuthReq } from "../../utils/api/authApi";
 import { Helmet } from "react-helmet";
 import CustomImages from "../../assets/images";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const SERVER_URL = environment.SERVER_URL;
 
@@ -39,11 +38,6 @@ const Login = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "customLogin",
-      label: "Email and Password Login",
-    });
-
     try {
       await postAuthReq("/login", data);
       navigate("/", { state: { message: "Successfully Logged In." } });
@@ -55,11 +49,6 @@ const Login = () => {
   };
 
   const googleOAuth = () => {
-    trackAnalyticsEvent({
-      action: "GoogleOAuthLogin",
-      label: "Google OAuth from Login",
-    });
-
     const url = `${SERVER_URL}/auth/google`;
     const openWindow = window.open(url, "_self");
 
