@@ -50,14 +50,16 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
 
   const onSubmit = async (data) => {
     try {
-      let notebook = await postToBackend("/notebooks", {
-        name: data.name,
-      });
+      let notebook;
       // dispatch(pushNewNotebook(newNotebook.data));
 
       if (update) {
         notebook = await patchToBackend("/notebooks", {
           id,
+          name: data.name,
+        });
+      } else {
+        notebook = await postToBackend("/notebooks", {
           name: data.name,
         });
       }

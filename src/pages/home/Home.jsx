@@ -10,10 +10,12 @@ import { Icons } from "../../assets/Icons";
 import Toastify from "../../lib/Toastify";
 import convertDateType from "../../utils/javaScript/convertDateType";
 import { Helmet } from "react-helmet";
+import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 
 const Home = () => {
   const { data } = UseLoginCheck();
-  const { notes } = useSelector(userInitialState);
+  // const { notes } = useSelector(userInitialState);
+  const { data: notes } = UseNotesQuery();
   const { state } = useLocation();
   const { ToastContainer, showSuccessMessage } = Toastify();
 
@@ -112,7 +114,6 @@ const Home = () => {
           </div>
         </section>
       </section>
-      <ToastContainer />
     </>
   );
 };

@@ -8,18 +8,23 @@ import { useMemo, useState } from "react";
 import { patchToBackend } from "../utils/api/userApi";
 import { Icons } from "../assets/Icons";
 import Toastify from "../lib/Toastify";
+import UseTagsQuery from "../hooks/query/UseTagsQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NoteTags = ({ activeNote }) => {
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const { tags, notes } = useSelector(userInitialState);
+  // const { tags, notes } = useSelector(userInitialState);
+  const { data: tags } = UseTagsQuery();
+
   const [showTagList, setShowTagList] = useState(false);
   const [index, setIndex] = useState(null);
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const [modifyTags, noteTagList] = useMemo(() => {
     let filterTags = [...tags];
-    const findNote = notes.find((note) => note._id === activeNote._id);
-    const populateTags = findNote?.tags.map((tagId) => {
+    // const findNote = notes.find((note) => note._id === activeNote._id);
+    const populateTags = activeNote?.tags.map((tagId) => {
       const findtag = tags.find((tag) => tag._id === tagId);
       filterTags = filterTags.filter((tag) => tag._id !== tagId);
       return {
@@ -29,19 +34,31 @@ const NoteTags = ({ activeNote }) => {
     });
 
     return [filterTags, populateTags];
-  }, [activeNote, notes, tags]);
+  }, [activeNote, tags]);
 
-  const handleAddTagToNote = async (id) => {
+  console.log("noteTagList", noteTagList);
+
+  const handleAddTagToNote = async (tagId) => {
     setShowTagList(false);
 
     try {
-      const addTagToNote = await patchToBackend("/notes", {
+      const updatedNote = await patchToBackend("/notes", {
         id: activeNote._id,
-        tagId: id,
+        tagId: tagId,
         isTagAdd: true,
       });
 
-      dispatch(updatedTheNote(addTagToNote.data));
+      const checkStatus = queryClient.getQueryState(["notes"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notes"], (prev = []) => {
+          return prev.map((note) =>
+            note._id === updatedNote._id ? updatedNote : note
+          );
+        });
+      }
+
+      // dispatch(updatedTheNote(addTagToNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -50,13 +67,23 @@ const NoteTags = ({ activeNote }) => {
   const handleRemoveNoteTag = async (id) => {
     setIndex(null);
     try {
-      const removeTagToNote = await patchToBackend("/notes", {
+      const updatedNote = await patchToBackend("/notes", {
         id: activeNote._id,
         tagId: id,
         isTagRemove: true,
       });
 
-      dispatch(updatedTheNote(removeTagToNote.data));
+      const checkStatus = queryClient.getQueryState(["notes"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notes"], (prev = []) => {
+          return prev.map((note) =>
+            note._id === updatedNote._id ? updatedNote : note
+          );
+        });
+      }
+
+      // dispatch(updatedTheNote(removeTagToNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -138,7 +165,6 @@ const NoteTags = ({ activeNote }) => {
           </main>
         </div>
       </section>
-      <ToastContainer />
     </>
   );
 };

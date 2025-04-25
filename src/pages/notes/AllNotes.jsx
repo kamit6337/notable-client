@@ -89,6 +89,7 @@ const AllNotes = () => {
         noteList={notes}
         activeNoteId={noteId}
         title={"All Notes"}
+        currentPathname={"/notes"}
         icon={<Icons.notesSolid />}
       />
     </>

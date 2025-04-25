@@ -11,12 +11,14 @@ import { useEffect } from "react";
 import { patchToBackend, postToBackend } from "../utils/api/userApi";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
+import { useQueryClient } from "@tanstack/react-query";
 
 /* eslint-disable react/prop-types */
 const CreateNewTag = ({ update = false, name = "", id }) => {
   const dispatch = useDispatch();
   const { tags } = useSelector(userInitialState);
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -43,20 +45,38 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
 
   const onSubmit = async (data) => {
     try {
-      if (!update) {
-        const tagCreated = await postToBackend("/tags", { name: data.title });
-        handleCancel();
-        dispatch(createdNewTag(tagCreated.data));
+      let newOrUpdatedTag;
+      // handleCancel();
+      // dispatch(createdNewTag(tagCreated.data));
 
-        return;
+      if (update) {
+        newOrUpdatedTag = await patchToBackend("/tags", {
+          id,
+          name: data.title,
+        });
+      } else {
+        newOrUpdatedTag = await postToBackend("/tags", { name: data.title });
       }
-      const tagUpdated = await patchToBackend("/tags", {
-        id,
-        name: data.title,
-      });
+
+      const checkStatus = queryClient.getQueryState(["tags"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["tags"], (prev = []) => {
+          const findTag = tags.find((tag) => tag._id === newOrUpdatedTag._id);
+
+          if (findTag) {
+            return prev.map((tag) =>
+              tag._id === newOrUpdatedTag._id ? newOrUpdatedTag : tag
+            );
+          }
+
+          return [...prev, newOrUpdatedTag];
+        });
+      }
+
       handleCancel();
 
-      dispatch(updateTheTag(tagUpdated.data));
+      // dispatch(updateTheTag(tagUpdated.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -120,6 +140,7 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
               <button
                 type="submit"
                 className="w-full text-lg py-2 bg-green-500 rounded-md text-white"
+                disabled={isSubmitting}
               >
                 {update ? "Update" : "Create"}
               </button>
@@ -127,7 +148,6 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
           </div>
         </div>
       </form>
-      <ToastContainer />
     </div>
   );
 };

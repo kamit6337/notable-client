@@ -8,42 +8,64 @@ import { useMemo, useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { patchToBackend } from "../utils/api/userApi";
 import Toastify from "../lib/Toastify";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ChangePrimaryNotebook = ({ handleClose }) => {
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const { primaryNotebook, notebooks } = useSelector(userInitialState);
-  const [value, setvalue] = useState("");
+  // const { primaryNotebook, notebooks } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
+  const [notebookId, setNotebookId] = useState(null);
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const filterNotebooks = useMemo(() => {
-    const filter = notebooks.filter(
-      (notebook) => notebook._id !== primaryNotebook._id
-    );
+    const filter = notebooks.filter((notebook) => !notebook.primary);
     return filter;
-  }, [primaryNotebook, notebooks]);
+  }, [notebooks]);
+
+  const primaryNotebook = useMemo(() => {
+    return notebooks.find((notebook) => notebook.primary);
+  }, [notebooks]);
 
   const handleSelect = (e) => {
     const { value } = e.target;
-    setvalue(value);
+    setNotebookId(value);
   };
 
   const handleChangePrimaryNotebook = async () => {
     try {
-      const patch = await patchToBackend("/primary", {
+      await patchToBackend("/primary", {
         id: primaryNotebook._id,
-        changedId: value,
+        changedId: notebookId,
       });
 
-      console.log("patch", patch);
+      const checkStatus = queryClient.getQueryState(["notebooks"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notebooks"], (prev = []) => {
+          return prev.map((notebook) => {
+            if (notebook._id === primaryNotebook._id) {
+              return { ...notebook, primary: false };
+            }
+
+            if (notebook._id === notebookId) {
+              return { ...notebook, primary: true };
+            }
+
+            return notebook;
+          });
+        });
+      }
 
       handleClose();
 
-      dispatch(
-        changeThePrimaryNotebook({
-          id: primaryNotebook._id,
-          changedId: value,
-        })
-      );
+      // dispatch(
+      //   changeThePrimaryNotebook({
+      //     id: primaryNotebook._id,
+      //     changedId: notebookId,
+      //   })
+      // );
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -64,7 +86,7 @@ const ChangePrimaryNotebook = ({ handleClose }) => {
 
           <FormControl fullWidth>
             <Select
-              value={value}
+              value={notebookId}
               onChange={handleSelect}
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}

@@ -5,9 +5,13 @@ import { userInitialState } from "../redux/slice/initialUserDataSlice";
 import { Link } from "react-router-dom";
 import { Icons } from "../assets/Icons";
 import { sortByDate } from "../utils/javaScript/sortOptionsList";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
+import UseNotesQuery from "../hooks/query/UseNotesQuery";
 
 const ShortcutPage = ({ reset }) => {
-  const { notebooks, notes } = useSelector(userInitialState);
+  // const { notebooks, notes } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
+  const { data: notes } = UseNotesQuery();
 
   const [shortcutNotes, shortcutNotebooks] = useMemo(() => {
     let filterNotebooks = notebooks.filter((notebook) => notebook.shortcut);

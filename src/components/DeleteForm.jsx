@@ -46,8 +46,17 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
     try {
       setIsSubmitting(true);
       await deleteToBackend("/tags", { id: _id });
+
+      const checkStatus = queryClient.getQueryState(["tags"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["tags"], (prev = []) => {
+          return prev.filter((tag) => tag._id !== _id);
+        });
+      }
+
       handleCancel();
-      dispatch(deletedTheTag(_id));
+      // dispatch(deletedTheTag(_id));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     } finally {

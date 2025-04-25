@@ -2,17 +2,17 @@ import { useDispatch } from "react-redux";
 import { toggleSettingForm } from "../redux/slice/toggleSlice";
 import { Icons } from "../assets/Icons";
 import { useState } from "react";
-import ProfileUpdateFOrm from "./ProfileUpdateFOrm";
+import ProfileUpdateForm from "./ProfileUpdateForm";
 import ChangePrimaryNotebook from "./ChangePrimaryNotebook";
 
 const accountOptionsList = [
   {
-    id: 2,
+    id: 1,
     title: "Change Primary Book",
     icon: <Icons.notebooks />,
   },
   {
-    id: 1,
+    id: 2,
     title: "Profile",
     icon: <Icons.profile />,
   },
@@ -20,7 +20,7 @@ const accountOptionsList = [
 
 const SettingFormPage = () => {
   const dispatch = useDispatch();
-  const [index, setIndex] = useState(1);
+  const [index, setIndex] = useState(2);
 
   const handleClose = () => {
     dispatch(toggleSettingForm({ bool: false }));
@@ -65,8 +65,8 @@ const SettingFormPage = () => {
           {/* MARK: SIDEBAR FORM */}
 
           <main className="flex-1 px-8 py-5">
-            {index === 1 && <ProfileUpdateFOrm handleClose={handleClose} />}
-            {index === 2 && <ChangePrimaryNotebook handleClose={handleClose} />}
+            {index === 1 && <ChangePrimaryNotebook handleClose={handleClose} />}
+            {index === 2 && <ProfileUpdateForm handleClose={handleClose} />}
           </main>
         </section>
       </main>

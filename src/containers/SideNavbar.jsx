@@ -222,6 +222,7 @@ const SideNavbar = () => {
         {/* MARK: LINKS */}
 
         <div className="px-5 my-4">
+          {/* NOTE: HOME */}
           <div className="flex items-center cursor-pointer w-max">
             <p className="text-lg">
               <Icons.homeSolid />
@@ -231,6 +232,7 @@ const SideNavbar = () => {
             </p>
           </div>
 
+          {/* NOTE: SHORTCUT */}
           <div
             className="flex items-center cursor-pointer w-max"
             onClick={() => setShowShorcut((prev) => !prev)}
@@ -295,6 +297,7 @@ const SideNavbar = () => {
         )}
       </section>
 
+      {/* NOTE: ALL TAGS SIDEBAR */}
       <div
         className={`sidebar_translate`}
         onMouseLeave={() => setShowTagList(false)}
@@ -302,6 +305,8 @@ const SideNavbar = () => {
       >
         <AllTags reset={resetAllTags} />
       </div>
+
+      {/* NOTE: SHORTCUT SIDEBAR */}
       <div
         className={`sidebar_translate`}
         onMouseLeave={() => setShowShorcut(false)}
@@ -309,7 +314,6 @@ const SideNavbar = () => {
       >
         <ShortcutPage reset={resetShortcuts} />
       </div>
-      <ToastContainer />
     </>
   );
 };
