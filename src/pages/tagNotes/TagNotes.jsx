@@ -1,23 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import {
   createdNewNote,
   userInitialState,
 } from "../../redux/slice/initialUserDataSlice";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import NotesArea from "../../components/NotesArea";
 import { Icons } from "../../assets/Icons";
 import { Helmet } from "react-helmet";
 import { postToBackend } from "../../utils/api/userApi";
 import { toggleNoteActivation } from "../../redux/slice/toggleSlice";
 import Toastify from "../../lib/Toastify";
+import UseNotesQuery from "../../hooks/query/UseNotesQuery";
+import UseTagsQuery from "../../hooks/query/UseTagsQuery";
+import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
 
 const TagNotes = () => {
-  const { notes, tags, primaryNotebook } = useSelector(userInitialState);
+  // const { notes, tags, primaryNotebook } = useSelector(userInitialState);
+  const { data: notes } = UseNotesQuery();
+  const { data: tags } = UseTagsQuery();
+  const { mutate } = UseNewNoteCreation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { id } = useParams();
+  const noteId = useSearchParams()[0].get("note");
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -28,32 +40,41 @@ const TagNotes = () => {
     return [noteList, tagName];
   }, [id, tags, notes]);
 
-  const handleNoteCreation = async () => {
-    try {
-      const navigateLink = pathname;
-      const obj = {
-        id: primaryNotebook._id,
-      };
+  useEffect(() => {
+    if (noteId) return;
 
-      const tagId = pathname.split("/").at(-1);
-      obj.tagId = tagId;
-
-      const newNote = await postToBackend("/notes", obj);
-      dispatch(createdNewNote(newNote.data));
-      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-      dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
-      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-      navigate(navigateLink);
-    } catch (error) {
-      showErrorMessage({
-        message: error.message || "Issue in create note. Try later",
-      });
+    if (noteList.length > 0) {
+      const findNoteId = noteList[0]._id;
+      navigate(`/tags/${id}?note=${findNoteId}`);
     }
-  };
+  }, [id, noteList, noteId, navigate]);
 
-  if (noteList.length === 0) {
+  // const handleNoteCreation = async () => {
+  //   try {
+  //     const navigateLink = pathname;
+  //     const obj = {
+  //       id: primaryNotebook._id,
+  //     };
+
+  //     const tagId = pathname.split("/").at(-1);
+  //     obj.tagId = tagId;
+
+  //     const newNote = await postToBackend("/notes", obj);
+  //     dispatch(createdNewNote(newNote.data));
+  //     await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+  //     dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
+  //     await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+  //     navigate(navigateLink);
+  //   } catch (error) {
+  //     showErrorMessage({
+  //       message: error.message || "Issue in create note. Try later",
+  //     });
+  //   }
+  // };
+
+  if (noteList.length === 0 || !noteId) {
     return (
       <>
         <Helmet>
@@ -70,7 +91,7 @@ const TagNotes = () => {
             Click on{" "}
             <span
               className="italic font-semibold cursor-pointer"
-              onClick={handleNoteCreation}
+              onClick={() => mutate()}
             >
               Note
             </span>{" "}
@@ -88,7 +109,13 @@ const TagNotes = () => {
         <title>Tags | {tagName}</title>
         <meta name="discription" content="A Note making Web Apps" />
       </Helmet>
-      <NotesArea list={noteList} title={tagName} icon={<Icons.tagOutline />} />
+      <NotesArea
+        noteList={noteList}
+        activeNoteId={noteId}
+        title={tagName}
+        currentPathname={`/tags/${id}`}
+        icon={<Icons.tagOutline />}
+      />
     </>
   );
 };

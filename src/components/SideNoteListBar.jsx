@@ -13,37 +13,37 @@ import { toggleNoteActivation, toggleState } from "../redux/slice/toggleSlice";
 const SideNoteListBar = ({
   title,
   icon,
-  list,
-  activeNote,
+  noteList,
+  activeNoteId,
   handleActiveNote,
   scrolling,
+  handleSort,
 }) => {
   const dispatch = useDispatch();
   const [showSortOption, setShowSortOption] = useState(false);
   const [showTitleHover, setShowTitleHover] = useState(false);
-  const [newList, setNewList] = useState(list);
+  // const [newList, setNewList] = useState(noteList);
   const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
   const { isNoteActivated } = useSelector(toggleState);
 
-  useEffect(() => {
-    if (!list) return;
-    const localSort = JSON.parse(localStorage.getItem("sort"));
-    if (!localSort) {
-      setNewList(list);
-      return;
-    }
-    setNewList(sortFunction(list, localSort.id));
-    const updateSortOptions = sortOptionsList.map((obj) => {
-      const newObj = { ...obj };
-      if (newObj.id === localSort.id) {
-        newObj.active = true;
-        return newObj;
-      }
-      delete newObj.active;
-      return newObj;
-    });
-    setNewSortOptions(updateSortOptions);
-  }, [list]);
+  // useEffect(() => {
+  //   const localSort = JSON.parse(localStorage.getItem("sort"));
+  //   if (!localSort) {
+  //     setNewList(noteList);
+  //     return;
+  //   }
+  //   setNewList(sortFunction(noteList, localSort.id));
+  //   const updateSortOptions = sortOptionsList.map((obj) => {
+  //     const newObj = { ...obj };
+  //     if (newObj.id === localSort.id) {
+  //       newObj.active = true;
+  //       return newObj;
+  //     }
+  //     delete newObj.active;
+  //     return newObj;
+  //   });
+  //   setNewSortOptions(updateSortOptions);
+  // }, [noteList]);
 
   useEffect(() => {
     if (isNoteActivated.bool) {
@@ -53,36 +53,36 @@ const SideNoteListBar = ({
   }, [isNoteActivated, dispatch, handleActiveNote]);
 
   useLayoutEffect(() => {
-    const childRef = document.getElementById(activeNote._id);
+    const childRef = document.getElementById(activeNoteId);
     if (childRef) {
       childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
     }
-  }, [activeNote, newList, scrolling]);
+  }, [activeNoteId, noteList, scrolling]);
 
-  const showActiveNoteIntoView = () => {
-    const childRef = document.getElementById(activeNote?._id);
-    if (childRef) {
-      childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
-    }
-  };
+  // const showActiveNoteIntoView = () => {
+  //   const childRef = document.getElementById(activeNoteId);
+  //   if (childRef) {
+  //     childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
+  //   }
+  // };
 
-  const handleSort = (id) => {
-    setShowSortOption(false);
-    localStorage.setItem("sort", JSON.stringify({ id }));
+  // const handleSort = (id) => {
+  //   setShowSortOption(false);
+  //   localStorage.setItem("sort", JSON.stringify({ id }));
 
-    setNewList(sortFunction(newList, id));
+  //   setNewList(sortFunction(newList, id));
 
-    const updateSortOptions = newSortOptions.map((obj) => {
-      const newObj = { ...obj };
-      if (newObj.id === id) {
-        newObj.active = true;
-        return newObj;
-      }
-      delete newObj.active;
-      return newObj;
-    });
-    setNewSortOptions(updateSortOptions);
-  };
+  //   const updateSortOptions = newSortOptions.map((obj) => {
+  //     const newObj = { ...obj };
+  //     if (newObj.id === id) {
+  //       newObj.active = true;
+  //       return newObj;
+  //     }
+  //     delete newObj.active;
+  //     return newObj;
+  //   });
+  //   setNewSortOptions(updateSortOptions);
+  // };
 
   return (
     <div className="w-full bg-gray-50 h-full  border-r border-gray-300">
@@ -108,13 +108,13 @@ const SideNoteListBar = ({
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <p>{newList.length} Notes</p>
-          <p
+          <p>{noteList.length} Notes</p>
+          {/* <p
             className="ml-auto mr-4 cursor-pointer"
             onClick={showActiveNoteIntoView}
           >
             <Icons.searchNote />
-          </p>
+          </p> */}
           <div className="relative">
             <p
               className="text-xl"
@@ -136,7 +136,10 @@ const SideNoteListBar = ({
                       className={`${
                         active && "bg-gray-100"
                       }  hover:bg-gray-100 px-10 py-2`}
-                      onClick={() => handleSort(id)}
+                      onClick={() => {
+                        handleSort(id);
+                        setShowSortOption(false);
+                      }}
                     >
                       <p className="">{name}</p>
                     </div>
@@ -153,8 +156,8 @@ const SideNoteListBar = ({
         className={`overflow-y-auto w-full p-[2px]  overflow-x-hidden`}
         style={{ maxHeight: "calc(100% - 100px)" }}
       >
-        {newList.length > 0 ? (
-          newList.map((note, i) => {
+        {noteList.length > 0 ? (
+          noteList.map((note, i) => {
             const { _id, title, body, updatedAt } = note;
 
             return (
@@ -162,10 +165,9 @@ const SideNoteListBar = ({
                 key={i}
                 id={_id}
                 className={`w-full h-32 flex flex-col justify-between  p-5  border-b hover:bg-white cursor-pointer ${
-                  activeNote?._id === _id &&
-                  "border border-my_single_note_title"
+                  activeNoteId === _id && "border border-my_single_note_title"
                 }`}
-                onClick={() => handleActiveNote(note)}
+                onClick={() => handleActiveNote(_id)}
               >
                 <p className="text-sm line-clamp-1 ">{title}</p>
                 <p className="text-sm  tablet:text-xs -mt-2 break-all text-gray-500 line-clamp-2">

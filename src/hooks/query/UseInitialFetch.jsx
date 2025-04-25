@@ -2,6 +2,10 @@ import { getFromBackend } from "../../utils/api/userApi";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { userInitialData } from "../../redux/slice/initialUserDataSlice";
+import { useQueries } from "@tanstack/react-query";
+import UseNotebooksQuery from "./UseNotebooksQuery";
+import UseNotesQuery from "./UseNotesQuery";
+import UseTagsQuery from "./UseTagsQuery";
 
 const UseInitialFetch = (toggle = false) => {
   const dispatch = useDispatch();
@@ -11,47 +15,85 @@ const UseInitialFetch = (toggle = false) => {
   const [errorArray, setErrorArray] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  useEffect(() => {
-    if (toggle) {
-      setIsLoadingArray([true]);
-      setIsSuccess(false);
-      (async () => {
-        try {
-          const fetchNotebook = getFromBackend("/notebooks");
-          const fetchNotes = getFromBackend("/notes");
-          const fetchTags = getFromBackend("/tags");
+  const url = ["/notebooks", "/notes", "/tags"];
 
-          const query = await Promise.all([
-            fetchNotebook,
-            fetchNotes,
-            fetchTags,
-          ]);
+  const notebooks = UseNotebooksQuery(toggle);
+  const notes = UseNotesQuery(toggle);
+  const tags = UseTagsQuery(toggle);
 
-          dispatch(userInitialData(query));
-          setIsSuccess(true);
-        } catch (error) {
-          setIsErrorArray([true]);
-          setErrorArray([error]);
-        } finally {
-          setIsLoadingArray([false]);
-        }
-      })();
-    }
-  }, [toggle, dispatch]);
+  // const query = useQueries({
+  //   queries: url.map((link) => ({
+  //     queryKey: [link],
+  //     queryFn: () => getFromBackend(link),
+  //     staleTime: Infinity,
+  //     enabled: toggle,
+  //   })),
+  //   combine: (results) => {
+  //     return {
+  //       data: results.map((result) => result.data),
+  //       isLoading: results.some((result) => result.isLoading),
+  //       error: results.some((result) => result.error),
+  //       isSuccess: results.every((result) => result.isSuccess),
+  //     };
+  //   },
+  // });
 
-  const isLoading = useMemo(() => {
-    return isLoadingArray.some((bool) => bool === true);
-  }, [isLoadingArray]);
+  // useEffect(() => {
+  //   if (query.isSuccess) {
+  //     dispatch(userInitialData(query.data));
+  //   }
+  // }, [query, dispatch]);
 
-  const isError = useMemo(() => {
-    return isErrorArray.some((bool) => bool === true);
-  }, [isErrorArray]);
+  // useEffect(() => {
+  //   if (toggle) {
+  //     setIsLoadingArray([true]);
+  //     setIsSuccess(false);
+  //     (async () => {
+  //       try {
+  //         const fetchNotebook = getFromBackend("/notebooks");
+  //         const fetchNotes = getFromBackend("/notes");
+  //         const fetchTags = getFromBackend("/tags");
 
-  const error = useMemo(() => {
-    return errorArray.find((bool) => bool);
-  }, [errorArray]);
+  //         const query = await Promise.all([
+  //           fetchNotebook,
+  //           fetchNotes,
+  //           fetchTags,
+  //         ]);
 
-  return { isLoading, isError, error, isSuccess };
+  //         dispatch(userInitialData(query));
+  //         setIsSuccess(true);
+  //       } catch (error) {
+  //         setIsErrorArray([true]);
+  //         setErrorArray([error]);
+  //       } finally {
+  //         setIsLoadingArray([false]);
+  //       }
+  //     })();
+  //   }
+  // }, [toggle, dispatch]);
+
+  // const isLoading = useMemo(() => {
+  //   return isLoadingArray.some((bool) => bool === true);
+  // }, [isLoadingArray]);
+
+  // const isError = useMemo(() => {
+  //   return isErrorArray.some((bool) => bool === true);
+  // }, [isErrorArray]);
+
+  // const error = useMemo(() => {
+  //   return errorArray.find((bool) => bool);
+  // }, [errorArray]);
+
+  // return {
+  //   isLoading,
+  //   error,
+  //   isSuccess,
+  // };
+  return {
+    isLoading: notebooks.isLoading || notes.isLoading || tags.isLoading,
+    error: notebooks.error || notes.error || tags.error,
+    isSuccess: notebooks.isSuccess || notes.isSuccess || tags.isSuccess,
+  };
 };
 
 export default UseInitialFetch;

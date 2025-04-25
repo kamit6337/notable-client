@@ -21,6 +21,8 @@ import { Icons } from "../assets/Icons";
 import ShortcutPage from "../components/ShortcutPage";
 import CheckPathname from "../components/CheckPathname";
 import Toastify from "../lib/Toastify";
+import UseNewNoteCreation from "../hooks/mutation/UseNewNoteCreation";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
 
 const list = [
   {
@@ -45,7 +47,8 @@ const SideNavbar = () => {
   const dispatch = useDispatch();
   const { data } = UseLoginCheck();
   const queryCache = new QueryCache();
-  const { primaryNotebook } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
+  // const { primaryNotebook } = useSelector(userInitialState);
   const [showTagList, setShowTagList] = useState(false);
   const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
@@ -53,6 +56,8 @@ const SideNavbar = () => {
   const { notelistIcon } = useSelector(toggleState);
   const { pathnameOK } = CheckPathname();
   const { ToastContainer, showErrorMessage } = Toastify();
+
+  const { mutate } = UseNewNoteCreation();
 
   const handleLogout = async () => {
     setShowAccountOptions(false);
@@ -72,36 +77,46 @@ const SideNavbar = () => {
 
   const handleNoteCreation = async () => {
     try {
+      // console.log("pathname", pathname);
+      // return;
+
+      const primaryNotebook = notebooks.find(
+        (notebook) => notebook.primary === true
+      );
+
       const obj = {
         id: primaryNotebook._id,
+        navigateLink: `/notebooks/${primaryNotebook._id}`,
       };
 
-      let navigateLink = `/notebooks/${primaryNotebook._id}`;
+      // let navigateLink = `/notebooks/${primaryNotebook._id}`;
 
       if (pathname.startsWith("/notes")) {
-        navigateLink = "/notes";
+        obj.navigateLink = "/notes";
       }
 
       if (pathname.startsWith("/notebooks/")) {
         const notebookId = pathname.split("/").at(-1);
         obj.id = notebookId;
-        navigateLink = pathname;
+        obj.navigateLink = pathname;
       }
 
       if (pathname.startsWith("/tags/")) {
         const tagId = pathname.split("/").at(-1);
         obj.tagId = tagId;
-        navigateLink = pathname;
+        obj.navigateLink = pathname;
       }
 
-      const newNote = await postToBackend("/notes", obj);
-      dispatch(createdNewNote(newNote.data));
-      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+      mutate(obj);
 
-      dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
-      await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+      // const newNote = await postToBackend("/notes", obj);
+      // dispatch(createdNewNote(newNote.data));
+      // await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
 
-      navigate(navigateLink);
+      // dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
+      // await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
+
+      // navigate(navigateLink);
     } catch (error) {
       showErrorMessage({
         message: error.message || "Issue in create note. Try later",
@@ -195,7 +210,7 @@ const SideNavbar = () => {
 
           <div
             className="p-2 px-4 sm_lap:p-[6px] sm_lap:px-3 rounded-2xl bg-my_note_green text-white cursor-pointer flex items-center gap-2"
-            onClick={handleNoteCreation}
+            onClick={() => mutate()}
           >
             <p>
               <Icons.plus />

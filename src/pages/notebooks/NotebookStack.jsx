@@ -4,7 +4,7 @@ import { updateTheNotebook } from "../../redux/slice/initialUserDataSlice";
 import { useRef, useState } from "react";
 import { patchToBackend, postToBackend } from "../../utils/api/userApi";
 import changeDate from "../../utils/javaScript/changeDate";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Icons } from "../../assets/Icons";
 import {
   toggleCreateNewNotebook,
@@ -12,8 +12,11 @@ import {
 } from "../../redux/slice/toggleSlice";
 import Toastify from "../../lib/Toastify";
 import { sortByDate } from "../../utils/javaScript/sortOptionsList";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NotebookStack = ({ notebooks, parentRef }) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [index, setIndex] = useState(null);
   const notebookRef = useRef(null);
@@ -40,10 +43,21 @@ const NotebookStack = ({ notebooks, parentRef }) => {
   const handleAddShortcut = async (id) => {
     setIndex(null);
     try {
-      const updateNotebook = await postToBackend("/shortcut", {
+      await postToBackend("/shortcut", {
         notebookId: id,
       });
-      dispatch(updateTheNotebook(updateNotebook.data));
+
+      const checkStatus = queryClient.getQueryState(["notebooks"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notebooks"], (prev = []) => {
+          return prev.map((notebook) =>
+            notebook._id === id ? { ...notebook, shortcut: true } : notebook
+          );
+        });
+      }
+
+      // dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something Went Wrong." });
     }
@@ -53,10 +67,21 @@ const NotebookStack = ({ notebooks, parentRef }) => {
     setIndex(null);
 
     try {
-      const updateNotebook = await patchToBackend("/shortcut", {
+      await patchToBackend("/shortcut", {
         notebookId: id,
       });
-      dispatch(updateTheNotebook(updateNotebook.data));
+
+      const checkStatus = queryClient.getQueryState(["notebooks"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notebooks"], (prev = []) => {
+          return prev.map((notebook) =>
+            notebook._id === id ? { ...notebook, shortcut: false } : notebook
+          );
+        });
+      }
+
+      // dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something Went Wrong." });
     }
@@ -79,16 +104,17 @@ const NotebookStack = ({ notebooks, parentRef }) => {
               className={`${!even && "bg-gray-100"} `}
               onClick={handleClick}
             >
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center h-10">
                 {/* MARK: TITLE */}
-                <div className="flex-1 flex py-2 px-4 tablet:p-2 cursor-pointer">
+                <button
+                  className="flex-1 flex px-4 tablet:p-2"
+                  onClick={() => navigate(`/notebooks/${_id}`)}
+                >
                   <p className="w-3 text-[10px] mt-[6px]">
                     {primary && <Icons.starSolid />}
                   </p>
-                  <p className="text-sm">
-                    <Link to={`/notebooks/${_id}`}>{title}</Link>
-                  </p>
-                </div>
+                  <p className="text-sm">{title}</p>
+                </button>
 
                 {/* MARK: CREATED AT */}
 
@@ -103,9 +129,9 @@ const NotebookStack = ({ notebooks, parentRef }) => {
 
                 {/* MARK: OPTIONS */}
 
-                <div className="all_notebooks_list text-end flex justify-end items-center relative h-full">
+                <div className="all_notebooks_list flex justify-end items-center relative">
                   <p
-                    className="h-full  cursor-pointer"
+                    className="cursor-pointer"
                     onClick={() => {
                       index === i ? setIndex(null) : setIndex(i);
                     }}
@@ -178,7 +204,6 @@ const NotebookStack = ({ notebooks, parentRef }) => {
           <p>No notebook available</p>
         </div>
       )}
-      <ToastContainer />
     </>
   );
 };

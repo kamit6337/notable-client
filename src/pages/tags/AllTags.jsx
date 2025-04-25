@@ -8,10 +8,12 @@ import alphabet from "../../data/alphabet";
 import ShowAlphabeticalTags from "./ShowAlphabeticalTags";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet";
+import UseTagsQuery from "../../hooks/query/UseTagsQuery";
 
 const AllTags = ({ reset }) => {
   const dispatch = useDispatch();
-  const { tags } = useSelector(userInitialState);
+  // const { tags } = useSelector(userInitialState);
+  const { data: tags } = UseTagsQuery();
   const [showOption, setShowOption] = useState(false);
   const [showSearchedTag, setShowSearchedTag] = useState(false);
   const [searchTagList, setSearchTagList] = useState([]);

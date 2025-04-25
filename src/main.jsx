@@ -10,18 +10,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import environment from "./utils/environment.js";
+import { ToastContainer } from "react-toastify";
 
 const PRODUCTION = "production";
 
 if (environment.NODE_ENV === PRODUCTION) disableReactDevTools();
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
       <BrowserRouter>
         <App />
+        <ToastContainer />
       </BrowserRouter>
     </Provider>
 

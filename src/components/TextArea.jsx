@@ -1,10 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTheNote,
   updatedTheNote,
-  userInitialState,
 } from "../redux/slice/initialUserDataSlice";
 import { Icons } from "../assets/Icons";
 import {
@@ -18,10 +18,18 @@ import Toastify from "../lib/Toastify";
 import convertDateType from "../utils/javaScript/convertDateType";
 import changeDate from "../utils/javaScript/changeDate";
 import ReactQuill from "react-quill";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UNTITLED = "Untitled";
 
-const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
+const TextArea = ({
+  activeNote,
+  noteList,
+  handleActiveNote = null,
+  backToHome = false,
+}) => {
+  const queryClient = useQueryClient();
   const ref = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,21 +37,22 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
   const [typingTimeout, setTypingTimeout] = useState(null); // State to hold typing timeout
   const [showOption, setShowOption] = useState(false);
   const [focusToBody, setFocusToBody] = useState(false);
-  const { notebooks } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
+
+  const activeNotebook = notebooks.find(
+    (notebook) => notebook._id === activeNote.notebook
+  );
+
+  // const activeNotebook = useMemo(() => {
+  //   return notebooks.find((notebook) => notebook._id === activeNote.notebook);
+  // }, [activeNote, notebooks]);
 
   const [value, setValue] = useState({
     title: "",
     body: "",
   });
 
-  const { ToastContainer, showErrorMessage } = Toastify();
-
-  const noteNotebook = useMemo(() => {
-    const findNotebook = notebooks.find(
-      (notebook) => notebook._id === activeNote.notebook
-    );
-    return findNotebook;
-  }, [activeNote, notebooks]);
+  const { showErrorMessage } = Toastify();
 
   useEffect(() => {
     if (activeNote._id) {
@@ -67,9 +76,19 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
             title: title,
             body: body,
           };
-          const updated = await patchToBackend("/notes", { ...obj });
+          const updatedNote = await patchToBackend("/notes", { ...obj });
 
-          dispatch(updatedTheNote(updated.data));
+          const checkStatus = queryClient.getQueryState(["notes"]);
+
+          if (checkStatus.status === "success") {
+            queryClient.setQueryData(["notes"], (prev = []) => {
+              return prev.map((note) =>
+                note._id === updatedNote._id ? updatedNote : note
+              );
+            });
+          }
+
+          // dispatch(updatedTheNote(updated.data));
         } catch (error) {
           showErrorMessage({ message: error.message });
         }
@@ -118,12 +137,34 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         localStorage.setItem("notesId", JSON.stringify(localNotes));
       }
 
-      if (resetSetIndex) {
-        resetSetIndex(activeNote._id);
+      if (handleActiveNote) {
+        const findLastNoteIndex = noteList.findIndex(
+          (note) => note._id === activeNote._id
+        );
+
+        let nextActiveNote = null;
+
+        if (findLastNoteIndex === noteList.length - 1) {
+          nextActiveNote = noteList.at(-2);
+          // setActiveNote(newList.at(-2));
+        } else {
+          nextActiveNote = noteList[findLastNoteIndex + 1];
+        }
+
+        const checkStatus = queryClient.getQueryState(["notes"]);
+
+        if (checkStatus.status === "success") {
+          queryClient.setQueryData(["notes"], (prev = []) => {
+            return prev.filter((note) => note._id !== activeNote._id);
+          });
+        }
+
+        // await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the timeout
+
+        handleActiveNote(nextActiveNote._id);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the timeout
-      dispatch(deleteTheNote(activeNote._id));
+      // dispatch(deleteTheNote(activeNote._id));
       if (backToHome) {
         navigate("/");
       }
@@ -139,7 +180,17 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         noteId: activeNote._id,
       });
 
-      dispatch(updatedTheNote(updatedNote.data));
+      const checkStatus = queryClient.getQueryState(["notes"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notes"], (prev = []) => {
+          return prev.map((note) =>
+            note._id === updatedNote._id ? updatedNote : note
+          );
+        });
+      }
+
+      // dispatch(updatedTheNote(updatedNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -152,7 +203,17 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
         noteId: activeNote._id,
       });
 
-      dispatch(updatedTheNote(updatedNote.data));
+      const checkStatus = queryClient.getQueryState(["notes"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notes"], (prev = []) => {
+          return prev.map((note) =>
+            note._id === updatedNote._id ? updatedNote : note
+          );
+        });
+      }
+
+      // dispatch(updatedTheNote(updatedNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -215,14 +276,14 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
               <div className="w-[2px] h-full bg-gray-400" />
 
               <Link
-                to={`/notebooks/${noteNotebook._id}`}
+                to={`/notebooks/${activeNotebook._id}`}
                 onClick={() => dispatch(toggleHideSidebars({ bool: false }))}
               >
                 <div className="flex items-center gap-1">
                   <p>
                     <Icons.notebooks />
                   </p>
-                  <p className="text-sm">{noteNotebook.title}</p>
+                  <p className="text-sm">{activeNotebook.title}</p>
                 </div>
               </Link>
             </div>
@@ -304,7 +365,6 @@ const TextArea = ({ activeNote, resetSetIndex = null, backToHome = false }) => {
           />
         </div>
       </main>
-      <ToastContainer />
     </>
   );
 };

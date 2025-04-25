@@ -12,11 +12,13 @@ import {
 import { toggleCreateNewNotebook } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NewNotebookForm = ({ update = false, name = "", id }) => {
+  const queryClient = useQueryClient();
   const { notebooks } = useSelector(userInitialState);
   const dispatch = useDispatch();
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const {
     register,
@@ -48,22 +50,38 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
 
   const onSubmit = async (data) => {
     try {
-      if (!update) {
-        const newNotebook = await postToBackend("/notebooks", {
-          name: data.name,
-        });
-        handleCancel();
-        dispatch(pushNewNotebook(newNotebook.data));
-
-        return;
-      }
-
-      const updateNotebook = await patchToBackend("/notebooks", {
-        id,
+      let notebook = await postToBackend("/notebooks", {
         name: data.name,
       });
+      // dispatch(pushNewNotebook(newNotebook.data));
+
+      if (update) {
+        notebook = await patchToBackend("/notebooks", {
+          id,
+          name: data.name,
+        });
+      }
+
+      const checkStatus = queryClient.getQueryState(["notebooks"]);
+
+      if (checkStatus.status === "success") {
+        queryClient.setQueryData(["notebooks"], (prev = []) => {
+          const findNotebook = prev.find(
+            (existingNotebook) => existingNotebook._id === notebook._id
+          );
+
+          if (findNotebook) {
+            return prev.map((prevNotebook) =>
+              prevNotebook._id === notebook._id ? notebook : prevNotebook
+            );
+          }
+
+          return [...prev, notebook];
+        });
+      }
+
       handleCancel();
-      dispatch(updateTheNotebook(updateNotebook.data));
+      // dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -128,6 +146,7 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
               <button
                 type="submit"
                 className="w-full text-lg py-2 bg-green-500 rounded-md text-white"
+                disabled={isSubmitting}
               >
                 {update ? "Update" : "Create"}
               </button>
@@ -135,7 +154,6 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
           </div>
         </div>
       </form>
-      <ToastContainer />
     </div>
   );
 };

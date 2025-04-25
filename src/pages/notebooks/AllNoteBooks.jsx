@@ -1,18 +1,18 @@
 import { Icons } from "../../assets/Icons";
 import { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { userInitialState } from "../../redux/slice/initialUserDataSlice";
+import { useDispatch } from "react-redux";
 import { toggleCreateNewNotebook } from "../../redux/slice/toggleSlice";
 import { useForm } from "react-hook-form";
 import NotebookStack from "./NotebookStack";
 import { Helmet } from "react-helmet";
+import UseNotebooksQuery from "../../hooks/query/UseNotebooksQuery";
 
 const AllNoteBooks = () => {
   const dispatch = useDispatch();
-  const { notebooks } = useSelector(userInitialState);
   const [showFullNotebooks, setShowFullNotebooks] = useState(true);
   const [searchedNotebook, setSearchNotebook] = useState([]);
   const parentRef = useRef(null);
+  const { data: notebooks } = UseNotebooksQuery();
 
   const { register } = useForm({
     defaultValues: {
@@ -79,7 +79,7 @@ const AllNoteBooks = () => {
           <p className="flex-1 py-2 px-4">Title</p>
           <p className="all_notebooks_list">Created At</p>
           <p className="all_notebooks_list">Updated At</p>
-          <p className="all_notebooks_list text-end">Options</p>
+          <p className="all_notebooks_list text-end mr-3">Options</p>
         </div>
 
         {/* MARK: NOTESBOOKS WITH STACK */}

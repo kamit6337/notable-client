@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { sortString } from "../../utils/javaScript/sortOptionsList";
 
 const initialState = {
-  notebooks: null,
-  notes: null,
-  tags: null,
+  notebooks: [],
+  notes: [],
+  tags: [],
   primaryNotebook: null,
 };
 
@@ -13,9 +13,9 @@ const userNotableData = createSlice({
   initialState,
   reducers: {
     userInitialData: (state, { payload }) => {
-      let notebooksList = payload[0].data;
-      let notesList = payload[1].data;
-      let tagsList = payload[2].data;
+      let notebooksList = payload[0];
+      let notesList = payload[1];
+      let tagsList = payload[2];
 
       notebooksList = sortString(notebooksList);
       notesList = sortString(notesList);
