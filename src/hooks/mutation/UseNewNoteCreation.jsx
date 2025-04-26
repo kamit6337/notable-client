@@ -21,8 +21,6 @@ const UseNewNoteCreation = () => {
       navigateLink: `/notebooks/${primaryNotebook._id}`,
     };
 
-    // let navigateLink = `/notebooks/${primaryNotebook._id}`;
-
     if (pathname.startsWith("/notes")) {
       obj.navigateLink = "/notes";
     }

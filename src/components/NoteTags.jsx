@@ -5,11 +5,12 @@ import { Icons } from "../assets/Icons";
 import Toastify from "../lib/Toastify";
 import UseTagsQuery from "../hooks/query/UseTagsQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 
-const NoteTags = ({ activeNote }) => {
+const NoteTags = ({ activeNote, noteList, handleActiveNote }) => {
   const queryClient = useQueryClient();
   const { data: tags } = UseTagsQuery();
-
+  const { pathname } = useLocation();
   const [showTagList, setShowTagList] = useState(false);
   const [index, setIndex] = useState(null);
   const { showErrorMessage } = Toastify();
@@ -55,6 +56,27 @@ const NoteTags = ({ activeNote }) => {
   const handleRemoveNoteTag = async (id) => {
     setIndex(null);
     try {
+      let isTagMatched = false;
+      let nextActiveNote = null;
+
+      if (pathname.startsWith("/tags/")) {
+        const tagId = pathname.split("/").at(-1);
+
+        if (tagId === id) {
+          const findLastNoteIndex = noteList.findIndex(
+            (note) => note._id === activeNote._id
+          );
+
+          if (findLastNoteIndex === noteList.length - 1) {
+            nextActiveNote = noteList.at(-2);
+          } else {
+            nextActiveNote = noteList[findLastNoteIndex + 1];
+          }
+
+          isTagMatched = true;
+        }
+      }
+
       const updatedNote = await patchToBackend("/notes", {
         id: activeNote._id,
         tagId: id,
@@ -69,6 +91,10 @@ const NoteTags = ({ activeNote }) => {
             note._id === updatedNote._id ? updatedNote : note
           );
         });
+      }
+
+      if (isTagMatched) {
+        handleActiveNote(nextActiveNote?._id);
       }
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });

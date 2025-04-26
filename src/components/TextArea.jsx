@@ -77,8 +77,6 @@ const TextArea = ({
               );
             });
           }
-
-          // dispatch(updatedTheNote(updated.data));
         } catch (error) {
           showErrorMessage({ message: error.message });
         }
@@ -136,7 +134,6 @@ const TextArea = ({
 
         if (findLastNoteIndex === noteList.length - 1) {
           nextActiveNote = noteList.at(-2);
-          // setActiveNote(newList.at(-2));
         } else {
           nextActiveNote = noteList[findLastNoteIndex + 1];
         }
@@ -149,12 +146,9 @@ const TextArea = ({
           });
         }
 
-        // await new Promise((resolve) => setTimeout(resolve, 100)); // Adjust the timeout
-
         handleActiveNote(nextActiveNote._id);
       }
 
-      // dispatch(deleteTheNote(activeNote._id));
       if (backToHome) {
         navigate("/");
       }

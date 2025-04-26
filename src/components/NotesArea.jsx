@@ -82,6 +82,11 @@ const NotesArea = ({
   };
 
   const handleActiveNote = (noteId) => {
+    if (!noteId) {
+      navigate(currentPathname);
+      return;
+    }
+
     navigate(`${currentPathname}?note=${noteId}`);
   };
 
@@ -132,7 +137,11 @@ const NotesArea = ({
           />
         </div>
         <div className="absolute z-10 bottom-0 left-0 w-full h-12 ">
-          <NoteTags activeNote={activeNote} />
+          <NoteTags
+            activeNote={activeNote}
+            noteList={sortedList}
+            handleActiveNote={handleActiveNote}
+          />
         </div>
       </div>
     </section>

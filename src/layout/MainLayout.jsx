@@ -15,7 +15,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isError, error, isSuccess, isLoading, data } = UseLoginCheck();
+  const { isError, error, isSuccess, isLoading } = UseLoginCheck();
 
   // NOTE: INITIALLY FETCH ALL NOTEBOOKS, NOTES AND TAGS RELATED TO THAT USER
   const {
@@ -49,10 +49,6 @@ const MainLayout = () => {
   if (!isSuccess || !initialFetchIsSuccess) {
     return null;
   }
-
-  console.log("user", data);
-  console.log("error", error);
-  console.log("isSuccess", isSuccess);
 
   return (
     <section className="w-full h-screen">
