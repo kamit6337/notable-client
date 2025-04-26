@@ -146,7 +146,7 @@ const TextArea = ({
           });
         }
 
-        handleActiveNote(nextActiveNote._id);
+        handleActiveNote(nextActiveNote?._id);
       }
 
       if (backToHome) {
