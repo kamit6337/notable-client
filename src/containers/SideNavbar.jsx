@@ -1,17 +1,11 @@
-import { QueryCache } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { postToBackend } from "../utils/api/userApi";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
 import UseLoginCheck from "../hooks/query/UseLoginCheck";
 import { getAuthReq } from "../utils/api/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createdNewNote,
-  userInitialState,
-} from "../redux/slice/initialUserDataSlice";
 import AllTags from "../pages/tags/AllTags";
 import { useState } from "react";
 import {
-  toggleNoteActivation,
   toggleNoteListIcon,
   toggleSearchForm,
   toggleSettingForm,
@@ -22,7 +16,6 @@ import ShortcutPage from "../components/ShortcutPage";
 import CheckPathname from "../components/CheckPathname";
 import Toastify from "../lib/Toastify";
 import UseNewNoteCreation from "../hooks/mutation/UseNewNoteCreation";
-import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
 
 const list = [
   {
@@ -46,16 +39,13 @@ const SideNavbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data: user } = UseLoginCheck();
-  const queryCache = new QueryCache();
-  const { data: notebooks } = UseNotebooksQuery();
-  // const { primaryNotebook } = useSelector(userInitialState);
+  const queryClient = useQueryClient();
   const [showTagList, setShowTagList] = useState(false);
-  const { pathname } = useLocation();
   const [showShortcut, setShowShorcut] = useState(false);
   const [showAccountOptions, setShowAccountOptions] = useState(false);
   const { notelistIcon } = useSelector(toggleState);
   const { pathnameOK } = CheckPathname();
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const { mutate } = UseNewNoteCreation();
 
@@ -63,7 +53,7 @@ const SideNavbar = () => {
     setShowAccountOptions(false);
     try {
       await getAuthReq("/logout");
-      queryCache.clear();
+      queryClient.clear();
       localStorage.removeItem("notesId");
       localStorage.removeItem("sort");
       navigate("/login", { state: { refresh: true } });
@@ -71,55 +61,6 @@ const SideNavbar = () => {
     } catch (error) {
       showErrorMessage({
         message: error.message || "Issue in Logout. Try later",
-      });
-    }
-  };
-
-  const handleNoteCreation = async () => {
-    try {
-      // console.log("pathname", pathname);
-      // return;
-
-      const primaryNotebook = notebooks.find(
-        (notebook) => notebook.primary === true
-      );
-
-      const obj = {
-        id: primaryNotebook._id,
-        navigateLink: `/notebooks/${primaryNotebook._id}`,
-      };
-
-      // let navigateLink = `/notebooks/${primaryNotebook._id}`;
-
-      if (pathname.startsWith("/notes")) {
-        obj.navigateLink = "/notes";
-      }
-
-      if (pathname.startsWith("/notebooks/")) {
-        const notebookId = pathname.split("/").at(-1);
-        obj.id = notebookId;
-        obj.navigateLink = pathname;
-      }
-
-      if (pathname.startsWith("/tags/")) {
-        const tagId = pathname.split("/").at(-1);
-        obj.tagId = tagId;
-        obj.navigateLink = pathname;
-      }
-
-      mutate(obj);
-
-      // const newNote = await postToBackend("/notes", obj);
-      // dispatch(createdNewNote(newNote.data));
-      // await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-      // dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
-      // await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-      // navigate(navigateLink);
-    } catch (error) {
-      showErrorMessage({
-        message: error.message || "Issue in create note. Try later",
       });
     }
   };

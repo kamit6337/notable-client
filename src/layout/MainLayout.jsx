@@ -15,10 +15,9 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // WORK: MAKING CONTINUOUS CHECKING ONLY AFTER SUCCESSFUL LOGGED IN THAT IS USER IS AUTHENTICATED EVERY 5 MINUTES, THAT IT DOES NOT MAKE ANY CHANGE IN TOKEN
   const { isError, error, isSuccess, isLoading } = UseLoginCheck();
 
-  // WORK: INITIALLY FETCH ALL NOTEBOOKS AND NOTES RELATED TO THAT USER
+  // NOTE: INITIALLY FETCH ALL NOTEBOOKS, NOTES AND TAGS RELATED TO THAT USER
   const {
     isLoading: initialFetchIsLoading,
     error: initialFetchError,
@@ -31,7 +30,6 @@ const MainLayout = () => {
     }
   }, [error]);
 
-  // WORK: IF ERROR COMES IN CONTINUOUS CHECKING, SHOW ERROR PAGE WHICH THEN TAKE TO LOGIN PAGE
   useEffect(() => {
     if (isError) {
       navigate(`/login?msg=${error?.message}`);

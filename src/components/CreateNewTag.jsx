@@ -1,11 +1,7 @@
+/* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
 import { Icons } from "../assets/Icons";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  createdNewTag,
-  updateTheTag,
-  userInitialState,
-} from "../redux/slice/initialUserDataSlice";
+import { useDispatch } from "react-redux";
 import { toggleCreateNewTag } from "../redux/slice/toggleSlice";
 import { useEffect } from "react";
 import { patchToBackend, postToBackend } from "../utils/api/userApi";
@@ -14,10 +10,8 @@ import Loading from "../containers/Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import UseTagsQuery from "../hooks/query/UseTagsQuery";
 
-/* eslint-disable react/prop-types */
 const CreateNewTag = ({ update = false, name = "", id }) => {
   const dispatch = useDispatch();
-  // const { tags } = useSelector(userInitialState);
   const { data: tags } = UseTagsQuery();
   const { showErrorMessage } = Toastify();
   const queryClient = useQueryClient();
@@ -48,8 +42,6 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
   const onSubmit = async (data) => {
     try {
       let newOrUpdatedTag;
-      // handleCancel();
-      // dispatch(createdNewTag(tagCreated.data));
 
       if (update) {
         newOrUpdatedTag = await patchToBackend("/tags", {
@@ -77,8 +69,6 @@ const CreateNewTag = ({ update = false, name = "", id }) => {
       }
 
       handleCancel();
-
-      // dispatch(updateTheTag(tagUpdated.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }

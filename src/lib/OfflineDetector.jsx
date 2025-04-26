@@ -33,10 +33,6 @@ const OfflineDetector = () => {
     }
   }, [isOnline]);
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
   if (showNetworkPage) {
     return (
       <section
@@ -44,15 +40,7 @@ const OfflineDetector = () => {
         style={{ zIndex: 9999 }}
       >
         <main className="border bg-white text-black p-20 rounded">
-          <p className="whitespace-nowrap">
-            Network problem. Check your internet connection
-          </p>
-          {/* <p
-            className="w-full border rounded py-2 cursor-pointer mt-10 text-center hover:bg-gray-100 text-slate-600 duration-500"
-            onClick={refreshPage}
-          >
-            Refresh
-          </p> */}
+          <p>Network problem. Check your internet connection</p>
         </main>
       </section>
     );

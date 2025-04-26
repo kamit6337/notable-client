@@ -1,37 +1,19 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import {
-  createdNewNote,
-  userInitialState,
-} from "../../redux/slice/initialUserDataSlice";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import NotesArea from "../../components/NotesArea";
 import { Icons } from "../../assets/Icons";
 import { Helmet } from "react-helmet";
-import { postToBackend } from "../../utils/api/userApi";
-import { toggleNoteActivation } from "../../redux/slice/toggleSlice";
-import Toastify from "../../lib/Toastify";
 import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 import UseTagsQuery from "../../hooks/query/UseTagsQuery";
 import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
 
 const TagNotes = () => {
-  // const { notes, tags, primaryNotebook } = useSelector(userInitialState);
   const { data: notes } = UseNotesQuery();
   const { data: tags } = UseTagsQuery();
   const { mutate } = UseNewNoteCreation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { pathname } = useLocation();
   const { id } = useParams();
   const noteId = useSearchParams()[0].get("note");
-
-  const { ToastContainer, showErrorMessage } = Toastify();
 
   const [noteList, tagName] = useMemo(() => {
     const findTag = tags.find((tag) => tag._id === id);
@@ -48,31 +30,6 @@ const TagNotes = () => {
       navigate(`/tags/${id}?note=${findNoteId}`);
     }
   }, [id, noteList, noteId, navigate]);
-
-  // const handleNoteCreation = async () => {
-  //   try {
-  //     const navigateLink = pathname;
-  //     const obj = {
-  //       id: primaryNotebook._id,
-  //     };
-
-  //     const tagId = pathname.split("/").at(-1);
-  //     obj.tagId = tagId;
-
-  //     const newNote = await postToBackend("/notes", obj);
-  //     dispatch(createdNewNote(newNote.data));
-  //     await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-  //     dispatch(toggleNoteActivation({ bool: true, data: newNote.data }));
-  //     await new Promise((resolve) => setTimeout(resolve, 200)); // Adjust the time
-
-  //     navigate(navigateLink);
-  //   } catch (error) {
-  //     showErrorMessage({
-  //       message: error.message || "Issue in create note. Try later",
-  //     });
-  //   }
-  // };
 
   if (noteList.length === 0 || !noteId) {
     return (
@@ -98,7 +55,6 @@ const TagNotes = () => {
             to create a new Note on this Tag
           </p>
         </div>
-        <ToastContainer />
       </>
     );
   }

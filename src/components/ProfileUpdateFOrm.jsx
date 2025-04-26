@@ -36,8 +36,7 @@ const ProfileUpdateForm = ({ handleClose }) => {
     delete formData.confirmPassword;
 
     try {
-      const updateProfile = await patchAuthReq("/update", formData);
-      console.log("updateProfile", updateProfile);
+      await patchAuthReq("/update", formData);
       handleClose();
       refetch();
     } catch (error) {

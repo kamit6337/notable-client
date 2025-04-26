@@ -3,18 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import TextArea from "./TextArea";
 import NoteTags from "./NoteTags";
 import SideNoteListBar from "./SideNoteListBar";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  toggleNoteActivation,
-  toggleNoteListIcon,
-  toggleState,
-} from "../redux/slice/toggleSlice";
-import { userInitialState } from "../redux/slice/initialUserDataSlice";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   sortFunction,
   sortOptionsList,
 } from "../utils/javaScript/sortOptionsList";
+import { toggleState } from "../redux/slice/toggleSlice";
 
 const NotesArea = ({
   noteList,
@@ -24,12 +19,8 @@ const NotesArea = ({
   currentPathname,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { hideSidebars, notelistIcon, isNoteActivated } =
-    useSelector(toggleState);
+  const { hideSidebars, notelistIcon } = useSelector(toggleState);
   const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
-
-  // const { notes } = useSelector(userInitialState);
 
   const activeNote = useMemo(() => {
     return noteList.find((note) => note._id === activeNoteId);
@@ -55,24 +46,6 @@ const NotesArea = ({
     });
     setNewSortOptions(updateSortOptions);
   }, [noteList, title]);
-
-  console.log("activeNote", activeNote);
-
-  // useEffect(() => {
-  //   if (!list) return;
-  //   setNewlist(list);
-  //   dispatch(toggleNoteListIcon({ haveList: true }));
-  //   if (!activeNote) {
-  //     // setActiveNote(list[0]);
-  //   } else {
-  //     const findNote = list.find((note) => note._id === activeNote._id);
-  //     if (!findNote) {
-  //       // setActiveNote(list[0]);
-  //     } else {
-  //       // setActiveNote(findNote);
-  //     }
-  //   }
-  // }, [list, activeNote, dispatch]);
 
   useEffect(() => {
     if (activeNoteId) {
@@ -106,25 +79,6 @@ const NotesArea = ({
       return newObj;
     });
     setNewSortOptions(updateSortOptions);
-  };
-
-  useEffect(() => {
-    if (isNoteActivated.bool) {
-      setActiveNote(isNoteActivated.data);
-      dispatch(toggleNoteActivation({ bool: false }));
-    }
-  }, [isNoteActivated, dispatch]);
-
-  const resetSetIndex = async (id) => {
-    // const findLastNoteIndex = sortedList.findIndex((note) => note._id === id);
-    // if (findLastNoteIndex === sortedList.length - 1) {
-    //   const activeNote = sortedList.at(-2);
-    //   handleActiveNote(activeNote._id);
-    //   // setActiveNote(newList.at(-2));
-    // } else {
-    //   const activeNote = sortedList[findLastNoteIndex - 1];
-    //   handleActiveNote(activeNote._id);
-    // }
   };
 
   const handleActiveNote = (noteId) => {

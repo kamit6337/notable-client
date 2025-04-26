@@ -1,9 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux";
-import {
-  deletedNotebook,
-  deletedTheTag,
-} from "../redux/slice/initialUserDataSlice";
 import { deleteToBackend } from "../utils/api/userApi";
 import { toggleDeleteForm } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
@@ -14,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const DeleteForm = ({ data: { title, _id }, tag = false }) => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCancel = () => {
@@ -34,7 +30,6 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
         });
       }
       handleCancel();
-      // dispatch(deletedNotebook(_id));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     } finally {
@@ -56,7 +51,6 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
       }
 
       handleCancel();
-      // dispatch(deletedTheTag(_id));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     } finally {
@@ -98,7 +92,6 @@ const DeleteForm = ({ data: { title, _id }, tag = false }) => {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

@@ -1,6 +1,4 @@
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import { useMemo } from "react";
 import TextArea from "../../components/TextArea";
 import NoteTags from "../../components/NoteTags";
@@ -8,7 +6,6 @@ import { Helmet } from "react-helmet";
 import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 
 const SingleNote = () => {
-  // const { notes } = useSelector(userInitialState);
   const { data: notes } = UseNotesQuery();
   const { id } = useParams();
 

@@ -1,7 +1,5 @@
 import { useEffect, useMemo } from "react";
 import UseLoginCheck from "../../hooks/query/UseLoginCheck";
-import { useSelector } from "react-redux";
-import { userInitialState } from "../../redux/slice/initialUserDataSlice";
 import CustomImages from "../../assets/images";
 import currentDate from "../../utils/javaScript/currentDate";
 import { Link, useLocation } from "react-router-dom";
@@ -14,10 +12,9 @@ import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 
 const Home = () => {
   const { data } = UseLoginCheck();
-  // const { notes } = useSelector(userInitialState);
   const { data: notes } = UseNotesQuery();
   const { state } = useLocation();
-  const { ToastContainer, showSuccessMessage } = Toastify();
+  const { showSuccessMessage } = Toastify();
 
   useEffect(() => {
     if (state?.message) {

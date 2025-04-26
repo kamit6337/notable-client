@@ -2,10 +2,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteTheNote,
-  updatedTheNote,
-} from "../redux/slice/initialUserDataSlice";
 import { Icons } from "../assets/Icons";
 import {
   deleteToBackend,
@@ -20,8 +16,6 @@ import changeDate from "../utils/javaScript/changeDate";
 import ReactQuill from "react-quill";
 import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
 import { useQueryClient } from "@tanstack/react-query";
-
-const UNTITLED = "Untitled";
 
 const TextArea = ({
   activeNote,
@@ -42,10 +36,6 @@ const TextArea = ({
   const activeNotebook = notebooks.find(
     (notebook) => notebook._id === activeNote.notebook
   );
-
-  // const activeNotebook = useMemo(() => {
-  //   return notebooks.find((notebook) => notebook._id === activeNote.notebook);
-  // }, [activeNote, notebooks]);
 
   const [value, setValue] = useState({
     title: "",
@@ -108,7 +98,7 @@ const TextArea = ({
       };
     });
 
-    handleDatabaseChange(activeNote.title || UNTITLED, formattedContent);
+    handleDatabaseChange(activeNote.title, formattedContent);
   };
 
   const changeTitle = (e) => {
@@ -116,11 +106,11 @@ const TextArea = ({
 
     const newValue = {
       ...value,
-      title: newTitle || UNTITLED,
+      title: newTitle,
     };
 
     setValue(newValue);
-    handleDatabaseChange(newTitle || UNTITLED, value.body);
+    handleDatabaseChange(newTitle, value.body);
   };
 
   const handleDeleteNote = async () => {
@@ -290,7 +280,7 @@ const TextArea = ({
             <div className="w-full">
               <input
                 type="text"
-                value={value.title === UNTITLED ? "" : value.title}
+                value={value.title}
                 className="w-full h-full  text-xl font-bold outline-none bg-my_notearea_white"
                 placeholder="Untitled"
                 onChange={changeTitle}

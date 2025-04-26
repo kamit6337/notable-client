@@ -1,9 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useDispatch, useSelector } from "react-redux";
-import {
-  updatedTheNote,
-  userInitialState,
-} from "../redux/slice/initialUserDataSlice";
 import { useMemo, useState } from "react";
 import { patchToBackend } from "../utils/api/userApi";
 import { Icons } from "../assets/Icons";
@@ -13,17 +8,14 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const NoteTags = ({ activeNote }) => {
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-  // const { tags, notes } = useSelector(userInitialState);
   const { data: tags } = UseTagsQuery();
 
   const [showTagList, setShowTagList] = useState(false);
   const [index, setIndex] = useState(null);
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const [modifyTags, noteTagList] = useMemo(() => {
     let filterTags = [...tags];
-    // const findNote = notes.find((note) => note._id === activeNote._id);
     const populateTags = activeNote?.tags.map((tagId) => {
       const findtag = tags.find((tag) => tag._id === tagId);
       filterTags = filterTags.filter((tag) => tag._id !== tagId);
@@ -35,8 +27,6 @@ const NoteTags = ({ activeNote }) => {
 
     return [filterTags, populateTags];
   }, [activeNote, tags]);
-
-  console.log("noteTagList", noteTagList);
 
   const handleAddTagToNote = async (tagId) => {
     setShowTagList(false);
@@ -57,8 +47,6 @@ const NoteTags = ({ activeNote }) => {
           );
         });
       }
-
-      // dispatch(updatedTheNote(addTagToNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -82,8 +70,6 @@ const NoteTags = ({ activeNote }) => {
           );
         });
       }
-
-      // dispatch(updatedTheNote(removeTagToNote.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }

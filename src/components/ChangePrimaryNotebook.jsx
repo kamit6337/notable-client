@@ -1,9 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useDispatch, useSelector } from "react-redux";
-import {
-  changeThePrimaryNotebook,
-  userInitialState,
-} from "../redux/slice/initialUserDataSlice";
 import { useMemo, useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { patchToBackend } from "../utils/api/userApi";
@@ -13,11 +8,9 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const ChangePrimaryNotebook = ({ handleClose }) => {
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-  // const { primaryNotebook, notebooks } = useSelector(userInitialState);
   const { data: notebooks } = UseNotebooksQuery();
   const [notebookId, setNotebookId] = useState(null);
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const filterNotebooks = useMemo(() => {
     const filter = notebooks.filter((notebook) => !notebook.primary);
@@ -59,13 +52,6 @@ const ChangePrimaryNotebook = ({ handleClose }) => {
       }
 
       handleClose();
-
-      // dispatch(
-      //   changeThePrimaryNotebook({
-      //     id: primaryNotebook._id,
-      //     changedId: notebookId,
-      //   })
-      // );
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }
@@ -113,7 +99,6 @@ const ChangePrimaryNotebook = ({ handleClose }) => {
           Change
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 };

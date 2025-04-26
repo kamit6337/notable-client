@@ -16,7 +16,7 @@ const CreateNewPassword = () => {
   const email = searchParams.get("email");
   const token = searchParams.get("token");
 
-  const { ToastContainer, showErrorMessage, showSuccessMessage } = Toastify();
+  const { showErrorMessage, showSuccessMessage } = Toastify();
 
   const {
     register,
@@ -146,7 +146,6 @@ const CreateNewPassword = () => {
           </div>
         </form>
       </section>
-      <ToastContainer />
     </>
   );
 };

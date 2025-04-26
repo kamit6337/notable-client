@@ -3,12 +3,7 @@ import { useEffect } from "react";
 import { Icons } from "../assets/Icons";
 import { patchToBackend, postToBackend } from "../utils/api/userApi";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  pushNewNotebook,
-  updateTheNotebook,
-  userInitialState,
-} from "../redux/slice/initialUserDataSlice";
+import { useDispatch } from "react-redux";
 import { toggleCreateNewNotebook } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
@@ -17,7 +12,6 @@ import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
 
 const NewNotebookForm = ({ update = false, name = "", id }) => {
   const queryClient = useQueryClient();
-  // const { notebooks } = useSelector(userInitialState);
   const { data: notebooks } = UseNotebooksQuery();
   const dispatch = useDispatch();
   const { showErrorMessage } = Toastify();
@@ -53,7 +47,6 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
   const onSubmit = async (data) => {
     try {
       let notebook;
-      // dispatch(pushNewNotebook(newNotebook.data));
 
       if (update) {
         notebook = await patchToBackend("/notebooks", {
@@ -85,7 +78,6 @@ const NewNotebookForm = ({ update = false, name = "", id }) => {
       }
 
       handleCancel();
-      // dispatch(updateTheNotebook(updateNotebook.data));
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
     }

@@ -8,7 +8,7 @@ import { Helmet } from "react-helmet";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
-  const { ToastContainer, showSuccessMessage, showErrorMessage } = Toastify();
+  const { showSuccessMessage, showErrorMessage } = Toastify();
 
   const {
     register,
@@ -98,7 +98,6 @@ const ForgotPasswordPage = () => {
           </p>
         </form>
       </section>
-      <ToastContainer />
     </>
   );
 };

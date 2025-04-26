@@ -1,14 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useLayoutEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { Icons } from "../assets/Icons";
 import convertDateType from "../utils/javaScript/convertDateType";
 import convertHTMLtoString from "../utils/javaScript/convertHTMLtoString";
-import {
-  sortFunction,
-  sortOptionsList,
-} from "../utils/javaScript/sortOptionsList";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleNoteActivation, toggleState } from "../redux/slice/toggleSlice";
 
 const SideNoteListBar = ({
   title,
@@ -20,38 +14,8 @@ const SideNoteListBar = ({
   handleSort,
   sortOptions,
 }) => {
-  const dispatch = useDispatch();
   const [showSortOption, setShowSortOption] = useState(false);
   const [showTitleHover, setShowTitleHover] = useState(false);
-  // const [newList, setNewList] = useState(noteList);
-  // const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
-  const { isNoteActivated } = useSelector(toggleState);
-
-  // useEffect(() => {
-  //   const localSort = JSON.parse(localStorage.getItem("sort"));
-  //   if (!localSort) {
-  //     setNewList(noteList);
-  //     return;
-  //   }
-  //   setNewList(sortFunction(noteList, localSort.id));
-  //   const updateSortOptions = sortOptionsList.map((obj) => {
-  //     const newObj = { ...obj };
-  //     if (newObj.id === localSort.id) {
-  //       newObj.active = true;
-  //       return newObj;
-  //     }
-  //     delete newObj.active;
-  //     return newObj;
-  //   });
-  //   setNewSortOptions(updateSortOptions);
-  // }, [noteList]);
-
-  useEffect(() => {
-    if (isNoteActivated.bool) {
-      handleActiveNote(isNoteActivated.data);
-      dispatch(toggleNoteActivation({ bool: false }));
-    }
-  }, [isNoteActivated, dispatch, handleActiveNote]);
 
   useLayoutEffect(() => {
     const childRef = document.getElementById(activeNoteId);
@@ -59,31 +23,6 @@ const SideNoteListBar = ({
       childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
     }
   }, [activeNoteId, noteList, scrolling]);
-
-  // const showActiveNoteIntoView = () => {
-  //   const childRef = document.getElementById(activeNoteId);
-  //   if (childRef) {
-  //     childRef.scrollIntoView({ behavior: "instant", block: "nearest" });
-  //   }
-  // };
-
-  // const handleSort = (id) => {
-  //   setShowSortOption(false);
-  //   localStorage.setItem("sort", JSON.stringify({ id }));
-
-  //   setNewList(sortFunction(newList, id));
-
-  //   const updateSortOptions = newSortOptions.map((obj) => {
-  //     const newObj = { ...obj };
-  //     if (newObj.id === id) {
-  //       newObj.active = true;
-  //       return newObj;
-  //     }
-  //     delete newObj.active;
-  //     return newObj;
-  //   });
-  //   setNewSortOptions(updateSortOptions);
-  // };
 
   return (
     <div className="w-full bg-gray-50 h-full  border-r border-gray-300">

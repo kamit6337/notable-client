@@ -18,7 +18,7 @@ const Login = () => {
 
   const errMsg = searchParams.get("msg");
 
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const {
     register,
@@ -182,7 +182,6 @@ const Login = () => {
             <p>Login with Google</p>
           </div>
         </div>
-        <ToastContainer />
       </div>
     </>
   );

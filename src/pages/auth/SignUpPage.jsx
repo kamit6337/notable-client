@@ -33,7 +33,7 @@ const SignUpPage = () => {
     },
   });
 
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const onSubmit = async (data) => {
     const formData = { ...data };
@@ -238,7 +238,6 @@ const SignUpPage = () => {
             <p>Login with Google</p>
           </div>
         </div>
-        <ToastContainer />
       </div>
     </>
   );
