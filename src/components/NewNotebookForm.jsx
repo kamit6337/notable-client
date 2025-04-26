@@ -13,10 +13,12 @@ import { toggleCreateNewNotebook } from "../redux/slice/toggleSlice";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
 import { useQueryClient } from "@tanstack/react-query";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
 
 const NewNotebookForm = ({ update = false, name = "", id }) => {
   const queryClient = useQueryClient();
-  const { notebooks } = useSelector(userInitialState);
+  // const { notebooks } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
   const dispatch = useDispatch();
   const { showErrorMessage } = Toastify();
 

@@ -146,6 +146,7 @@ const NotesArea = ({
             noteList={sortedList}
             title={title}
             handleSort={handleSort}
+            sortOptions={newSortOptions}
           />
         </div>
       )}
@@ -161,6 +162,8 @@ const NotesArea = ({
           noteList={noteList}
           title={title}
           scrolling={notelistIcon.bool}
+          handleSort={handleSort}
+          sortOptions={newSortOptions}
         />
       </div>
 

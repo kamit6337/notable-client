@@ -24,7 +24,9 @@ const ForgotPasswordPage = () => {
     const { email } = data;
     try {
       await postAuthReq("/forgot", { email });
-      showSuccessMessage({ message: "Successfully Sent OTP to your Email ID" });
+      showSuccessMessage({
+        message: "Successfully Send Reset Password Link to your Email ID",
+      });
       setTimeout(() => {
         navigate("/login");
       }, 2000);

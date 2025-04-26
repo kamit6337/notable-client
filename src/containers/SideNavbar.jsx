@@ -45,7 +45,7 @@ const list = [
 const SideNavbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { data } = UseLoginCheck();
+  const { data: user } = UseLoginCheck();
   const queryCache = new QueryCache();
   const { data: notebooks } = UseNotebooksQuery();
   // const { primaryNotebook } = useSelector(userInitialState);
@@ -151,12 +151,13 @@ const SideNavbar = () => {
           >
             <div className="w-8 sm_lap:w-7 rounded-full">
               <img
-                src={data?.photo}
+                src={user.photo}
                 alt="profile"
                 className="w-full rounded-full object-cover"
+                loading="lazy"
               />
             </div>
-            <p className="hover:text-white ">{data?.name.split(" ")[0]}</p>
+            <p className="hover:text-white ">{user.name.split(" ")[0]}</p>
           </div>
           {showAccountOptions && (
             <div
@@ -169,12 +170,12 @@ const SideNavbar = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-8 rounded-full">
                     <img
-                      src={data?.photo}
+                      src={user.photo}
                       alt="profile"
                       className="w-full rounded-full object-cover"
                     />
                   </div>
-                  <p>{data?.email}</p>
+                  <p>{user.email}</p>
                 </div>
               </div>
               <div className="w-full h-[1px] bg-gray-200 my-3" />

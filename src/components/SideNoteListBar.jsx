@@ -18,12 +18,13 @@ const SideNoteListBar = ({
   handleActiveNote,
   scrolling,
   handleSort,
+  sortOptions,
 }) => {
   const dispatch = useDispatch();
   const [showSortOption, setShowSortOption] = useState(false);
   const [showTitleHover, setShowTitleHover] = useState(false);
   // const [newList, setNewList] = useState(noteList);
-  const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
+  // const [newSortOptions, setNewSortOptions] = useState(sortOptionsList);
   const { isNoteActivated } = useSelector(toggleState);
 
   // useEffect(() => {
@@ -127,7 +128,7 @@ const SideNoteListBar = ({
                 className="absolute z-20 top-full mt-3 left-0 bg-white border whitespace-nowrap  rounded-lg py-4 text-sm"
                 onMouseLeave={() => setShowSortOption(false)}
               >
-                {newSortOptions.map((obj, i) => {
+                {sortOptions.map((obj, i) => {
                   const { id, name, active } = obj;
 
                   return (

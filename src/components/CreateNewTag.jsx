@@ -12,11 +12,13 @@ import { patchToBackend, postToBackend } from "../utils/api/userApi";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
 import { useQueryClient } from "@tanstack/react-query";
+import UseTagsQuery from "../hooks/query/UseTagsQuery";
 
 /* eslint-disable react/prop-types */
 const CreateNewTag = ({ update = false, name = "", id }) => {
   const dispatch = useDispatch();
-  const { tags } = useSelector(userInitialState);
+  // const { tags } = useSelector(userInitialState);
+  const { data: tags } = UseTagsQuery();
   const { showErrorMessage } = Toastify();
   const queryClient = useQueryClient();
 

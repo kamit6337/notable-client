@@ -5,10 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { userInitialState } from "../redux/slice/initialUserDataSlice";
 import { Link } from "react-router-dom";
 import { toggleSearchForm } from "../redux/slice/toggleSlice";
+import UseNotebooksQuery from "../hooks/query/UseNotebooksQuery";
+import UseNotesQuery from "../hooks/query/UseNotesQuery";
 
 const SearchForm = () => {
   const dispatch = useDispatch();
-  const { notebooks, notes } = useSelector(userInitialState);
+  // const { notebooks, notes } = useSelector(userInitialState);
+  const { data: notebooks } = UseNotebooksQuery();
+  const { data: notes } = UseNotesQuery();
+
   const [searchedList, setSearchedList] = useState([]);
 
   const { register, setFocus } = useForm({
