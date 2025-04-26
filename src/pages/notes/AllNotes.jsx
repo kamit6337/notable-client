@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const AllNotes = () => {
   const navigate = useNavigate();
   const { data: notes } = UseNotesQuery();
-  const { mutate } = UseNewNoteCreation();
+  const { mutate, isPending } = UseNewNoteCreation();
   const noteId = useSearchParams()[0].get("note");
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const AllNotes = () => {
             Click on{" "}
             <span
               className="italic font-semibold cursor-pointer"
-              onClick={() => mutate()}
+              onClick={() => (isPending ? "" : mutate())}
             >
               Note
             </span>{" "}

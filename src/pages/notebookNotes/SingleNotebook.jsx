@@ -21,7 +21,7 @@ const SingleNotebook = () => {
     return [filterNotebookNotes, findNotebook.title];
   }, [id, notes, notebooks]);
 
-  const { mutate } = UseNewNoteCreation();
+  const { mutate, isPending } = UseNewNoteCreation();
 
   useEffect(() => {
     if (noteId) return;
@@ -48,7 +48,7 @@ const SingleNotebook = () => {
             Click on{" "}
             <span
               className="italic font-semibold cursor-pointer"
-              onClick={() => mutate()}
+              onClick={() => (isPending ? "" : mutate())}
             >
               Note
             </span>{" "}

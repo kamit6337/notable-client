@@ -10,7 +10,7 @@ import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
 const TagNotes = () => {
   const { data: notes } = UseNotesQuery();
   const { data: tags } = UseTagsQuery();
-  const { mutate } = UseNewNoteCreation();
+  const { mutate, isPending } = UseNewNoteCreation();
   const navigate = useNavigate();
   const { id } = useParams();
   const noteId = useSearchParams()[0].get("note");
@@ -48,7 +48,7 @@ const TagNotes = () => {
             Click on{" "}
             <span
               className="italic font-semibold cursor-pointer"
-              onClick={() => mutate()}
+              onClick={() => (isPending ? "" : mutate())}
             >
               Note
             </span>{" "}

@@ -47,7 +47,7 @@ const SideNavbar = () => {
   const { pathnameOK } = CheckPathname();
   const { showErrorMessage } = Toastify();
 
-  const { mutate } = UseNewNoteCreation();
+  const { mutate, isPending } = UseNewNoteCreation();
 
   const handleLogout = async () => {
     setShowAccountOptions(false);
@@ -152,7 +152,7 @@ const SideNavbar = () => {
 
           <div
             className="p-2 px-4 sm_lap:p-[6px] sm_lap:px-3 rounded-2xl bg-my_note_green text-white cursor-pointer flex items-center gap-2"
-            onClick={() => mutate()}
+            onClick={() => (isPending ? "" : mutate())}
           >
             <p>
               <Icons.plus />
