@@ -2,8 +2,8 @@ import { useDispatch } from "react-redux";
 import { toggleSettingForm } from "../redux/slice/toggleSlice";
 import { Icons } from "../assets/Icons";
 import { useState } from "react";
-import ProfileUpdateForm from "./ProfileUpdateForm";
 import ChangePrimaryNotebook from "./ChangePrimaryNotebook";
+import UserProfileUpdateForm from "./UserProfileUpdateForm";
 
 const accountOptionsList = [
   {
@@ -66,7 +66,7 @@ const SettingFormPage = () => {
 
           <main className="flex-1 px-8 py-5">
             {index === 1 && <ChangePrimaryNotebook handleClose={handleClose} />}
-            {index === 2 && <ProfileUpdateForm handleClose={handleClose} />}
+            {index === 2 && <UserProfileUpdateForm handleClose={handleClose} />}
           </main>
         </section>
       </main>

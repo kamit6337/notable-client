@@ -7,10 +7,10 @@ import Loading from "../containers/Loading";
 import { patchAuthReq } from "../utils/api/authApi";
 import Toastify from "../lib/Toastify";
 
-const ProfileUpdateForm = ({ handleClose }) => {
+const UserProfileUpdateForm = ({ handleClose }) => {
   const { data: user, refetch } = UseLoginCheck();
 
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { showErrorMessage } = Toastify();
 
   const [toggle, setToggle] = useState({
     password: false,
@@ -175,9 +175,8 @@ const ProfileUpdateForm = ({ handleClose }) => {
           )}
         </div>
       </form>
-      <ToastContainer />
     </>
   );
 };
 
-export default ProfileUpdateForm;
+export default UserProfileUpdateForm;
