@@ -15,7 +15,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isError, error, isSuccess, isLoading, data: user } = UseLoginCheck();
+  const { isError, error, isSuccess, isLoading, data } = UseLoginCheck();
 
   // NOTE: INITIALLY FETCH ALL NOTEBOOKS, NOTES AND TAGS RELATED TO THAT USER
   const {
@@ -50,7 +50,8 @@ const MainLayout = () => {
     return null;
   }
 
-  console.log("user", user);
+  console.log("user", data);
+  console.log("error", error);
   console.log("isSuccess", isSuccess);
 
   return (
