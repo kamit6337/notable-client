@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 import UseTagsQuery from "../../hooks/query/UseTagsQuery";
 import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
+import { sortFunction } from "../../utils/javaScript/sortOptionsList";
 
 const TagNotes = () => {
   const { data: notes } = UseNotesQuery();
@@ -26,8 +27,19 @@ const TagNotes = () => {
     if (noteId) return;
 
     if (noteList.length > 0) {
-      const findNoteId = noteList[0]._id;
-      navigate(`/tags/${id}?note=${findNoteId}`);
+      const localSort = JSON.parse(localStorage.getItem("sort"));
+
+      let firstNoteId = null;
+
+      if (!localSort) {
+        const sortedList = sortFunction(noteList, 1);
+        firstNoteId = sortedList[0]._id;
+      } else {
+        const sortedList = sortFunction(noteList, localSort.id);
+        firstNoteId = sortedList[0]._id;
+      }
+
+      navigate(`/tags/${id}?note=${firstNoteId}`);
     }
   }, [id, noteList, noteId, navigate]);
 

@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
 import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 import { useEffect } from "react";
+import { sortFunction } from "../../utils/javaScript/sortOptionsList";
 
 const AllNotes = () => {
   const navigate = useNavigate();
@@ -16,8 +17,19 @@ const AllNotes = () => {
     if (noteId) return;
 
     if (notes.length > 0) {
-      const findNoteId = notes[0]._id;
-      navigate(`/notes?note=${findNoteId}`);
+      const localSort = JSON.parse(localStorage.getItem("sort"));
+
+      let firstNoteId = null;
+
+      if (!localSort) {
+        const sortedList = sortFunction(notes, 1);
+        firstNoteId = sortedList[0]._id;
+      } else {
+        const sortedList = sortFunction(notes, localSort.id);
+        firstNoteId = sortedList[0]._id;
+      }
+
+      navigate(`/notes?note=${firstNoteId}`);
     }
   }, [notes, noteId, navigate]);
 

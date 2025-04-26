@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import UseNotebooksQuery from "../../hooks/query/UseNotebooksQuery";
 import UseNotesQuery from "../../hooks/query/UseNotesQuery";
 import UseNewNoteCreation from "../../hooks/mutation/UseNewNoteCreation";
+import { sortFunction } from "../../utils/javaScript/sortOptionsList";
 
 const SingleNotebook = () => {
   const navigate = useNavigate();
@@ -27,8 +28,19 @@ const SingleNotebook = () => {
     if (noteId) return;
 
     if (noteList.length > 0) {
-      const findNoteId = noteList[0]._id;
-      navigate(`/notebooks/${id}?note=${findNoteId}`);
+      const localSort = JSON.parse(localStorage.getItem("sort"));
+
+      let firstNoteId = null;
+
+      if (!localSort) {
+        const sortedList = sortFunction(noteList, 1);
+        firstNoteId = sortedList[0]._id;
+      } else {
+        const sortedList = sortFunction(noteList, localSort.id);
+        firstNoteId = sortedList[0]._id;
+      }
+
+      navigate(`/notebooks/${id}?note=${firstNoteId}`);
     }
   }, [id, noteList, noteId]);
 
