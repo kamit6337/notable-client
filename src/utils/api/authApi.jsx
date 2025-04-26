@@ -1,6 +1,7 @@
 import axios from "axios";
+import environment from "../environment";
 
-const SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+const SERVER_URL = environment.SERVER_URL;
 
 export const getAuthReq = async (url, params) => {
   try {
